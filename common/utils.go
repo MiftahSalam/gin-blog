@@ -2,15 +2,20 @@ package common
 
 import (
 	"fmt"
-	"log"
 	"math/rand"
 	"os"
 	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
 )
+
+type CommonError struct {
+	Errors map[string]interface{} `json:"errors"`
+}
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 
@@ -28,7 +33,7 @@ func GetToken(id uint) string {
 	jwt_expired, err := strconv.Atoi(jwt_expired_env)
 
 	if err != nil {
-		log.Fatal("Error while loading jwt_expired. Err: ", err)
+		LogE.Fatal("Error while loading jwt_expired. Err: ", err)
 	}
 
 	jwt_token.Claims = jwt.MapClaims{
@@ -38,10 +43,6 @@ func GetToken(id uint) string {
 	token, _ := jwt_token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 
 	return token
-}
-
-type CommonError struct {
-	Errors map[string]interface{} `json:"errors"`
 }
 
 func NewValidatorError(err error) CommonError {
@@ -58,4 +59,18 @@ func NewValidatorError(err error) CommonError {
 	}
 
 	return res
+}
+
+func NewError(key string, err error) CommonError {
+	res := CommonError{}
+	res.Errors = make(map[string]interface{})
+	res.Errors[key] = err.Error()
+
+	return res
+}
+
+func Bind(c *gin.Context, obj interface{}) error {
+	b := binding.Default(c.Request.Method, c.ContentType())
+
+	return c.ShouldBindWith(obj, b)
 }
