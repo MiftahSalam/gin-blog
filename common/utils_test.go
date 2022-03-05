@@ -14,7 +14,10 @@ func TestMain(t *testing.M) {
 	if err != nil {
 		log.Fatal("Cannot load env file. Err: ", err)
 	}
+
+	t.Run()
 }
+
 func TestRandString(t *testing.T) {
 	asserts := assert.New(t)
 
@@ -28,6 +31,7 @@ func TestRandString(t *testing.T) {
 	for _, ch := range str {
 		asserts.Contains(letters, ch, "char should contain")
 	}
+	panic("test")
 }
 
 func TestGenToken(t *testing.T) {
