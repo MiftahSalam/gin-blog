@@ -1,0 +1,2 @@
+- ## Testing detail output not shown in windows
+  - Status: Solved (add t.Run() in TestMain function )
