@@ -1,8 +1,9 @@
 package main
 
 import (
-	"log"
+	// "log"
 
+	"github.com/MiftahSalam/gin-blog/common"
 	"github.com/MiftahSalam/gin-blog/users"
 	"github.com/joho/godotenv"
 )
@@ -10,8 +11,9 @@ import (
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading file .env")
+		common.LogE.Println("Error loading file .env")
 	}
+	common.LogI.Println("Test log format")
 
 	users.CheckDotEnv()
 }
