@@ -9,13 +9,16 @@ import (
 )
 
 func TestMain(t *testing.M) {
-	err := godotenv.Load("../.env")
+	LogI.Println("Test main users common/utils start")
 
+	err := godotenv.Load("../.env")
 	if err != nil {
 		log.Fatal("Cannot load env file. Err: ", err)
 	}
 
 	t.Run()
+
+	LogI.Println("Test main users common/utils end")
 }
 
 func TestRandString(t *testing.T) {

@@ -4,7 +4,6 @@ import (
 	// "log"
 
 	"github.com/MiftahSalam/gin-blog/common"
-	"github.com/MiftahSalam/gin-blog/users"
 	"github.com/joho/godotenv"
 )
 
@@ -15,5 +14,5 @@ func main() {
 	}
 	common.LogI.Println("Test log format")
 
-	users.CheckDotEnv()
+	// users.CheckDotEnv()
 }
