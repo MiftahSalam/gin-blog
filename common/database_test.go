@@ -13,6 +13,7 @@ func TestDatabaseConnection(t *testing.T) {
 	LogI.Println("masuk")
 
 	sqlDB, err := db.DB()
+
 	asserts.NoError(err, "Db should be available")
 	asserts.NoError(sqlDB.Ping(), "Db should be connected")
 }

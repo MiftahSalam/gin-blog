@@ -1,11 +1,33 @@
 package users
 
 import (
-	"fmt"
+	// "fmt"
 
 	"github.com/MiftahSalam/gin-blog/common"
+	"gorm.io/gorm"
 )
 
-func CheckDotEnv() {
-	fmt.Println(common.GetToken(23))
+type UserModel struct {
+	ID           uint    `gorm:"primary_key"`
+	Username     string  `gorm:"column:username"`
+	Email        string  `gorm:"column:email"`
+	Bio          string  `gorm:"column:bio;size:1024"`
+	Image        *string `gorm:"column:image"`
+	PasswordHash string  `gorm:"column:password;not null"`
+}
+
+type FollowModel struct {
+	gorm.Model
+	Following    UserModel
+	FollowingID  uint
+	FollowedBy   UserModel
+	FollowedByID uint
+}
+
+func AuthoMigrate() {
+	db := common.GetDB()
+
+	db.AutoMigrate(&UserModel{})
+	db.AutoMigrate(&FollowModel{})
+
 }
