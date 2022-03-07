@@ -24,7 +24,6 @@ func Init() *gorm.DB {
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Asia/Jakarta",
 		os.Getenv("DATABASE_HOST"), os.Getenv("DATABASE_USERNAME"), os.Getenv("DATABASE_PASSWORD"), os.Getenv("DATABASE_NAME"), dbPort)
-	// dsn := "host=localhost user=postgres password=postgres dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
 	enableLog, err := strconv.Atoi(os.Getenv("DATABASE_LOGGING"))
 	if err != nil {
 		LogE.Fatal("Error while loading DATABASE_LOGGING. Err: ", err)
@@ -37,6 +36,16 @@ func Init() *gorm.DB {
 		LogE.Fatal("db init error: ", err)
 	}
 
+	sqlDB, err := db.DB()
+	if err != nil {
+		LogE.Fatal("get db instance error: ", err)
+	}
+	sqlDB.SetConnMaxIdleTime(10)
+
 	DB = db
+	return DB
+}
+
+func GetDB() *gorm.DB {
 	return DB
 }
