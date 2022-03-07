@@ -9,6 +9,9 @@ require (
 	github.com/go-playground/validator/v10 v10.10.0
 	github.com/joho/godotenv v1.4.0
 	github.com/stretchr/testify v1.7.0
+	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
+	gorm.io/driver/postgres v1.3.1
+	gorm.io/gorm v1.23.2
 )
 
 require (
@@ -34,11 +37,8 @@ require (
 	github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
-	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
 	golang.org/x/sys v0.0.0-20210806184541-e5e7981a1069 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
-	gorm.io/driver/postgres v1.3.1 // indirect
-	gorm.io/gorm v1.23.2 // indirect
 )
