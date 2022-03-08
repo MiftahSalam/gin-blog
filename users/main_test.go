@@ -1,12 +1,37 @@
 package users
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
 	"github.com/MiftahSalam/gin-blog/common"
 	"github.com/joho/godotenv"
+	"gorm.io/gorm"
 )
+
+var db *gorm.DB
+var usersMock []UserModel
+
+func createUsersMock(n int) []UserModel {
+	var ret []UserModel
+
+	for i := 0; i < n; i++ {
+		image := fmt.Sprintf("http://image/%v.jpg", i)
+		userModel := UserModel{
+			Username: fmt.Sprintf("user%v", 1),
+			Email:    fmt.Sprintf("user%v@linkedin.com", 1),
+			Bio:      fmt.Sprintf("bio%v", i),
+			Image:    &image,
+		}
+		userModel.setPassword("123456")
+		common.LogI.Println("create user", userModel)
+		db.Create(&userModel)
+		ret = append(ret, userModel)
+	}
+
+	return ret
+}
 
 func TestMain(m *testing.M) {
 	common.LogI.Println("Test main users start")
@@ -17,6 +42,9 @@ func TestMain(m *testing.M) {
 		panic("Cannot load env file")
 	}
 	db = common.Init()
+
+	AuthoMigrate()
+	usersMock = createUsersMock(3)
 
 	exitVal := m.Run()
 
