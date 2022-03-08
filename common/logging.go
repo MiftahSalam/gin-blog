@@ -10,7 +10,7 @@ import (
 type LogWriter struct{}
 
 func (f LogWriter) Write(p []byte) (n int, err error) {
-	pc, file, line, ok := runtime.Caller(4)
+	pc, file, line, ok := runtime.Caller(3)
 
 	if !ok {
 		file = "?"
