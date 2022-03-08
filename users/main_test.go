@@ -18,6 +18,10 @@ var usersMock []UserModel
 func createUsersMock(n int) []UserModel {
 	var ret []UserModel
 
+	if n < 2 {
+		panic("user mock count should be greater or equal to 2")
+	}
+
 	for i := 0; i < n; i++ {
 		image := fmt.Sprintf("http://image/%v.jpg", i)
 		userModel := UserModel{
