@@ -40,7 +40,21 @@ func createUsersMock(n int) []UserModel {
 }
 
 func cleanUpAfterTest() {
-	db.Where("username LIKE ?", "%user%").Delete(&UserModel{})
+	common.LogI.Println("clean up start")
+
+	for _, user := range usersMock {
+		common.LogI.Println("clean up user", user)
+
+		db.Debug().Unscoped().Delete(FollowModel{}, &FollowModel{
+			FollowedByID: user.ID,
+		})
+
+		db.Debug().Unscoped().Delete(FollowModel{}, &FollowModel{
+			FollowingID: user.ID,
+		})
+	}
+
+	db.Debug().Where("username LIKE ?", "%user%").Delete(UserModel{})
 	common.LogI.Println("cleaned up")
 }
 
