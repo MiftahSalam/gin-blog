@@ -56,3 +56,18 @@ func TestUserUpdate(t *testing.T) {
 	asserts.NoError(errFind, "user %v should exist", user)
 	asserts.Equal(user, userUpdated, "user %v should equal", user)
 }
+
+func TestFollowing(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, user := range usersMock {
+		t.Run(fmt.Sprintf("Test Get Following user: %v", user.Username), func(t *testing.T) {
+			followingUser := user.GetFollowing()
+			asserts.Empty(followingUser, "following user should be empty")
+		})
+	}
+
+	usersMock[0].following(usersMock[1])
+	asserts.Equal(1, len(usersMock[0].GetFollowing()), "user0 following users len should equal 1 ")
+	asserts.True(usersMock[0].isFollowing(usersMock[1]), "%v should be follow %v", usersMock[0].Username, usersMock[0].Username)
+}
