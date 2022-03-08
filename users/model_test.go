@@ -4,10 +4,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"gorm.io/gorm"
 )
 
-var db *gorm.DB
 var image_url = "https://golang.org/doc/gopher/frontpage.png"
 var userModelMock UserModel = UserModel{
 	ID:           2,
