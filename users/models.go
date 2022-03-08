@@ -24,6 +24,14 @@ type FollowModel struct {
 	FollowedByID uint
 }
 
+func (u FollowModel) TableName() string {
+	return "follows"
+}
+
+func (u UserModel) TableName() string {
+	return "users"
+}
+
 func AuthoMigrate() {
 	db := common.GetDB()
 
