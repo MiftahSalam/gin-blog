@@ -10,6 +10,8 @@ import (
 	"gorm.io/gorm"
 )
 
+const userMockNumber = 3
+
 var db *gorm.DB
 var usersMock []UserModel
 
@@ -49,7 +51,7 @@ func TestMain(m *testing.M) {
 	db = common.Init()
 
 	AuthoMigrate()
-	usersMock = createUsersMock(3)
+	usersMock = createUsersMock(userMockNumber)
 
 	exitVal := m.Run()
 
