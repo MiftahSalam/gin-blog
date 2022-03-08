@@ -21,7 +21,7 @@ func createUsersMock(n int) []UserModel {
 	for i := 0; i < n; i++ {
 		image := fmt.Sprintf("http://image/%v.jpg", i)
 		userModel := UserModel{
-			Username: fmt.Sprintf("user%v", 1),
+			Username: fmt.Sprintf("user%v", i),
 			Email:    fmt.Sprintf("user%v@linkedin.com", i),
 			Bio:      fmt.Sprintf("bio%v", i),
 			Image:    &image,
