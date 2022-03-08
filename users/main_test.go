@@ -20,17 +20,22 @@ func createUsersMock(n int) []UserModel {
 		image := fmt.Sprintf("http://image/%v.jpg", i)
 		userModel := UserModel{
 			Username: fmt.Sprintf("user%v", 1),
-			Email:    fmt.Sprintf("user%v@linkedin.com", 1),
+			Email:    fmt.Sprintf("user%v@linkedin.com", i),
 			Bio:      fmt.Sprintf("bio%v", i),
 			Image:    &image,
 		}
 		userModel.setPassword("123456")
-		common.LogI.Println("create user", userModel)
+		// common.LogI.Println("create user", userModel)
 		db.Create(&userModel)
 		ret = append(ret, userModel)
 	}
 
 	return ret
+}
+
+func cleanUpAfterTest() {
+	db.Where("username LIKE ?", "%user%").Delete(&UserModel{})
+	common.LogI.Println("cleaned up")
 }
 
 func TestMain(m *testing.M) {
@@ -48,6 +53,7 @@ func TestMain(m *testing.M) {
 
 	exitVal := m.Run()
 
+	cleanUpAfterTest()
 	sqlDB, err := db.DB()
 	if err != nil {
 		common.LogE.Fatal("get db instance error: ", err)
