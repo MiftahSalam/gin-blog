@@ -1,11 +1,45 @@
-package users
+package models
 
 import (
 	"errors"
 
 	"github.com/MiftahSalam/gin-blog/common"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
+
+type UserModel struct {
+	ID           uint    `gorm:"primary_key"`
+	Username     string  `gorm:"column:username"`
+	Email        string  `gorm:"column:email"`
+	Bio          string  `gorm:"column:bio;size:1024"`
+	Image        *string `gorm:"column:image"`
+	PasswordHash string  `gorm:"column:password;not null"`
+}
+
+type FollowModel struct {
+	gorm.Model
+	Following    UserModel
+	FollowingID  uint
+	FollowedBy   UserModel
+	FollowedByID uint
+}
+
+func (u FollowModel) TableName() string {
+	return "follows"
+}
+
+func (u UserModel) TableName() string {
+	return "users"
+}
+
+func AuthoMigrate() {
+	db := common.GetDB()
+
+	db.AutoMigrate(&UserModel{})
+	db.AutoMigrate(&FollowModel{})
+
+}
 
 func (u *UserModel) Update(data interface{}) error {
 	db := common.GetDB()
@@ -34,22 +68,8 @@ func (u UserModel) GetFollowing() []UserModel {
 
 	return followings
 }
-func FindOneUser(condition interface{}) (UserModel, error) {
-	db := common.GetDB()
-	var model UserModel
 
-	err := db.Where(condition).First(&model).Error
-
-	return model, err
-}
-func SaveOne(data interface{}) error {
-	db := common.GetDB()
-	err := db.Save(data).Error
-
-	return err
-}
-
-func (u UserModel) following(fu UserModel) error {
+func (u UserModel) Following(fu UserModel) error {
 	db := common.GetDB()
 	var follow FollowModel
 	err := db.FirstOrCreate(&follow, &FollowModel{
@@ -60,7 +80,7 @@ func (u UserModel) following(fu UserModel) error {
 	return err
 }
 
-func (u UserModel) isFollowing(fu UserModel) bool {
+func (u UserModel) IsFollowing(fu UserModel) bool {
 	db := common.GetDB()
 	var follow FollowModel
 
@@ -73,7 +93,7 @@ func (u UserModel) isFollowing(fu UserModel) bool {
 
 }
 
-func (u UserModel) unFollow(fu UserModel) error {
+func (u UserModel) UnFollow(fu UserModel) error {
 	db := common.GetDB()
 	err := db.Where(FollowModel{
 		FollowingID:  fu.ID,
@@ -83,7 +103,7 @@ func (u UserModel) unFollow(fu UserModel) error {
 	return err
 }
 
-func (u *UserModel) setPassword(password string) error {
+func (u *UserModel) SetPassword(password string) error {
 	if len(password) == 0 {
 		return errors.New("password should no be empty")
 	}
@@ -95,7 +115,7 @@ func (u *UserModel) setPassword(password string) error {
 	return nil
 }
 
-func (u *UserModel) checkPassword(password string) error {
+func (u *UserModel) CheckPassword(password string) error {
 	bytePassword := []byte(password)
 	byteHashedPassword := []byte(u.PasswordHash)
 

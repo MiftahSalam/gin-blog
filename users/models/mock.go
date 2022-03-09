@@ -1,19 +1,23 @@
-package users
+package models
 
 import (
 	"fmt"
-	"os"
-	"testing"
 
 	"github.com/MiftahSalam/gin-blog/common"
-	"github.com/joho/godotenv"
 	"gorm.io/gorm"
 )
 
-const userMockNumber = 3
+const UserMockNumber = 3
 
 var db *gorm.DB
-var usersMock []UserModel
+var UsersMock []UserModel
+
+func Init(database *gorm.DB) {
+	db = database
+
+	UsersMock = createUsersMock(UserMockNumber)
+
+}
 
 func createUsersMock(n int) []UserModel {
 	var ret []UserModel
@@ -30,8 +34,8 @@ func createUsersMock(n int) []UserModel {
 			Bio:      fmt.Sprintf("bio%v", i),
 			Image:    &image,
 		}
-		userModel.setPassword("123456")
-		// common.LogI.Println("create user", userModel)
+		userModel.SetPassword("123456")
+		common.LogI.Println("create user", userModel)
 		db.Create(&userModel)
 		ret = append(ret, userModel)
 	}
@@ -39,10 +43,10 @@ func createUsersMock(n int) []UserModel {
 	return ret
 }
 
-func cleanUpAfterTest() {
+func CleanUpAfterTest() {
 	common.LogI.Println("clean up start")
 
-	for _, user := range usersMock {
+	for _, user := range UsersMock {
 		common.LogI.Println("clean up user", user)
 
 		db.Debug().Unscoped().Delete(FollowModel{}, &FollowModel{
@@ -56,31 +60,10 @@ func cleanUpAfterTest() {
 
 	db.Debug().Where("username LIKE ?", "%user%").Delete(UserModel{})
 	common.LogI.Println("cleaned up")
-}
 
-func TestMain(m *testing.M) {
-	common.LogI.Println("Test main users start")
-
-	err := godotenv.Load("../.env")
-	if err != nil {
-		common.LogE.Fatal("Cannot load env file. Err: ", err)
-		panic("Cannot load env file")
-	}
-	db = common.Init()
-
-	AuthoMigrate()
-	usersMock = createUsersMock(userMockNumber)
-
-	exitVal := m.Run()
-
-	cleanUpAfterTest()
 	sqlDB, err := db.DB()
 	if err != nil {
 		common.LogE.Fatal("get db instance error: ", err)
 	}
 	sqlDB.Close()
-
-	os.Exit(exitVal)
-
-	common.LogI.Println("Test main users end")
 }
