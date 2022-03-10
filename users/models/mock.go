@@ -35,7 +35,7 @@ func createUsersMock(n int) []UserModel {
 			Image:    &image,
 		}
 		userModel.SetPassword("123456")
-		common.LogI.Println("create user", userModel)
+		// common.LogI.Println("create user", userModel)
 		db.Create(&userModel)
 		ret = append(ret, userModel)
 	}
@@ -47,13 +47,13 @@ func CleanUpAfterTest() {
 	common.LogI.Println("clean up start")
 
 	for _, user := range UsersMock {
-		common.LogI.Println("clean up user", user)
+		// common.LogI.Println("clean up user", user)
 
-		db.Debug().Unscoped().Delete(FollowModel{}, &FollowModel{
+		db.Unscoped().Delete(FollowModel{}, &FollowModel{
 			FollowedByID: user.ID,
 		})
 
-		db.Debug().Unscoped().Delete(FollowModel{}, &FollowModel{
+		db.Unscoped().Delete(FollowModel{}, &FollowModel{
 			FollowingID: user.ID,
 		})
 	}
