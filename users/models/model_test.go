@@ -72,5 +72,17 @@ func TestFollowing(t *testing.T) {
 
 	UsersMock[0].Following(UsersMock[1])
 	asserts.Equal(1, len(UsersMock[0].GetFollowing()), "user0 following users len should equal 1 ")
-	asserts.True(UsersMock[0].IsFollowing(UsersMock[1]), "%v should be follow %v", UsersMock[0].Username, UsersMock[0].Username)
+	asserts.True(UsersMock[0].IsFollowing(UsersMock[1]), "%v should be follow %v", UsersMock[0].Username, UsersMock[1].Username)
+
+	UsersMock[0].Following(UsersMock[2])
+	asserts.Equal(2, len(UsersMock[0].GetFollowing()), "user0 following users len should equal 2 ")
+	asserts.True(UsersMock[0].IsFollowing(UsersMock[2]), "%v should be follow %v", UsersMock[0].Username, UsersMock[2].Username)
+
+	follwedUser1, follwedUser2 := UsersMock[0].GetFollowing()[0], UsersMock[0].GetFollowing()[1]
+	asserts.Equal(UsersMock[1], follwedUser1, "%v should same with %v", UsersMock[1], follwedUser1)
+	asserts.Equal(UsersMock[2], follwedUser2, "%v should same with %v", UsersMock[2], follwedUser2)
+
+	UsersMock[0].UnFollow(UsersMock[1])
+	asserts.Equal(1, len(UsersMock[0].GetFollowing()), "user0 following users len should equal 1 ")
+	asserts.False(UsersMock[0].IsFollowing(UsersMock[1]), "%v should not follow %v", UsersMock[0].Username, UsersMock[1].Username)
 }
