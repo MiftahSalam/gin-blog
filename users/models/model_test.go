@@ -54,9 +54,10 @@ func TestUserUpdate(t *testing.T) {
 	err := user.Update(&userUpdate)
 	asserts.NoError(err, "user %v should updated", user)
 
-	// userUpdated, errFind := services.FindOneUser(user)
-	// asserts.NoError(errFind, "user %v should exist", user)
-	// asserts.Equal(user, userUpdated, "user %v should equal", user)
+	var userUpdated UserModel
+	errFind := db.Where(user).First(&userUpdated).Error
+	asserts.NoError(errFind, "user %v should exist", user)
+	asserts.Equal(user, userUpdated, "user %v should equal", user)
 }
 
 func TestFollowing(t *testing.T) {
