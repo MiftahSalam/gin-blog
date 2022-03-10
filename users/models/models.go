@@ -95,7 +95,7 @@ func (u UserModel) IsFollowing(fu UserModel) bool {
 
 func (u UserModel) UnFollow(fu UserModel) error {
 	db := common.GetDB()
-	err := db.Where(FollowModel{
+	err := db.Unscoped().Where(FollowModel{
 		FollowingID:  fu.ID,
 		FollowedByID: u.ID,
 	}).Delete(FollowModel{}).Error
