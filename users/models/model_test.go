@@ -2,10 +2,13 @@ package models
 
 import (
 	"fmt"
+	"os"
 	"testing"
 
 	// "github.com/MiftahSalam/gin-blog/users/services"
 
+	"github.com/MiftahSalam/gin-blog/common"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,6 +20,28 @@ var userModelMock UserModel = UserModel{
 	Bio:          "Hello world",
 	Image:        &image_url,
 	PasswordHash: "",
+}
+
+func TestMain(m *testing.M) {
+	common.LogI.Println("Test main users start")
+
+	err := godotenv.Load("../../.env")
+	if err != nil {
+		common.LogE.Fatal("Cannot load env file. Err: ", err)
+		panic("Cannot load env file")
+	}
+	db := common.Init()
+	Init(db)
+
+	AuthoMigrate()
+
+	exitVal := m.Run()
+
+	CleanUpAfterTest()
+
+	os.Exit(exitVal)
+
+	common.LogI.Println("Test main users end")
 }
 
 func TestUserModel(t *testing.T) {
@@ -39,6 +64,24 @@ func TestUserModel(t *testing.T) {
 	asserts.NoError(err, "password should be checked and valid")
 }
 
+func TestGetUsers(t *testing.T) {
+	asserts := assert.New(t)
+
+	users, err := GetUsers()
+	asserts.NoError(err, "should get all users")
+	asserts.Equal(UserMockNumber, len(users))
+}
+
+func TestFindOneUser(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, user := range UsersMock {
+		userActual, err := FindOneUser(user.ID)
+		asserts.NoError(err, "%v should exist", user.Username)
+		asserts.Equal(user, userActual, "user should equal")
+	}
+}
+
 func TestUserUpdate(t *testing.T) {
 	asserts := assert.New(t)
 
@@ -58,6 +101,26 @@ func TestUserUpdate(t *testing.T) {
 	errFind := db.Where(user).First(&userUpdated).Error
 	asserts.NoError(errFind, "user %v should exist", user)
 	asserts.Equal(user, userUpdated, "user %v should equal", user)
+}
+
+func TestSaveOneUser(t *testing.T) {
+	asserts := assert.New(t)
+
+	image := fmt.Sprintf("http://image/%v.jpg", UserMockNumber+1)
+	user := UserModel{
+		Username: fmt.Sprintf("user%v", UserMockNumber+1),
+		Email:    fmt.Sprintf("user%v@linkedin.com", UserMockNumber+1),
+		Bio:      fmt.Sprintf("bio%v", UserMockNumber+1),
+		Image:    &image,
+	}
+	user.SetPassword("123456")
+
+	err := SaveOne(&user)
+	asserts.NoError(err, "user %v should created", user)
+
+	userSaved, errFind := FindOneUser(user)
+	asserts.NoError(errFind, "user %v should exist", user)
+	asserts.Equal(user, userSaved, "user %v should equal", user)
 }
 
 func TestFollowing(t *testing.T) {
@@ -86,3 +149,13 @@ func TestFollowing(t *testing.T) {
 	asserts.Equal(1, len(UsersMock[0].GetFollowing()), "user0 following users len should equal 1 ")
 	asserts.False(UsersMock[0].IsFollowing(UsersMock[1]), "%v should not follow %v", UsersMock[0].Username, UsersMock[1].Username)
 }
+
+// func TestDeleteOneUser(t *testing.T) {
+// 	asserts := assert.New(t)
+
+// 	var userToDelete = UsersMock[UserMockNumber-1]
+// 	err := DeleteOneUsers(UserModel{ID: userToDelete.ID})
+// 	asserts.NoError(err, "should success deleted one user: %v", userToDelete.Username)
+// 	_, err = FindOneUser(userToDelete)
+// 	asserts.Error(err, "user %v should not found", userToDelete.Username)
+// }

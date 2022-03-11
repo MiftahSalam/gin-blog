@@ -121,3 +121,48 @@ func (u *UserModel) CheckPassword(password string) error {
 
 	return bcrypt.CompareHashAndPassword(byteHashedPassword, bytePassword)
 }
+
+func GetUsers() ([]UserModel, error) {
+	db := common.GetDB()
+	var users []UserModel
+
+	err := db.Find(&users).Error
+
+	return users, err
+}
+
+func FindOneUser(condition interface{}) (UserModel, error) {
+	db := common.GetDB()
+	var model UserModel
+
+	err := db.Where(condition).First(&model).Error
+
+	return model, err
+}
+
+func SaveOne(data interface{}) error {
+	db := common.GetDB()
+	err := db.Save(data).Error
+
+	return err
+}
+
+func DeleteOneUsers(data interface{}) error {
+	user, ok := data.(FollowModel)
+	if !ok {
+		return errors.New("invalid follow model input")
+	}
+
+	db := common.GetDB()
+
+	db.Unscoped().Delete(FollowModel{}, &FollowModel{
+		FollowedByID: user.ID,
+	})
+	db.Unscoped().Delete(FollowModel{}, &FollowModel{
+		FollowingID: user.ID,
+	})
+
+	err := db.Unscoped().Delete(UserModel{}, data).Error
+
+	return err
+}
