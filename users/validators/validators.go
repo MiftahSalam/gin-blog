@@ -1,6 +1,8 @@
 package validators
 
 import (
+	"os"
+
 	"github.com/MiftahSalam/gin-blog/common"
 	"github.com/MiftahSalam/gin-blog/users/models"
 	"github.com/gin-gonic/gin"
@@ -45,7 +47,7 @@ func NewUserModelValidatorFillWith(userModel models.UserModel) UserModelValidato
 	userModelValidator.User.Username = userModel.Username
 	userModelValidator.User.Email = userModel.Email
 	userModelValidator.User.Bio = userModel.Bio
-	userModelValidator.User.Password = common.RandString(10)
+	userModelValidator.User.Password = os.Getenv("JWT_SECRET")
 
 	if userModel.Image != nil {
 		userModelValidator.User.Image = *userModel.Image

@@ -19,7 +19,7 @@ type ProfileResponse struct {
 }
 
 func (pSerializer *ProfileSerializer) Response() ProfileResponse {
-	model := pSerializer.C.MustGet("my_user_model").(models.UserModel)
+	model := pSerializer.C.MustGet("user").(models.UserModel)
 	profile := ProfileResponse{
 		ID:        model.ID,
 		Username:  model.Username,
