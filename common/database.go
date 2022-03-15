@@ -28,6 +28,7 @@ func Init() *gorm.DB {
 	if err != nil {
 		LogE.Fatal("Error while loading DATABASE_LOGGING. Err: ", err)
 	}
+	dsn = os.Getenv("DATABASE_URL")
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.LogLevel(enableLog)),
