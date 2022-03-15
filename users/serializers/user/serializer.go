@@ -30,3 +30,19 @@ func (u *UserSerializer) Response() UserResponse {
 
 	return user
 }
+
+func (u *UserSerializer) Responses(users []models.UserModel) []UserResponse {
+	var usersResponse []UserResponse
+	for _, currentUser := range users {
+		user := UserResponse{
+			Username: currentUser.Username,
+			Email:    currentUser.Email,
+			Bio:      currentUser.Bio,
+			Image:    currentUser.Image,
+		}
+		usersResponse = append(usersResponse, user)
+	}
+	// common.LogI.Println("usersResponse", usersResponse)
+
+	return usersResponse
+}
