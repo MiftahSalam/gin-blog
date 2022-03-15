@@ -16,7 +16,7 @@ type UserModelValidator struct {
 		Bio      string `form:"bio" json:"bio" binding:"max=1024"`
 		Image    string `form:"image" json:"image" binding:"omitempty,url"`
 	} `json:"user"`
-	userModel models.UserModel `json:"-"`
+	UserModel models.UserModel `json:"-"`
 }
 
 func (validator *UserModelValidator) Bind(c *gin.Context) error {
@@ -25,12 +25,12 @@ func (validator *UserModelValidator) Bind(c *gin.Context) error {
 		return err
 	}
 
-	validator.userModel.Username = validator.User.Username
-	validator.userModel.Email = validator.User.Email
-	validator.userModel.Bio = validator.User.Bio
-	validator.userModel.SetPassword(validator.User.Password)
+	validator.UserModel.Username = validator.User.Username
+	validator.UserModel.Email = validator.User.Email
+	validator.UserModel.Bio = validator.User.Bio
+	validator.UserModel.SetPassword(validator.User.Password)
 	if validator.User.Image != "" {
-		validator.userModel.Image = &validator.User.Image
+		validator.UserModel.Image = &validator.User.Image
 	}
 
 	return nil
