@@ -8,7 +8,7 @@ import (
 	serializers "github.com/MiftahSalam/gin-blog/users/serializers/user"
 )
 
-var MockTests = []struct {
+var MockTestsRegister = []struct {
 	Init            func(*http.Request)
 	Url             string
 	Method          string
@@ -28,6 +28,30 @@ var MockTests = []struct {
 	},
 }
 
+var MockTestsGetUsers = []struct {
+	Init            func(*http.Request)
+	Url             string
+	Method          string
+	Body            string
+	ResponseCode    int
+	ResponsePattern string
+	Msg             string
+}{
+	{
+		func(req *http.Request) {},
+		"/users/",
+		"GET",
+		"",
+		http.StatusOK,
+		"",
+		"valid data end should return StatusOK",
+	},
+}
+
 type UserResponseMock struct {
 	User serializers.UserResponse
+}
+
+type UsersResponseMock struct {
+	Users []serializers.UserResponse
 }
