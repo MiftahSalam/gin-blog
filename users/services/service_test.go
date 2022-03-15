@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 
 	"github.com/MiftahSalam/gin-blog/common"
@@ -18,7 +17,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var router *gin.Engine
+// var router *gin.Engine
 
 func TestMain(m *testing.M) {
 	common.LogI.Println("Test main users services start")
@@ -33,20 +32,21 @@ func TestMain(m *testing.M) {
 	models.Init(db)
 	models.AuthoMigrate()
 
-	router = gin.New()
-
-	users.Users(router.Group("/users"))
-	router.Use(middlewares.AuthMiddleware(true))
-
 	exitVal := m.Run()
-	os.Exit(exitVal)
+	// os.Exit(exitVal)
 
-	common.LogI.Println("Test main users services end")
+	models.CleanUpAfterTest()
+
+	common.LogI.Println("Test main users services end with exit code", exitVal)
 
 }
 
 func TestUserRegister(t *testing.T) {
 	asserts := assert.New(t)
+	router := gin.New()
+
+	users.Users(router.Group("/users"))
+	router.Use(middlewares.AuthMiddleware(true))
 
 	for _, testData := range services.MockTestsRegister {
 		body := testData.Body
@@ -80,6 +80,10 @@ func TestUserRegister(t *testing.T) {
 
 func TestGetUsers(t *testing.T) {
 	asserts := assert.New(t)
+	router := gin.New()
+
+	users.Users(router.Group("/users"))
+	router.Use(middlewares.AuthMiddleware(true))
 
 	for _, testData := range services.MockTestsGetUsers {
 		body := testData.Body
