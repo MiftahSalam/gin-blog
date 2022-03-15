@@ -18,6 +18,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var router *gin.Engine
+
 func TestMain(m *testing.M) {
 	common.LogI.Println("Test main users services start")
 
@@ -31,6 +33,11 @@ func TestMain(m *testing.M) {
 	models.Init(db)
 	models.AuthoMigrate()
 
+	router = gin.New()
+
+	users.Users(router.Group("/users"))
+	router.Use(middlewares.AuthMiddleware(true))
+
 	exitVal := m.Run()
 	os.Exit(exitVal)
 
@@ -40,12 +47,8 @@ func TestMain(m *testing.M) {
 
 func TestUserRegister(t *testing.T) {
 	asserts := assert.New(t)
-	router := gin.New()
 
-	users.Users(router.Group("/users"))
-	router.Use(middlewares.AuthMiddleware(true))
-
-	for _, testData := range services.MockTests {
+	for _, testData := range services.MockTestsRegister {
 		body := testData.Body
 		req, err := http.NewRequest(testData.Method, testData.Url, bytes.NewBufferString(body))
 		req.Header.Set("Content-Type", "application/json")
@@ -59,6 +62,10 @@ func TestUserRegister(t *testing.T) {
 
 		var jsonResp services.UserResponseMock
 		err = json.Unmarshal(w.Body.Bytes(), &jsonResp)
+
+		// common.LogI.Println("body", w.Body.String())
+		// common.LogI.Println("jsonResp", jsonResp)
+
 		asserts.Equal(testData.ResponseCode, w.Code, "Response Status - "+testData.Msg)
 
 		if err != nil {
@@ -68,5 +75,34 @@ func TestUserRegister(t *testing.T) {
 
 		asserts.Regexp("(^[\\w-]*\\.[\\w-]*\\.[\\w-]*$)", tok, "Response Content - "+testData.Msg)
 		// asserts.Regexp("(^[\\w-]*\\.[\\w-]*\\.[\\w-]*$)", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyMDIyLTAzLTE1VDExOjA0OjU2LjkyMjE2MTIrMDc6MDAiLCJpZCI6MjgxfQ.Dbzjz5loj3X_lOG55gJtOXw2ENj2Re6sodnMmKPc-uc", "Response Content - "+testData.msg)
+	}
+}
+
+func TestGetUsers(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, testData := range services.MockTestsGetUsers {
+		body := testData.Body
+		req, err := http.NewRequest(testData.Method, testData.Url, bytes.NewBufferString(body))
+
+		asserts.NoError(err)
+
+		testData.Init(req)
+
+		w := httptest.NewRecorder()
+		router.ServeHTTP(w, req)
+
+		// common.LogI.Println("body", w.Body.String())
+
+		var jsonResp services.UsersResponseMock
+		err = json.Unmarshal(w.Body.Bytes(), &jsonResp)
+		if err != nil {
+			common.LogE.Println("json unmarshall error", err)
+			panic("invalid json data")
+		}
+
+		// common.LogI.Println("jsonResp", jsonResp)
+
+		asserts.Equal(testData.ResponseCode, w.Code, "Response Status - "+testData.Msg)
 	}
 }
