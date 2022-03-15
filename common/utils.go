@@ -53,7 +53,7 @@ func NewValidatorError(err error) CommonError {
 	var currentErr *json.SyntaxError
 
 	if errors.As(err, &currentErr) {
-		res.Errors["json erros"] = err.Error()
+		res.Errors["json error"] = err.Error()
 		return res
 	}
 
