@@ -27,3 +27,15 @@ func Register(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"user": serializer.Response()})
 
 }
+
+func GetUsers(c *gin.Context) {
+	users, err := models.GetUsers()
+	if err != nil {
+		common.LogI.Println("get users error", err)
+		c.JSON(http.StatusInternalServerError, common.NewError("database error", err))
+	}
+	// common.LogI.Println("users", users)
+
+	serializer := serializers.UserSerializer{C: c}
+	c.JSON(http.StatusOK, gin.H{"user": serializer.Responses(users)})
+}
