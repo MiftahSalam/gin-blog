@@ -1,6 +1,8 @@
 package common
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
 	"math/rand"
 	"os"
@@ -48,8 +50,14 @@ func GetToken(id uint) string {
 func NewValidatorError(err error) CommonError {
 	res := CommonError{}
 	res.Errors = make(map[string]interface{})
-	errs := err.(validator.ValidationErrors)
+	var currentErr *json.SyntaxError
 
+	if errors.As(err, &currentErr) {
+		res.Errors["json erros"] = err.Error()
+		return res
+	}
+
+	errs := err.(validator.ValidationErrors)
 	for _, v := range errs {
 		if v.Param() != "" {
 			res.Errors[v.Field()] = fmt.Sprintf("{%v: %v}", v.Tag(), v.Param())
