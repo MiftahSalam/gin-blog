@@ -22,7 +22,7 @@ func UpdateContextUserModel(c *gin.Context, user_id uint) {
 	c.Set("user", userModel)
 }
 
-func AuthModdleware(autho401 bool) gin.HandlerFunc {
+func AuthMiddleware(autho401 bool) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		UpdateContextUserModel(ctx, 0)
 		tok, err := request.ParseFromRequest(ctx.Request, common.Auth2Extractor, func(t *jwt.Token) (interface{}, error) {
