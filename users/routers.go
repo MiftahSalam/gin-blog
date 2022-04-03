@@ -7,5 +7,9 @@ import (
 
 func Users(router *gin.RouterGroup) {
 	router.POST("/", services.Register)
+	router.POST("/login", services.Login)
+}
+
+func UsersAuth(router *gin.RouterGroup) {
 	router.GET("/", services.GetUsers)
 }
