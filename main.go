@@ -31,8 +31,10 @@ func main() {
 	router := gin.Default()
 	v1 := router.Group("/api")
 
+	// v1.Use(userMiddlewares.AuthMiddleware(true))
 	users.Users(v1.Group("/users"))
-	v1.Use(userMiddlewares.AuthMiddleware(false))
+	v1.Use(userMiddlewares.AuthMiddleware(true))
+	users.UsersAuth(v1.Group("/users"))
 
 	router.Run()
 }
