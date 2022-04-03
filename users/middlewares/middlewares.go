@@ -30,8 +30,9 @@ func AuthMiddleware(autho401 bool) gin.HandlerFunc {
 			return b, nil
 		})
 		if err != nil {
+			common.LogI.Println("err", err)
 			if autho401 {
-				ctx.AbortWithError(http.StatusUnauthorized, err)
+				ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			}
 			return
 		}
