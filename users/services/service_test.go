@@ -129,7 +129,6 @@ func TestUserLogin(t *testing.T) {
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, req)
 
-		common.LogI.Println("err", err)
 		common.LogI.Println("body", w.Body.String())
 
 		var jsonResp services.UserResponseMock
