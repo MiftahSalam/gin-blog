@@ -15,8 +15,10 @@ func TestStripBearerPrefixFromTokenString(t *testing.T) {
 		want string
 	}{
 		{"No error test: string without prefix", bearerString, bearerString},
-		{"No error test: string with capitalized prefix", "TOKEN " + bearerString, bearerString},
-		{"No error test: string with uncapitalized prefix", "token " + bearerString, bearerString},
+		{"No error test: string with capitalized token prefix", "TOKEN " + bearerString, bearerString},
+		{"No error test: string with uncapitalized token prefix", "token " + bearerString, bearerString},
+		{"No error test: string with capitalized bearer prefix", "BEARER " + bearerString, bearerString},
+		{"No error test: string with uncapitalized bearer prefix", "BEARER " + bearerString, bearerString},
 	}
 
 	for _, test := range tableTest {
