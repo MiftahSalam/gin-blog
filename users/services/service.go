@@ -22,9 +22,11 @@ func Login(c *gin.Context) {
 	userModel, err := models.FindOneUser(&models.UserModel{Email: loginValidation.User.Email})
 	if err != nil {
 		c.JSON(http.StatusForbidden, common.NewError("login", errors.New("not registered or invalid email")))
+		return
 	}
 	if userModel.CheckPassword(loginValidation.User.Password) != nil {
 		c.JSON(http.StatusForbidden, common.NewError("login", errors.New("invalid password")))
+		return
 	}
 
 	middlewares.UpdateContextUserModel(c, userModel.ID)
