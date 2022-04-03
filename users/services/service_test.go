@@ -45,8 +45,8 @@ func TestUserRegister(t *testing.T) {
 	asserts := assert.New(t)
 	router := gin.New()
 
+	router.Use(middlewares.AuthMiddleware(false))
 	users.Users(router.Group("/users"))
-	router.Use(middlewares.AuthMiddleware(true))
 
 	for _, testData := range services.MockTestsRegister {
 		body := testData.Body
@@ -82,8 +82,8 @@ func TestGetUsers(t *testing.T) {
 	asserts := assert.New(t)
 	router := gin.New()
 
-	users.Users(router.Group("/users"))
 	router.Use(middlewares.AuthMiddleware(true))
+	users.UsersAuth(router.Group("/users"))
 
 	for _, testData := range services.MockTestsGetUsers {
 		body := testData.Body
@@ -96,7 +96,8 @@ func TestGetUsers(t *testing.T) {
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, req)
 
-		// common.LogI.Println("body", w.Body.String())
+		asserts.Equal(testData.ResponseCode, w.Code, "Response Status - "+testData.Msg)
+		common.LogI.Println("body", w.Body.String())
 
 		var jsonResp services.UsersResponseMock
 		err = json.Unmarshal(w.Body.Bytes(), &jsonResp)
@@ -105,8 +106,45 @@ func TestGetUsers(t *testing.T) {
 			panic("invalid json data")
 		}
 
-		// common.LogI.Println("jsonResp", jsonResp)
+		common.LogI.Println("jsonResp", jsonResp)
 
-		asserts.Equal(testData.ResponseCode, w.Code, "Response Status - "+testData.Msg)
+	}
+}
+
+func TestUserLogin(t *testing.T) {
+	asserts := assert.New(t)
+	router := gin.New()
+
+	users.Users(router.Group("/users"))
+
+	for _, testData := range services.MockTestsLogin {
+		body := testData.Body
+		req, err := http.NewRequest(testData.Method, testData.Url, bytes.NewBufferString(body))
+		req.Header.Set("Content-Type", "application/json")
+
+		asserts.NoError(err)
+
+		testData.Init(req)
+
+		w := httptest.NewRecorder()
+		router.ServeHTTP(w, req)
+
+		common.LogI.Println("err", err)
+		common.LogI.Println("body", w.Body.String())
+
+		var jsonResp services.UserResponseMock
+		err = json.Unmarshal(w.Body.Bytes(), &jsonResp)
+
+		common.LogI.Println("jsonResp", jsonResp)
+
+		asserts.Equal(testData.ResponseCode, w.Code, "Response status - "+testData.Msg)
+
+		if err != nil {
+			panic("invalid json data")
+		}
+		tok := jsonResp.User.Token
+
+		asserts.Regexp("(^[\\w-]*\\.[\\w-]*\\.[\\w-]*$)", tok, "Response Content - "+testData.Msg)
+
 	}
 }

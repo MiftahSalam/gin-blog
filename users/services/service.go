@@ -1,14 +1,36 @@
 package services
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/MiftahSalam/gin-blog/common"
+	"github.com/MiftahSalam/gin-blog/users/middlewares"
 	"github.com/MiftahSalam/gin-blog/users/models"
 	serializers "github.com/MiftahSalam/gin-blog/users/serializers/user"
 	"github.com/MiftahSalam/gin-blog/users/validators"
 	"github.com/gin-gonic/gin"
 )
+
+func Login(c *gin.Context) {
+	loginValidation := validators.NewLoginValidator()
+	if err := loginValidation.Bind(c); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, common.NewValidatorError(err))
+		return
+	}
+
+	userModel, err := models.FindOneUser(&models.UserModel{Email: loginValidation.User.Email})
+	if err != nil {
+		c.JSON(http.StatusForbidden, common.NewError("login", errors.New("not registered or invalid email")))
+	}
+	if userModel.CheckPassword(loginValidation.User.Password) != nil {
+		c.JSON(http.StatusForbidden, common.NewError("login", errors.New("invalid password")))
+	}
+
+	middlewares.UpdateContextUserModel(c, userModel.ID)
+	serializer := serializers.UserSerializer{C: c}
+	c.JSON(http.StatusOK, gin.H{"user": serializer.Response()})
+}
 
 func Register(c *gin.Context) {
 	userValidation := validators.NewUserModelValidator()
@@ -37,5 +59,5 @@ func GetUsers(c *gin.Context) {
 	// common.LogI.Println("users", users)
 
 	serializer := serializers.UserSerializer{C: c}
-	c.JSON(http.StatusOK, gin.H{"user": serializer.Responses(users)})
+	c.JSON(http.StatusOK, gin.H{"users": serializer.Responses(users)})
 }
