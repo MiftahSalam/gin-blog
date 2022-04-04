@@ -131,11 +131,11 @@ func GetUsers() ([]UserModel, error) {
 	return users, err
 }
 
-func FindOneUser(condition interface{}) (UserModel, error) {
+func FindOneUser(condition interface{}, args ...interface{}) (UserModel, error) {
 	db := common.GetDB()
 	var model UserModel
 
-	err := db.Where(condition).First(&model).Error
+	err := db.Where(condition, args...).First(&model).Error
 
 	return model, err
 }
