@@ -17,7 +17,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// var router *gin.Engine
+var router *gin.Engine
 
 func TestMain(m *testing.M) {
 	common.LogI.Println("Test main users services start")
@@ -32,41 +32,43 @@ func TestMain(m *testing.M) {
 	models.Init(db)
 	models.AuthoMigrate()
 
+	router = gin.New()
+	router.Use(middlewares.AuthMiddleware(false))
+	users.Users(router.Group("/users"))
+	router.Use(middlewares.AuthMiddleware(true))
+	users.UsersAuth(router.Group("/users"))
+
 	exitVal := m.Run()
-	// os.Exit(exitVal)
 
 	models.CleanUpAfterTest()
 
 	common.LogI.Println("Test main users services end with exit code", exitVal)
+}
 
+func createTest(asserts *assert.Assertions, testData *services.MockTests) *httptest.ResponseRecorder {
+	body := testData.Body
+	req, err := http.NewRequest(testData.Method, testData.Url, bytes.NewBufferString(body))
+
+	asserts.NoError(err)
+
+	testData.Init(req)
+
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	asserts.Equal(testData.ResponseCode, w.Code, "Response Status - "+testData.Msg)
+
+	return w
 }
 
 func TestUserRegister(t *testing.T) {
 	asserts := assert.New(t)
-	router := gin.New()
-
-	router.Use(middlewares.AuthMiddleware(false))
-	users.Users(router.Group("/users"))
-
 	for _, testData := range services.MockTestsRegister {
-		body := testData.Body
-		req, err := http.NewRequest(testData.Method, testData.Url, bytes.NewBufferString(body))
-		req.Header.Set("Content-Type", "application/json")
-
-		asserts.NoError(err)
-
-		testData.Init(req)
-
-		w := httptest.NewRecorder()
-		router.ServeHTTP(w, req)
-
+		w := createTest(asserts, &testData)
 		var jsonResp services.UserResponseMock
-		err = json.Unmarshal(w.Body.Bytes(), &jsonResp)
+		err := json.Unmarshal(w.Body.Bytes(), &jsonResp)
 
 		// common.LogI.Println("body", w.Body.String())
-		// common.LogI.Println("jsonResp", jsonResp)
-
-		asserts.Equal(testData.ResponseCode, w.Code, "Response Status - "+testData.Msg)
 
 		if err != nil {
 			panic("invalid json data")
@@ -80,61 +82,27 @@ func TestUserRegister(t *testing.T) {
 
 func TestGetUsers(t *testing.T) {
 	asserts := assert.New(t)
-	router := gin.New()
-
-	router.Use(middlewares.AuthMiddleware(true))
-	users.UsersAuth(router.Group("/users"))
-
 	for _, testData := range services.MockTestsGetUsers {
-		body := testData.Body
-		req, err := http.NewRequest(testData.Method, testData.Url, bytes.NewBufferString(body))
-
-		asserts.NoError(err)
-
-		testData.Init(req)
-
-		w := httptest.NewRecorder()
-		router.ServeHTTP(w, req)
-
-		asserts.Equal(testData.ResponseCode, w.Code, "Response Status - "+testData.Msg)
-		common.LogI.Println("body", w.Body.String())
-
+		w := createTest(asserts, &testData)
 		var jsonResp services.UsersResponseMock
-		err = json.Unmarshal(w.Body.Bytes(), &jsonResp)
+		err := json.Unmarshal(w.Body.Bytes(), &jsonResp)
 		if err != nil {
 			common.LogE.Println("json unmarshall error", err)
 			panic("invalid json data")
 		}
 
-		common.LogI.Println("jsonResp", jsonResp)
-
+		// common.LogI.Println("jsonResp", jsonResp)
 	}
 }
 
 func TestUserLogin(t *testing.T) {
 	asserts := assert.New(t)
-	router := gin.New()
-
-	users.Users(router.Group("/users"))
-
 	for _, testData := range services.MockTestsLogin {
-		body := testData.Body
-		req, err := http.NewRequest(testData.Method, testData.Url, bytes.NewBufferString(body))
-		req.Header.Set("Content-Type", "application/json")
-
-		asserts.NoError(err)
-
-		testData.Init(req)
-
-		w := httptest.NewRecorder()
-		router.ServeHTTP(w, req)
-
-		common.LogI.Println("body", w.Body.String())
-
+		w := createTest(asserts, &testData)
 		var jsonResp services.UserResponseMock
-		err = json.Unmarshal(w.Body.Bytes(), &jsonResp)
+		err := json.Unmarshal(w.Body.Bytes(), &jsonResp)
 
-		common.LogI.Println("jsonResp", jsonResp)
+		// common.LogI.Println("jsonResp", jsonResp)
 
 		asserts.Equal(testData.ResponseCode, w.Code, "Response status - "+testData.Msg)
 
@@ -144,6 +112,5 @@ func TestUserLogin(t *testing.T) {
 		tok := jsonResp.User.Token
 
 		asserts.Regexp("(^[\\w-]*\\.[\\w-]*\\.[\\w-]*$)", tok, "Response Content - "+testData.Msg)
-
 	}
 }

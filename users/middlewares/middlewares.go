@@ -20,6 +20,8 @@ func UpdateContextUserModel(c *gin.Context, user_id uint) {
 	}
 	c.Set("user_id", user_id)
 	c.Set("user", userModel)
+
+	common.LogI.Println("current_user_id", user_id)
 }
 
 func AuthMiddleware(autho401 bool) gin.HandlerFunc {
