@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/MiftahSalam/gin-blog/common"
@@ -33,7 +34,7 @@ func TestMain(m *testing.M) {
 	models.AuthoMigrate()
 
 	router = gin.New()
-	router.Use(middlewares.AuthMiddleware(false))
+	// router.Use(middlewares.AuthMiddleware(false))
 	users.Users(router.Group("/users"))
 	router.Use(middlewares.AuthMiddleware(true))
 	users.UsersAuth(router.Group("/users"))
@@ -64,53 +65,63 @@ func createTest(asserts *assert.Assertions, testData *services.MockTests) *httpt
 func TestUserRegister(t *testing.T) {
 	asserts := assert.New(t)
 	for _, testData := range services.MockTestsRegister {
-		w := createTest(asserts, &testData)
-		var jsonResp services.UserResponseMock
-		err := json.Unmarshal(w.Body.Bytes(), &jsonResp)
+		t.Run(testData.TestName, func(t *testing.T) {
+			w := createTest(asserts, &testData)
+			var jsonResp services.UserResponseMock
+			err := json.Unmarshal(w.Body.Bytes(), &jsonResp)
 
-		// common.LogI.Println("body", w.Body.String())
+			common.LogI.Println("body", w.Body.String())
 
-		if err != nil {
-			panic("invalid json data")
-		}
-		tok := jsonResp.User.Token
+			if err != nil {
+				panic("invalid json data")
+			}
+			tok := jsonResp.User.Token
 
-		asserts.Regexp("(^[\\w-]*\\.[\\w-]*\\.[\\w-]*$)", tok, "Response Content - "+testData.Msg)
-		// asserts.Regexp("(^[\\w-]*\\.[\\w-]*\\.[\\w-]*$)", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyMDIyLTAzLTE1VDExOjA0OjU2LjkyMjE2MTIrMDc6MDAiLCJpZCI6MjgxfQ.Dbzjz5loj3X_lOG55gJtOXw2ENj2Re6sodnMmKPc-uc", "Response Content - "+testData.msg)
+			if strings.Contains(testData.TestName, "no error") {
+				asserts.Regexp("(^[\\w-]*\\.[\\w-]*\\.[\\w-]*$)", tok, "Response Content - "+testData.Msg)
+				// asserts.Regexp("(^[\\w-]*\\.[\\w-]*\\.[\\w-]*$)", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyMDIyLTAzLTE1VDExOjA0OjU2LjkyMjE2MTIrMDc6MDAiLCJpZCI6MjgxfQ.Dbzjz5loj3X_lOG55gJtOXw2ENj2Re6sodnMmKPc-uc", "Response Content - "+testData.msg)
+			} else {
+				asserts.Equal("", tok, "Response Content - "+testData.Msg)
+			}
+		})
 	}
 }
 
 func TestGetUsers(t *testing.T) {
 	asserts := assert.New(t)
 	for _, testData := range services.MockTestsGetUsers {
-		w := createTest(asserts, &testData)
-		var jsonResp services.UsersResponseMock
-		err := json.Unmarshal(w.Body.Bytes(), &jsonResp)
-		if err != nil {
-			common.LogE.Println("json unmarshall error", err)
-			panic("invalid json data")
-		}
+		t.Run(testData.TestName, func(t *testing.T) {
+			w := createTest(asserts, &testData)
+			var jsonResp services.UsersResponseMock
+			err := json.Unmarshal(w.Body.Bytes(), &jsonResp)
+			if err != nil {
+				common.LogE.Println("json unmarshall error", err)
+				panic("invalid json data")
+			}
 
-		// common.LogI.Println("jsonResp", jsonResp)
+			// common.LogI.Println("jsonResp", jsonResp)
+		})
 	}
 }
 
 func TestUserLogin(t *testing.T) {
 	asserts := assert.New(t)
 	for _, testData := range services.MockTestsLogin {
-		w := createTest(asserts, &testData)
-		var jsonResp services.UserResponseMock
-		err := json.Unmarshal(w.Body.Bytes(), &jsonResp)
+		t.Run(testData.TestName, func(t *testing.T) {
+			w := createTest(asserts, &testData)
+			var jsonResp services.UserResponseMock
+			err := json.Unmarshal(w.Body.Bytes(), &jsonResp)
 
-		// common.LogI.Println("jsonResp", jsonResp)
+			// common.LogI.Println("jsonResp", jsonResp)
 
-		asserts.Equal(testData.ResponseCode, w.Code, "Response status - "+testData.Msg)
+			asserts.Equal(testData.ResponseCode, w.Code, "Response status - "+testData.Msg)
 
-		if err != nil {
-			panic("invalid json data")
-		}
-		tok := jsonResp.User.Token
+			if err != nil {
+				panic("invalid json data")
+			}
+			tok := jsonResp.User.Token
 
-		asserts.Regexp("(^[\\w-]*\\.[\\w-]*\\.[\\w-]*$)", tok, "Response Content - "+testData.Msg)
+			asserts.Regexp("(^[\\w-]*\\.[\\w-]*\\.[\\w-]*$)", tok, "Response Content - "+testData.Msg)
+		})
 	}
 }

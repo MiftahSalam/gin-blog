@@ -41,15 +41,21 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	if err := models.SaveOne(&userValidation.UserModel); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, common.NewError("Database", err))
+	userModel, _ := models.FindOneUser("username = ?", userValidation.User.Username)
+	if userModel.Username == "" {
+		if err := models.SaveOne(&userValidation.UserModel); err != nil {
+			c.JSON(http.StatusUnprocessableEntity, common.NewError("Database", err))
+			return
+		}
+
+		c.Set("user", userValidation.UserModel)
+		serializer := serializers.UserSerializer{C: c}
+		c.JSON(http.StatusCreated, gin.H{"user": serializer.Response()})
+	} else {
+		c.JSON(http.StatusBadRequest, common.NewError("Validation", errors.New("User already exist")))
 		return
 	}
-
-	c.Set("user", userValidation.UserModel)
-	serializer := serializers.UserSerializer{C: c}
-	c.JSON(http.StatusCreated, gin.H{"user": serializer.Response()})
-
+	// common.LogI.Println("Find existing user", userModel.Username)
 }
 
 func GetUsers(c *gin.Context) {
