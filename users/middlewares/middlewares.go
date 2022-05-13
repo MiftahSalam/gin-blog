@@ -38,7 +38,12 @@ func AuthMiddleware(autho401 bool) gin.HandlerFunc {
 			}
 			return
 		}
-		if claims, ok := tok.Claims.(jwt.MapClaims); ok && tok.Valid {
+
+		// common.LogI.Println("tok", tok)
+
+		if claims, ok := tok.Claims.(jwt.MapClaims); ok {
+			common.LogI.Println("cek tok exp", claims["exp"])
+
 			user_id := uint(claims["id"].(float64))
 			UpdateContextUserModel(ctx, user_id)
 		}
