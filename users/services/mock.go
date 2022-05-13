@@ -84,6 +84,30 @@ var MockTestsGetUsers = []MockTests{
 		"",
 		"valid data end should return StatusOK",
 	},
+	{
+		"error unauthorized: token not exist",
+		func(req *http.Request) {
+			// req.Header.Set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyMDIyLTA0LTAzVDExOjE1OjE0Ljk0Nzg2NjIrMDc6MDAiLCJpZCI6NDg1fQ.IBzRW627TBLpYFFj2-6DDaXcPBkv4XW5dtMuSr6aohY")
+		},
+		"/users/",
+		"GET",
+		"",
+		http.StatusUnauthorized,
+		"",
+		"invalid data end should return StatusUnauthorized",
+	},
+	{
+		"error unauthorized: token expired",
+		func(req *http.Request) {
+			req.Header.Set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTI0Mzg3MzksImlkIjo2MTR9.kaUsapW0gBxmBcu5C3LsXbbeMnMfAOhMD4Ri7jc9ZlI")
+		},
+		"/users/",
+		"GET",
+		"",
+		http.StatusUnauthorized,
+		"",
+		"invalid data end should return StatusUnauthorized",
+	},
 }
 
 type UserResponseMock struct {
