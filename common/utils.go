@@ -40,7 +40,7 @@ func GetToken(id uint) string {
 
 	jwt_token.Claims = jwt.MapClaims{
 		"id":  id,
-		"exp": time.Now().Add(time.Minute * time.Duration(jwt_expired)),
+		"exp": time.Now().Add(time.Minute * time.Duration(jwt_expired)).Unix(),
 	}
 	token, _ := jwt_token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 
