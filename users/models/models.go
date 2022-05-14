@@ -148,9 +148,9 @@ func SaveOne(data interface{}) error {
 }
 
 func DeleteOneUsers(data interface{}) error {
-	user, ok := data.(FollowModel)
+	user, ok := data.(UserModel)
 	if !ok {
-		return errors.New("invalid follow model input")
+		return errors.New("invalid user model input")
 	}
 
 	db := common.GetDB()
