@@ -8,6 +8,7 @@ import (
 )
 
 var UserMockNumber = 3
+var CurrentRecordCount int64
 
 var db *gorm.DB
 var UsersMock []UserModel
@@ -28,10 +29,9 @@ func createUsersMock(n int) []UserModel {
 
 	//count existing record
 	var users []UserModel
-	var current_record_count int64
-	db.Find(&users).Count(&current_record_count)
-	common.LogI.Println("current_record_count", current_record_count)
-	UserMockNumber += int(current_record_count)
+	db.Find(&users).Count(&CurrentRecordCount)
+	common.LogI.Println("CurrentRecordCount", CurrentRecordCount)
+	UserMockNumber += int(CurrentRecordCount)
 
 	for i := 0; i < n; i++ {
 		image := fmt.Sprintf("http://image/%v.jpg", i)
