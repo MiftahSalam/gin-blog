@@ -150,12 +150,12 @@ func TestFollowing(t *testing.T) {
 	asserts.False(UsersMock[0].IsFollowing(UsersMock[1]), "%v should not follow %v", UsersMock[0].Username, UsersMock[1].Username)
 }
 
-// func TestDeleteOneUser(t *testing.T) {
-// 	asserts := assert.New(t)
+func TestDeleteOneUser(t *testing.T) {
+	asserts := assert.New(t)
 
-// 	var userToDelete = UsersMock[UserMockNumber-1]
-// 	err := DeleteOneUsers(UserModel{ID: userToDelete.ID})
-// 	asserts.NoError(err, "should success deleted one user: %v", userToDelete.Username)
-// 	_, err = FindOneUser(userToDelete)
-// 	asserts.Error(err, "user %v should not found", userToDelete.Username)
-// }
+	var userToDelete = UsersMock[UserMockNumber-int(CurrentRecordCount)-1]
+	err := DeleteOneUsers(UserModel{ID: userToDelete.ID})
+	asserts.NoError(err, "should success deleted one user: %v", userToDelete.Username)
+	_, err = FindOneUser(userToDelete)
+	asserts.Error(err, "user %v should not found", userToDelete.Username)
+}
