@@ -8,7 +8,7 @@ import (
 )
 
 func stripBearerPrefixFromTokenString(tok string) (string, error) {
-	LogI.Println("token", tok)
+	// LogI.Println("token", tok)
 	if len(tok) == 0 {
 		return "", errors.New("bearer token empty")
 	} else if len(tok) > 5 && strings.ToUpper(tok[0:7]) == "BEARER " {

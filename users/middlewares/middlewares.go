@@ -32,7 +32,7 @@ func AuthMiddleware(autho401 bool) gin.HandlerFunc {
 			return b, nil
 		})
 		if err != nil {
-			common.LogI.Println("err", err)
+			common.LogE.Println("err", err)
 			if autho401 {
 				ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			}
@@ -42,7 +42,7 @@ func AuthMiddleware(autho401 bool) gin.HandlerFunc {
 		// common.LogI.Println("tok", tok)
 
 		if claims, ok := tok.Claims.(jwt.MapClaims); ok {
-			common.LogI.Println("cek tok exp", claims["exp"])
+			// common.LogI.Println("cek tok exp", claims["exp"])
 
 			user_id := uint(claims["id"].(float64))
 			UpdateContextUserModel(ctx, user_id)
