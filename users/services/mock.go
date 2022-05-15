@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/MiftahSalam/gin-blog/common"
 	"github.com/MiftahSalam/gin-blog/users/models"
 	serializers "github.com/MiftahSalam/gin-blog/users/serializers/user"
 )
@@ -30,6 +31,23 @@ var MockTestsLogin = []MockTests{
 		fmt.Sprintf(`{"user":{"email":"%v@gmail.com","password":"12345678"}}`, models.UserMockNumber+1),
 		http.StatusOK,
 		fmt.Sprintf(`{"user":{"username":"user%v","email":"%v@gmail.com","bio":"", "image":"null", "token":"([a-zA-Z0-9-_.])"}}`, models.UserMockNumber+1, models.UserMockNumber+1),
+		"valid data end should return StatusOk",
+	},
+}
+
+var MockTestsUpdateUser = []MockTests{
+	{
+		"no error: Update Test",
+		func(req *http.Request) {
+			common.LogI.Println("username", models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].Username)
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", common.GetToken(models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].ID)))
+		},
+		"/users/",
+		"PUT",
+		`{"user":{"username":"userUpdated","email":"Updated@gmail.com","bio":"bioUpdated","password":"passUpdated"}}`,
+		http.StatusOK,
+		`{"user":{"username":"userUpdated","email":"Updated@gmail.com","bio":"bioUpdated"}}`,
 		"valid data end should return StatusOk",
 	},
 }
@@ -75,7 +93,7 @@ var MockTestsGetUsers = []MockTests{
 	{
 		"no error: Get Users Test",
 		func(req *http.Request) {
-			req.Header.Set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyMDIyLTA0LTAzVDExOjE1OjE0Ljk0Nzg2NjIrMDc6MDAiLCJpZCI6NDg1fQ.IBzRW627TBLpYFFj2-6DDaXcPBkv4XW5dtMuSr6aohY")
+			req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", common.GetToken(models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].ID)))
 		},
 		"/users/",
 		"GET",

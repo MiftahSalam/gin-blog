@@ -52,7 +52,7 @@ func Register(c *gin.Context) {
 		serializer := serializers.UserSerializer{C: c}
 		c.JSON(http.StatusCreated, gin.H{"user": serializer.Response()})
 	} else {
-		c.JSON(http.StatusBadRequest, common.NewError("Validation", errors.New("User already exist")))
+		c.JSON(http.StatusBadRequest, common.NewError("Validation", errors.New("user already exist")))
 		return
 	}
 	// common.LogI.Println("Find existing user", userModel.Username)
@@ -68,4 +68,39 @@ func GetUsers(c *gin.Context) {
 
 	serializer := serializers.UserSerializer{C: c}
 	c.JSON(http.StatusOK, gin.H{"users": serializer.Responses(users)})
+}
+
+func UpdateUser(c *gin.Context) {
+	userValidation := validators.NewUserModelValidator()
+	if err := userValidation.Bind(c); err != nil {
+		c.JSON(http.StatusBadRequest, common.NewValidatorError(err))
+		return
+	}
+
+	if user_id := c.MustGet("user_id").(uint); user_id > 0 {
+		// common.LogI.Printf("user_id ctx %v, type %T", user_id, user_id)
+		userModel, _ := models.FindOneUser("id = ?", user_id)
+
+		userUpdate := userValidation.UserModel
+
+		if userModel.Username != "" {
+			if err := userModel.Update(&userUpdate); err == nil {
+				// common.LogI.Printf("userValidation %v", userValidation.User)
+				c.Set("user", userModel)
+				serializer := serializers.UserSerializer{C: c}
+				c.JSON(http.StatusOK, gin.H{"user": serializer.Response()})
+			} else {
+				common.LogE.Printf("error update")
+				c.JSON(http.StatusInternalServerError, common.NewError("Server error", err))
+				return
+			}
+		} else {
+			c.JSON(http.StatusBadRequest, common.NewError("Request error", errors.New("cannot find user")))
+			return
+		}
+	} else {
+		common.LogI.Println("user_id not exist")
+		c.JSON(http.StatusUnauthorized, common.NewError("Request error", errors.New("not logged in")))
+		return
+	}
 }

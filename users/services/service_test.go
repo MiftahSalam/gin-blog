@@ -125,3 +125,30 @@ func TestUserLogin(t *testing.T) {
 		})
 	}
 }
+
+func TestUserUpdate(t *testing.T) {
+	// t.Skip()
+	asserts := assert.New(t)
+	for _, testData := range services.MockTestsUpdateUser {
+		t.Run(testData.TestName, func(t *testing.T) {
+			w := createTest(asserts, &testData)
+			var jsonResp services.UserResponseMock
+
+			asserts.Equal(testData.ResponseCode, w.Code, "Response status - "+testData.Msg)
+
+			err := json.Unmarshal(w.Body.Bytes(), &jsonResp)
+			if err != nil {
+				panic("invalid json resp data")
+			}
+			var testBody map[string]interface{}
+			err = json.Unmarshal(w.Body.Bytes(), &testBody)
+			if err != nil {
+				panic("invalid json testBody data")
+			}
+			var testBodyUser = testBody["user"].(map[string]interface{})
+			common.LogI.Println("testBody", testBody)
+
+			asserts.Equal(testBodyUser["username"], jsonResp.User.Username, "Response status - "+testData.Msg)
+		})
+	}
+}
