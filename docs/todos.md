@@ -1,0 +1,6 @@
+- ## create appropiate DTO for different user request-respond
+  - Login DTO
+  - Update DTO
+  - Register DTO
+  - Get User DTO
+  - etc
