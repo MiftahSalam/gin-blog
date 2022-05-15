@@ -15,7 +15,7 @@ import (
 func Login(c *gin.Context) {
 	loginValidation := validators.NewLoginValidator()
 	if err := loginValidation.Bind(c); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, common.NewValidatorError(err))
+		c.JSON(http.StatusBadRequest, common.NewValidatorError(err))
 		return
 	}
 
