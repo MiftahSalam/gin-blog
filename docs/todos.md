@@ -3,4 +3,5 @@
   - Update DTO
   - Register DTO
   - Get User DTO
+  - Error response DTO
   - etc
