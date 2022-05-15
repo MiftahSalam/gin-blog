@@ -22,6 +22,16 @@ type MockTests struct {
 
 var MockTestsLogin = []MockTests{
 	{
+		"error bad request (no header content-type tag): Login Test",
+		func(req *http.Request) {},
+		"/users/login",
+		"POST",
+		fmt.Sprintf(`{"user":{"email":"%v@gmail.com","password":"12345678"}}`, models.UserMockNumber+1),
+		http.StatusBadRequest,
+		"{}",
+		"valid data end should return StatusBadRequest",
+	},
+	{
 		"no error: Login Test",
 		func(req *http.Request) {
 			req.Header.Set("Content-Type", "application/json")
@@ -39,7 +49,7 @@ var MockTestsUpdateUser = []MockTests{
 	{
 		"no error: Update Test",
 		func(req *http.Request) {
-			common.LogI.Println("username", models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].Username)
+			// common.LogI.Println("username", models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].Username)
 			req.Header.Set("Content-Type", "application/json")
 			req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", common.GetToken(models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].ID)))
 		},
@@ -49,6 +59,30 @@ var MockTestsUpdateUser = []MockTests{
 		http.StatusOK,
 		`{"user":{"username":"userUpdated","email":"Updated@gmail.com","bio":"bioUpdated"}}`,
 		"valid data end should return StatusOk",
+	},
+	{
+		"error unproccesed data (no header content-type tag): Update Test",
+		func(req *http.Request) {
+			req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", common.GetToken(models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].ID)))
+		},
+		"/users/",
+		"PUT",
+		`{"user":{"username":"userUpdated","email":"Updated@gmail.com","bio":"bioUpdated","password":"passUpdated"}}`,
+		http.StatusBadRequest,
+		"{}",
+		"valid data end should return StatusUnprocessableEntity",
+	},
+	{
+		"error unauthorized (no header authorization): Update Test",
+		func(req *http.Request) {
+			req.Header.Set("Content-Type", "application/json")
+		},
+		"/users/",
+		"PUT",
+		`{"user":{"username":"userUpdated","email":"Updated@gmail.com","bio":"bioUpdated","password":"passUpdated"}}`,
+		http.StatusUnauthorized,
+		"{}",
+		"valid data end should return StatusUnauthorized",
 	},
 }
 

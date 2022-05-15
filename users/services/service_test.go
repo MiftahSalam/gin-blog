@@ -112,16 +112,21 @@ func TestUserLogin(t *testing.T) {
 			var jsonResp services.UserResponseMock
 			err := json.Unmarshal(w.Body.Bytes(), &jsonResp)
 
-			// common.LogI.Println("jsonResp", jsonResp)
+			// common.LogI.Println("w.Body.String()", w.Body.String())
 
 			asserts.Equal(testData.ResponseCode, w.Code, "Response status - "+testData.Msg)
 
 			if err != nil {
 				panic("invalid json data")
 			}
-			tok := jsonResp.User.Token
 
-			asserts.Regexp("(^[\\w-]*\\.[\\w-]*\\.[\\w-]*$)", tok, "Response Content - "+testData.Msg)
+			if strings.Contains(testData.TestName, "no error") {
+				tok := jsonResp.User.Token
+
+				asserts.Regexp("(^[\\w-]*\\.[\\w-]*\\.[\\w-]*$)", tok, "Response Content - "+testData.Msg)
+			} else {
+				asserts.Equal("", "", "Response Content - "+testData.Msg)
+			}
 		})
 	}
 }
@@ -140,15 +145,22 @@ func TestUserUpdate(t *testing.T) {
 			if err != nil {
 				panic("invalid json resp data")
 			}
-			var testBody map[string]interface{}
-			err = json.Unmarshal(w.Body.Bytes(), &testBody)
+			var testResponseBody map[string]interface{}
+			err = json.Unmarshal([]byte(testData.ResponsePattern), &testResponseBody)
 			if err != nil {
-				panic("invalid json testBody data")
+				panic("invalid json testResponseBody data")
 			}
-			var testBodyUser = testBody["user"].(map[string]interface{})
-			common.LogI.Println("testBody", testBody)
 
-			asserts.Equal(testBodyUser["username"], jsonResp.User.Username, "Response status - "+testData.Msg)
+			common.LogI.Println("w.Body.String()", w.Body.String())
+			common.LogI.Println("testResponseBody", testResponseBody)
+			common.LogI.Println("jsonResp", jsonResp)
+
+			if strings.Contains(testData.TestName, "no error") {
+				var testBodyUser = testResponseBody["user"].(map[string]interface{})
+				asserts.Equal(testBodyUser["username"], jsonResp.User.Username, "Response status - "+testData.Msg)
+			} else {
+				asserts.Nil(testResponseBody["user"], "Response Content - "+testData.Msg)
+			}
 		})
 	}
 }
