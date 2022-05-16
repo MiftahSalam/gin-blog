@@ -35,6 +35,7 @@ func main() {
 	users.Users(v1.Group("/users"))
 	v1.Use(userMiddlewares.AuthMiddleware(true))
 	users.UsersAuth(v1.Group("/users"))
+	users.Profile(v1.Group("/profile"))
 
 	router.Run()
 }

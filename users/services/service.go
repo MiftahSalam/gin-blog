@@ -7,7 +7,8 @@ import (
 	"github.com/MiftahSalam/gin-blog/common"
 	"github.com/MiftahSalam/gin-blog/users/middlewares"
 	"github.com/MiftahSalam/gin-blog/users/models"
-	serializers "github.com/MiftahSalam/gin-blog/users/serializers/user"
+	profileSerializers "github.com/MiftahSalam/gin-blog/users/serializers/profile"
+	userSerializers "github.com/MiftahSalam/gin-blog/users/serializers/user"
 	"github.com/MiftahSalam/gin-blog/users/validators"
 	"github.com/gin-gonic/gin"
 )
@@ -30,7 +31,7 @@ func Login(c *gin.Context) {
 	}
 
 	middlewares.UpdateContextUserModel(c, userModel.ID)
-	serializer := serializers.UserSerializer{C: c}
+	serializer := userSerializers.UserSerializer{C: c}
 	c.JSON(http.StatusOK, gin.H{"user": serializer.Response()})
 }
 
@@ -49,7 +50,7 @@ func Register(c *gin.Context) {
 		}
 
 		c.Set("user", userValidation.UserModel)
-		serializer := serializers.UserSerializer{C: c}
+		serializer := userSerializers.UserSerializer{C: c}
 		c.JSON(http.StatusCreated, gin.H{"user": serializer.Response()})
 	} else {
 		c.JSON(http.StatusBadRequest, common.NewError("Validation", errors.New("user already exist")))
@@ -66,7 +67,7 @@ func GetUsers(c *gin.Context) {
 	}
 	// common.LogI.Println("users", users)
 
-	serializer := serializers.UserSerializer{C: c}
+	serializer := userSerializers.UserSerializer{C: c}
 	c.JSON(http.StatusOK, gin.H{"users": serializer.Responses(users)})
 }
 
@@ -87,7 +88,7 @@ func UpdateUser(c *gin.Context) {
 			if err := userModel.Update(&userUpdate); err == nil {
 				// common.LogI.Printf("userValidation %v", userValidation.User)
 				c.Set("user", userModel)
-				serializer := serializers.UserSerializer{C: c}
+				serializer := userSerializers.UserSerializer{C: c}
 				c.JSON(http.StatusOK, gin.H{"user": serializer.Response()})
 			} else {
 				common.LogE.Printf("error update")
@@ -103,4 +104,22 @@ func UpdateUser(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, common.NewError("Request error", errors.New("not logged in")))
 		return
 	}
+}
+
+//todo delete user service
+
+func GetUserProfile(c *gin.Context) {
+	username := c.Param("username")
+	userModel, err := models.FindOneUser("username = ? ", username)
+
+	common.LogI.Println("username", username)
+	common.LogI.Println("userModel", userModel)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, common.NewError("profile", errors.New("invalid username")))
+		return
+	}
+
+	profileSerializer := profileSerializers.ProfileSerializer{C: c, UserModel: userModel}
+	c.JSON(http.StatusOK, gin.H{"profile": profileSerializer.Response()})
 }

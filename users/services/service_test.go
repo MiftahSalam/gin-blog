@@ -38,6 +38,7 @@ func TestMain(m *testing.M) {
 	users.Users(router.Group("/users"))
 	router.Use(middlewares.AuthMiddleware(true))
 	users.UsersAuth(router.Group("/users"))
+	users.Profile(router.Group("/profile"))
 
 	exitVal := m.Run()
 
@@ -158,6 +159,41 @@ func TestUserUpdate(t *testing.T) {
 			if strings.Contains(testData.TestName, "no error") {
 				var testBodyUser = testResponseBody["user"].(map[string]interface{})
 				asserts.Equal(testBodyUser["username"], jsonResp.User.Username, "Response status - "+testData.Msg)
+			} else {
+				asserts.Nil(testResponseBody["user"], "Response Content - "+testData.Msg)
+			}
+		})
+	}
+}
+
+func TestGetUserProfile(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, testData := range services.MockTestsGetUserProfile {
+		t.Run(testData.TestName, func(t *testing.T) {
+			w := createTest(asserts, &testData)
+
+			var jsonResp services.UserProfileResponseMock
+
+			asserts.Equal(testData.ResponseCode, w.Code, "Response status - "+testData.Msg)
+
+			err := json.Unmarshal(w.Body.Bytes(), &jsonResp)
+			if err != nil {
+				panic("invalid json resp data")
+			}
+			var testResponseBody map[string]interface{}
+			err = json.Unmarshal([]byte(testData.ResponsePattern), &testResponseBody)
+			if err != nil {
+				panic("invalid json testResponseBody data")
+			}
+
+			common.LogI.Println("w.Body.String()", w.Body.String())
+			common.LogI.Println("testResponseBody", testResponseBody)
+			common.LogI.Println("jsonResp", jsonResp)
+
+			if strings.Contains(testData.TestName, "no error") {
+				var testBodyProfile = testResponseBody["profile"].(map[string]interface{})
+				asserts.Equal(testBodyProfile["username"], jsonResp.Profile.Username, "Response status - "+testData.Msg)
 			} else {
 				asserts.Nil(testResponseBody["user"], "Response Content - "+testData.Msg)
 			}

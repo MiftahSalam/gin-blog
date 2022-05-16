@@ -6,7 +6,8 @@ import (
 
 	"github.com/MiftahSalam/gin-blog/common"
 	"github.com/MiftahSalam/gin-blog/users/models"
-	serializers "github.com/MiftahSalam/gin-blog/users/serializers/user"
+	userProfileSerializers "github.com/MiftahSalam/gin-blog/users/serializers/profile"
+	userSerializers "github.com/MiftahSalam/gin-blog/users/serializers/user"
 )
 
 type MockTests struct {
@@ -162,10 +163,55 @@ var MockTestsGetUsers = []MockTests{
 	},
 }
 
+var MockTestsGetUserProfile = []MockTests{
+	{
+		"no error: Get User Profile",
+		func(req *http.Request) {
+			// common.LogI.Println("username", models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].Username)
+			// req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", common.GetToken(models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].ID)))
+		},
+		fmt.Sprintf("/profile/user%v", 0),
+		"GET",
+		"",
+		http.StatusOK,
+		fmt.Sprintf(`{"profile":{"username":"user%v","bio":"","image":"null","following":"false"}}`, 0),
+		"valid data end should return StatusOK",
+	},
+	// {
+	// 	"error unauthorized: token not exist",
+	// 	func(req *http.Request) {
+	// 		// req.Header.Set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyMDIyLTA0LTAzVDExOjE1OjE0Ljk0Nzg2NjIrMDc6MDAiLCJpZCI6NDg1fQ.IBzRW627TBLpYFFj2-6DDaXcPBkv4XW5dtMuSr6aohY")
+	// 	},
+	// 	"/users/",
+	// 	"GET",
+	// 	"",
+	// 	http.StatusUnauthorized,
+	// 	"",
+	// 	"invalid data end should return StatusUnauthorized",
+	// },
+	// {
+	// 	"error unauthorized: token expired",
+	// 	func(req *http.Request) {
+	// 		req.Header.Set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTI0Mzg3MzksImlkIjo2MTR9.kaUsapW0gBxmBcu5C3LsXbbeMnMfAOhMD4Ri7jc9ZlI")
+	// 	},
+	// 	"/users/",
+	// 	"GET",
+	// 	"",
+	// 	http.StatusUnauthorized,
+	// 	"",
+	// 	"invalid data end should return StatusUnauthorized",
+	// },
+}
+
 type UserResponseMock struct {
-	User serializers.UserResponse
+	User userSerializers.UserResponse
 }
 
 type UsersResponseMock struct {
-	Users []serializers.UserResponse
+	Users []userSerializers.UserResponse
+}
+
+type UserProfileResponseMock struct {
+	Profile userProfileSerializers.ProfileResponse
 }

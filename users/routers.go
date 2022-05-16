@@ -14,3 +14,7 @@ func UsersAuth(router *gin.RouterGroup) {
 	router.GET("/", services.GetUsers)
 	router.PUT("/", services.UpdateUser)
 }
+
+func Profile(router *gin.RouterGroup) {
+	router.GET("/:username", services.GetUserProfile)
+}

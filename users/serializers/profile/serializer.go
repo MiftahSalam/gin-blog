@@ -15,16 +15,16 @@ type ProfileResponse struct {
 	Username  string  `json:"username"`
 	Bio       string  `json:"bio"`
 	Image     *string `json:"image"`
-	Following bool    `json:"follwing"`
+	Following bool    `json:"following"`
 }
 
 func (pSerializer *ProfileSerializer) Response() ProfileResponse {
 	model := pSerializer.C.MustGet("user").(models.UserModel)
 	profile := ProfileResponse{
-		ID:        model.ID,
-		Username:  model.Username,
-		Bio:       model.Bio,
-		Image:     model.Image,
+		ID:        pSerializer.ID,
+		Username:  pSerializer.Username,
+		Bio:       pSerializer.Bio,
+		Image:     pSerializer.Image,
 		Following: model.IsFollowing(pSerializer.UserModel),
 	}
 
