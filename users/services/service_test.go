@@ -195,7 +195,7 @@ func TestGetUserProfile(t *testing.T) {
 				var testBodyProfile = testResponseBody["profile"].(map[string]interface{})
 				asserts.Equal(testBodyProfile["username"], jsonResp.Profile.Username, "Response status - "+testData.Msg)
 			} else {
-				asserts.Nil(testResponseBody["user"], "Response Content - "+testData.Msg)
+				asserts.Nil(testResponseBody["profile"], "Response Content - "+testData.Msg)
 			}
 		})
 	}

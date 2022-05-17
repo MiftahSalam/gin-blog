@@ -167,8 +167,6 @@ var MockTestsGetUserProfile = []MockTests{
 	{
 		"no error: Get User Profile",
 		func(req *http.Request) {
-			// common.LogI.Println("username", models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].Username)
-			// req.Header.Set("Content-Type", "application/json")
 			req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", common.GetToken(models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].ID)))
 		},
 		fmt.Sprintf("/profile/user%v", 0),
@@ -178,30 +176,16 @@ var MockTestsGetUserProfile = []MockTests{
 		fmt.Sprintf(`{"profile":{"username":"user%v","bio":"","image":"null","following":"false"}}`, 0),
 		"valid data end should return StatusOK",
 	},
-	// {
-	// 	"error unauthorized: token not exist",
-	// 	func(req *http.Request) {
-	// 		// req.Header.Set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyMDIyLTA0LTAzVDExOjE1OjE0Ljk0Nzg2NjIrMDc6MDAiLCJpZCI6NDg1fQ.IBzRW627TBLpYFFj2-6DDaXcPBkv4XW5dtMuSr6aohY")
-	// 	},
-	// 	"/users/",
-	// 	"GET",
-	// 	"",
-	// 	http.StatusUnauthorized,
-	// 	"",
-	// 	"invalid data end should return StatusUnauthorized",
-	// },
-	// {
-	// 	"error unauthorized: token expired",
-	// 	func(req *http.Request) {
-	// 		req.Header.Set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTI0Mzg3MzksImlkIjo2MTR9.kaUsapW0gBxmBcu5C3LsXbbeMnMfAOhMD4Ri7jc9ZlI")
-	// 	},
-	// 	"/users/",
-	// 	"GET",
-	// 	"",
-	// 	http.StatusUnauthorized,
-	// 	"",
-	// 	"invalid data end should return StatusUnauthorized",
-	// },
+	{
+		"error unauthorized: token not exist. Get User Profile",
+		func(req *http.Request) {},
+		fmt.Sprintf("/profile/user%v", 0),
+		"GET",
+		"",
+		http.StatusUnauthorized,
+		"{}",
+		"valid data end should return StatusOK",
+	},
 }
 
 type UserResponseMock struct {
