@@ -177,6 +177,18 @@ var MockTestsGetUserProfile = []MockTests{
 		"valid data end should return StatusOK",
 	},
 	{
+		"error user not found: Get User Profile",
+		func(req *http.Request) {
+			req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", common.GetToken(models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].ID)))
+		},
+		fmt.Sprintf("/profile/user%v", 10),
+		"GET",
+		"",
+		http.StatusNotFound,
+		"{}",
+		"valid data end should return StatusNotFound",
+	},
+	{
 		"error unauthorized: token not exist. Get User Profile",
 		func(req *http.Request) {},
 		fmt.Sprintf("/profile/user%v", 0),
@@ -184,7 +196,44 @@ var MockTestsGetUserProfile = []MockTests{
 		"",
 		http.StatusUnauthorized,
 		"{}",
+		"valid data end should return StatusUnauthorized",
+	},
+}
+
+var MockTestsFollowUser = []MockTests{
+	{
+		"no error: Follow User",
+		func(req *http.Request) {
+			req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", common.GetToken(models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].ID)))
+		},
+		fmt.Sprintf("/profile/user%v/follow", 0),
+		"POST",
+		"",
+		http.StatusOK,
+		fmt.Sprintf(`{"profile":{"username":"user%v","bio":"","image":"null","following":"true"}}`, 0),
 		"valid data end should return StatusOK",
+	},
+	{
+		"error user not found: Follow User",
+		func(req *http.Request) {
+			req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", common.GetToken(models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].ID)))
+		},
+		fmt.Sprintf("/profile/user%v/follow", 10),
+		"POST",
+		"",
+		http.StatusNotFound,
+		"{}",
+		"valid data end should return StatusNotFound",
+	},
+	{
+		"error unauthorized: token not exist. Follow User",
+		func(req *http.Request) {},
+		fmt.Sprintf("/profile/user%v/follow", 0),
+		"POST",
+		"",
+		http.StatusUnauthorized,
+		"{}",
+		"valid data end should return StatusUnauthorized",
 	},
 }
 

@@ -123,3 +123,26 @@ func GetUserProfile(c *gin.Context) {
 	profileSerializer := profileSerializers.ProfileSerializer{C: c, UserModel: userModel}
 	c.JSON(http.StatusOK, gin.H{"profile": profileSerializer.Response()})
 }
+
+func FollowUser(c *gin.Context) {
+	username := c.Param("username")
+	userModel, err := models.FindOneUser("username = ?", username)
+
+	common.LogI.Println("username", username)
+	common.LogI.Println("userModel", userModel)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, common.NewError("profile", errors.New("invalid username")))
+		return
+	}
+
+	cur_active_user := c.MustGet("user").(models.UserModel)
+	err = cur_active_user.Following(userModel)
+	if err != nil {
+		c.JSON(http.StatusExpectationFailed, common.NewError("profile", err))
+		return
+	}
+
+	profileSerializer := profileSerializers.ProfileSerializer{C: c, UserModel: userModel}
+	c.JSON(http.StatusOK, gin.H{"profile": profileSerializer.Response()})
+}

@@ -17,4 +17,5 @@ func UsersAuth(router *gin.RouterGroup) {
 
 func Profile(router *gin.RouterGroup) {
 	router.GET("/:username", services.GetUserProfile)
+	router.POST("/:username/follow", services.FollowUser)
 }
