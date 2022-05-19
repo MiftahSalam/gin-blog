@@ -237,6 +237,43 @@ var MockTestsFollowUser = []MockTests{
 	},
 }
 
+var MockTestsUnFollowUser = []MockTests{
+	{
+		"no error: UnFollow User",
+		func(req *http.Request) {
+			req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", common.GetToken(models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].ID)))
+		},
+		fmt.Sprintf("/profile/user%v/follow", 0),
+		"DELETE",
+		"",
+		http.StatusOK,
+		fmt.Sprintf(`{"profile":{"username":"user%v","bio":"","image":"null","following":"false"}}`, 0),
+		"valid data end should return StatusOK",
+	},
+	{
+		"error user not found: UnFollow User",
+		func(req *http.Request) {
+			req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", common.GetToken(models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].ID)))
+		},
+		fmt.Sprintf("/profile/user%v/follow", 10),
+		"DELETE",
+		"",
+		http.StatusNotFound,
+		"{}",
+		"valid data end should return StatusNotFound",
+	},
+	{
+		"error unauthorized: token not exist. UnFollow User",
+		func(req *http.Request) {},
+		fmt.Sprintf("/profile/user%v/follow", 0),
+		"DELETE",
+		"",
+		http.StatusUnauthorized,
+		"{}",
+		"valid data end should return StatusUnauthorized",
+	},
+}
+
 type UserResponseMock struct {
 	User userSerializers.UserResponse
 }

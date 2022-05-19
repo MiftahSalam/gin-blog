@@ -236,3 +236,38 @@ func TestFollowUser(t *testing.T) {
 		})
 	}
 }
+
+func TestUnfollowUser(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, testData := range services.MockTestsUnFollowUser {
+		t.Run(testData.TestName, func(t *testing.T) {
+			w := createTest(asserts, &testData)
+			var jsonResp services.UserProfileResponseMock
+
+			err := json.Unmarshal(w.Body.Bytes(), &jsonResp)
+			if err != nil {
+				panic("invalid json resp data")
+			}
+
+			var testResponseBody map[string]interface{}
+			err = json.Unmarshal([]byte(testData.ResponsePattern), &testResponseBody)
+			if err != nil {
+				panic("invalid json testResponseBody data")
+			}
+
+			common.LogI.Println("w.Body.String()", w.Body.String())
+			common.LogI.Println("testResponseBody", testResponseBody)
+			common.LogI.Println("jsonResp", jsonResp)
+
+			if strings.Contains(testData.TestName, "no error") {
+				var testBodyProfile = testResponseBody["profile"].(map[string]interface{})
+				asserts.Equal(testBodyProfile["username"], jsonResp.Profile.Username, "Response status - "+testData.Msg)
+				asserts.Equal(testBodyProfile["following"], "false", "Response status - "+testData.Msg)
+			} else {
+				asserts.Nil(testResponseBody["profile"], "Response Content - "+testData.Msg)
+			}
+
+		})
+	}
+}

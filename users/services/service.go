@@ -146,3 +146,24 @@ func FollowUser(c *gin.Context) {
 	profileSerializer := profileSerializers.ProfileSerializer{C: c, UserModel: userModel}
 	c.JSON(http.StatusOK, gin.H{"profile": profileSerializer.Response()})
 }
+
+func UnFollowUser(c *gin.Context) {
+	username := c.Param("username")
+	userModel, err := models.FindOneUser("username = ? ", username)
+
+	common.LogI.Println("username", username)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, common.NewError("profile", err))
+		return
+	}
+
+	current_active_user := c.MustGet("user").(models.UserModel)
+	err = current_active_user.UnFollow(userModel)
+	if err != nil {
+		c.JSON(http.StatusExpectationFailed, common.NewError("profile", err))
+	}
+
+	profileSerializer := profileSerializers.ProfileSerializer{C: c, UserModel: userModel}
+	c.JSON(http.StatusOK, gin.H{"profile": profileSerializer.Response()})
+}
