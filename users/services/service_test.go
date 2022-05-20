@@ -100,7 +100,7 @@ func TestGetUsers(t *testing.T) {
 				panic("invalid json data")
 			}
 
-			// common.LogI.Println("jsonResp", jsonResp)
+			// common.LogI.Println("w.Body.String()", w.Body.String())
 		})
 	}
 }
@@ -268,6 +268,32 @@ func TestUnfollowUser(t *testing.T) {
 				asserts.Nil(testResponseBody["profile"], "Response Content - "+testData.Msg)
 			}
 
+		})
+	}
+}
+
+func TestGetUsersFollowing(t *testing.T) {
+	asserts := assert.New(t)
+	for _, testData := range services.MockTestsUsersFollowing {
+		t.Run(testData.TestName, func(t *testing.T) {
+			w := createTest(asserts, &testData)
+			var jsonResp services.UsersResponseMock
+
+			// common.LogI.Println("w.Body.String()", w.Body.String())
+
+			err := json.Unmarshal(w.Body.Bytes(), &jsonResp)
+			if err != nil {
+				common.LogE.Println("json unmarshall error", err)
+				panic("invalid json data")
+			}
+
+			if strings.Contains(testData.TestName, "no error") {
+				asserts.Equal(2, len(jsonResp.Users), "Response Content - "+testData.Msg)
+				asserts.Equal(models.UsersMock[0].Username, jsonResp.Users[0].Username, "Response Content - "+testData.Msg)
+				asserts.Equal(models.UsersMock[1].Username, jsonResp.Users[1].Username, "Response Content - "+testData.Msg)
+			}
+
+			// common.LogI.Println("jsonResp", jsonResp)
 		})
 	}
 }

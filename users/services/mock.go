@@ -274,6 +274,55 @@ var MockTestsUnFollowUser = []MockTests{
 	},
 }
 
+var MockTestsUsersFollowing = []MockTests{
+	{
+		"init following user 0: User Following",
+		func(req *http.Request) {
+			req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", common.GetToken(models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].ID)))
+		},
+		fmt.Sprintf("/profile/user%v/follow", 0),
+		"POST",
+		"",
+		http.StatusOK,
+		fmt.Sprintf(`{"profile":{"username":"user%v","bio":"","image":"null","following":"true"}}`, 0),
+		"valid data end should return StatusOK",
+	},
+	{
+		"init following user 1: User Following",
+		func(req *http.Request) {
+			req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", common.GetToken(models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].ID)))
+		},
+		fmt.Sprintf("/profile/user%v/follow", 1),
+		"POST",
+		"",
+		http.StatusOK,
+		fmt.Sprintf(`{"profile":{"username":"user%v","bio":"","image":"null","following":"true"}}`, 0),
+		"valid data end should return StatusOK",
+	},
+	{
+		"no error: Get Users Following",
+		func(req *http.Request) {
+			req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", common.GetToken(models.UsersMock[models.UserMockNumber-int(models.CurrentRecordCount)-1].ID)))
+		},
+		"/users/following",
+		"GET",
+		"",
+		http.StatusOK,
+		"",
+		"valid data (length and content) and should return StatusOK",
+	},
+	{
+		"error unauthorized: token not exist. Get Users Following",
+		func(req *http.Request) {},
+		"/users/following",
+		"GET",
+		"",
+		http.StatusUnauthorized,
+		"",
+		"valid data (length and content) and should return StatusUnauthorized",
+	},
+}
+
 type UserResponseMock struct {
 	User userSerializers.UserResponse
 }

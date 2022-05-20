@@ -71,6 +71,19 @@ func GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"users": serializer.Responses(users)})
 }
 
+func GetUsersFollowing(c *gin.Context) {
+	current_user, exist := c.Get("user")
+	if !exist {
+		c.JSON(http.StatusNotFound, common.NewError("user", errors.New("invalid user")))
+		return
+	}
+
+	followingUsers := current_user.(models.UserModel).GetFollowing()
+	usersSerializer := userSerializers.UserSerializer{C: c}
+
+	c.JSON(http.StatusOK, gin.H{"users": usersSerializer.Responses(followingUsers)})
+}
+
 func UpdateUser(c *gin.Context) {
 	userValidation := validators.NewUserModelValidator()
 	if err := userValidation.Bind(c); err != nil {
