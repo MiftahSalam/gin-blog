@@ -14,7 +14,7 @@ type UserModel struct {
 	Email        string  `gorm:"column:email"`
 	Bio          string  `gorm:"column:bio;size:1024"`
 	Image        *string `gorm:"column:image"`
-	PasswordHash string  `gorm:"column:password;not null"`
+	PasswordHash string  `gorm:"column:password;not null;->:false;<-:create"`
 }
 
 type FollowModel struct {
