@@ -67,10 +67,4 @@ func CleanUpAfterTest() {
 
 	db.Debug().Where("username LIKE ?", "%user%").Delete(UserModel{})
 	common.LogI.Println("cleaned up")
-
-	sqlDB, err := db.DB()
-	if err != nil {
-		common.LogE.Fatal("get db instance error: ", err)
-	}
-	sqlDB.Close()
 }

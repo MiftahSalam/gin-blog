@@ -39,6 +39,12 @@ func TestMain(m *testing.M) {
 
 	CleanUpAfterTest()
 
+	sqlDB, err := db.DB()
+	if err != nil {
+		common.LogE.Fatal("get db instance error: ", err)
+	}
+	sqlDB.Close()
+
 	os.Exit(exitVal)
 
 	common.LogI.Println("Test main users end")
