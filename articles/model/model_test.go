@@ -81,11 +81,13 @@ func TestSaveComment(t *testing.T) {
 }
 
 func TestFindOneArticle(t *testing.T) {
+	asserts := assert.New(t)
+
 	article, err := articleUserModel.FindOneArticle(&articleUserModel.ArticleModel{
 		Slug: articleUserModel.ArticlesMock[0].Slug,
 	})
 
-	common.LogI.Println("ArticlesMock0 slug", articleUserModel.ArticlesMock[0].Slug)
+	common.LogI.Println("ArticlesMock0", articleUserModel.ArticlesMock[0])
 
 	if err != nil {
 		common.LogE.Fatal("cannot find article with error: ", err)
@@ -94,4 +96,7 @@ func TestFindOneArticle(t *testing.T) {
 
 	common.LogI.Println("article found", article)
 
+	asserts.Equal(articleUserModel.ArticlesMock[0].Author.UserModel, article.Author.UserModel)
+	asserts.Equal(articleUserModel.ArticlesMock[0].Title, article.Title)
+	asserts.Equal(articleUserModel.ArticlesMock[0].Body, article.Body)
 }
