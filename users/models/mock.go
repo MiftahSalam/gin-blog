@@ -51,7 +51,7 @@ func createUsersMock(n int) []UserModel {
 }
 
 func CleanUpAfterTest() {
-	common.LogI.Println("clean up start")
+	common.LogI.Println("clean up users start")
 
 	for _, user := range UsersMock {
 		// common.LogI.Println("clean up user", user)
@@ -66,5 +66,5 @@ func CleanUpAfterTest() {
 	}
 
 	db.Debug().Where("username LIKE ?", "%user%").Delete(UserModel{})
-	common.LogI.Println("cleaned up")
+	common.LogI.Println("clean up users end")
 }

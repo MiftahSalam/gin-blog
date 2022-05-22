@@ -53,6 +53,8 @@ func AutoMigrate() {
 	db := common.GetDB()
 
 	db.AutoMigrate(&ArticleUserModel{})
+	db.AutoMigrate(&ArticleModel{})
+	db.AutoMigrate(&CommentModel{})
 }
 
 func GetArticleUserModel(user userModel.UserModel) ArticleUserModel {
@@ -68,4 +70,37 @@ func GetArticleUserModel(user userModel.UserModel) ArticleUserModel {
 	articleUserModel.UserModel = user
 
 	return articleUserModel
+}
+
+func SaveOne(data interface{}) error {
+	db := common.GetDB()
+	err := db.Save(data).Error
+
+	return err
+}
+
+func FindOneArticle(condition interface{}) (ArticleModel, error) {
+	db := common.GetDB()
+	var model ArticleModel
+
+	err := db.Preload("Author.UserModel").Preload("Tags").First(&model, condition).Error
+
+	return model, err
+}
+
+func (article *ArticleModel) setTags(tags []string) error {
+	db := common.GetDB()
+	var tagList []TagModel
+
+	for _, tag := range tags {
+		var tagModel TagModel
+		err := db.FirstOrCreate(&tagModel, TagModel{Tag: tag}).Error
+
+		if err != nil {
+			return err
+		}
+		tagList = append(tagList, tagModel)
+	}
+	article.Tags = tagList
+	return nil
 }
