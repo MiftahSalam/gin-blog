@@ -129,3 +129,12 @@ func TestFavourite(t *testing.T) {
 	//first favourite by user check 3
 	asserts.False(ArticlesMock[0].isFavoriteBy(&ArticleUsersModelMock[1]))
 }
+
+func TestGetAllTags(t *testing.T) {
+	asserts := assert.New(t)
+
+	tags, err := getAllTags()
+
+	asserts.NoError(err)
+	asserts.Equal(len(TagsMock), len(tags))
+}

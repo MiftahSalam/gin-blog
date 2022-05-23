@@ -89,6 +89,14 @@ func FindOneArticle(condition interface{}) (ArticleModel, error) {
 	return model, err
 }
 
+func getAllTags() ([]TagModel, error) {
+	db := common.GetDB()
+	var tags []TagModel
+	err := db.Find(&tags).Error
+
+	return tags, err
+}
+
 func (article *ArticleModel) setTags(tags []string) error {
 	db := common.GetDB()
 	var tagList []TagModel
