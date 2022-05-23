@@ -100,10 +100,17 @@ func CleanUpAfterTest() {
 
 	for _, article := range ArticlesMock {
 		common.LogI.Println("clean up article tags", article.Tags)
-
 		err := db.Unscoped().Model(&article).Association("Tags").Clear()
 		if err != nil {
 			common.LogE.Println("cannot delete article tags: ", err)
+		}
+
+		common.LogI.Println("clean up article favourite", article.Slug)
+		err = db.Unscoped().Where(&FavoriteModel{
+			FavoriteID: article.ID,
+		}).Delete(FavoriteModel{}).Error
+		if err != nil {
+			common.LogE.Println("cannot delete article favourite: ", err)
 		}
 	}
 	for _, tag := range TagsMock {

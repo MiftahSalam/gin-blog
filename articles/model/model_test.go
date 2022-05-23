@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	articleUserModel "github.com/MiftahSalam/gin-blog/articles/model"
+	articlesModel "github.com/MiftahSalam/gin-blog/articles/model"
 	"github.com/MiftahSalam/gin-blog/common"
 	userModel "github.com/MiftahSalam/gin-blog/users/models"
 	"github.com/gosimple/slug"
@@ -23,12 +23,12 @@ func TestMain(m *testing.M) {
 
 	db := common.Init()
 
-	articleUserModel.AutoMigrate()
-	articleUserModel.Init(db)
+	articlesModel.AutoMigrate()
+	articlesModel.Init(db)
 
 	exitVal := m.Run()
 
-	articleUserModel.CleanUpAfterTest()
+	articlesModel.CleanUpAfterTest()
 	sqlDB, err := db.DB()
 	if err != nil {
 		common.LogE.Fatal("get db instance error: ", err)
@@ -44,7 +44,7 @@ func TestGetArticleUserModel(t *testing.T) {
 	asserts := assert.New(t)
 
 	for _, user := range userModel.UsersMock {
-		articleUsersModel := articleUserModel.GetArticleUserModel(user)
+		articleUsersModel := articlesModel.GetArticleUserModel(user)
 		asserts.Equal(articleUsersModel.UserModel, user)
 	}
 }
@@ -52,9 +52,9 @@ func TestGetArticleUserModel(t *testing.T) {
 func TestSaveArticle(t *testing.T) {
 	asserts := assert.New(t)
 
-	articleUser0Model := articleUserModel.GetArticleUserModel(userModel.UsersMock[0])
+	articleUser0Model := articlesModel.GetArticleUserModel(userModel.UsersMock[0])
 
-	err := articleUserModel.SaveOne(&articleUserModel.ArticleModel{
+	err := articlesModel.SaveOne(&articlesModel.ArticleModel{
 		Title:       "My Article 0",
 		Slug:        slug.Make("My Article 0"),
 		Description: "This article is about article 0",
@@ -69,11 +69,11 @@ func TestSaveArticle(t *testing.T) {
 func TestSaveComment(t *testing.T) {
 	asserts := assert.New(t)
 
-	err := articleUserModel.SaveOne(&articleUserModel.CommentModel{
-		Article:   articleUserModel.ArticlesMock[0],
-		ArticleID: articleUserModel.ArticlesMock[0].ID,
-		Author:    articleUserModel.ArticleUsersModelMock[1],
-		AuthorID:  articleUserModel.ArticleUsersModelMock[1].ID,
+	err := articlesModel.SaveOne(&articlesModel.CommentModel{
+		Article:   articlesModel.ArticlesMock[0],
+		ArticleID: articlesModel.ArticlesMock[0].ID,
+		Author:    articlesModel.ArticleUsersModelMock[1],
+		AuthorID:  articlesModel.ArticleUsersModelMock[1].ID,
 		Body:      "this is comment for article 0",
 	})
 
@@ -83,11 +83,11 @@ func TestSaveComment(t *testing.T) {
 func TestFindOneArticle(t *testing.T) {
 	asserts := assert.New(t)
 
-	article, err := articleUserModel.FindOneArticle(&articleUserModel.ArticleModel{
-		Slug: articleUserModel.ArticlesMock[0].Slug,
+	article, err := articlesModel.FindOneArticle(&articlesModel.ArticleModel{
+		Slug: articlesModel.ArticlesMock[0].Slug,
 	})
 
-	common.LogI.Println("ArticlesMock0", articleUserModel.ArticlesMock[0])
+	common.LogI.Println("ArticlesMock0", articlesModel.ArticlesMock[0])
 
 	if err != nil {
 		common.LogE.Fatal("cannot find article with error: ", err)
@@ -96,7 +96,37 @@ func TestFindOneArticle(t *testing.T) {
 
 	common.LogI.Println("article found", article)
 
-	asserts.Equal(articleUserModel.ArticlesMock[0].Author.UserModel, article.Author.UserModel)
-	asserts.Equal(articleUserModel.ArticlesMock[0].Title, article.Title)
-	asserts.Equal(articleUserModel.ArticlesMock[0].Body, article.Body)
+	asserts.Equal(articlesModel.ArticlesMock[0].Author.UserModel, article.Author.UserModel)
+	asserts.Equal(articlesModel.ArticlesMock[0].Title, article.Title)
+	asserts.Equal(articlesModel.ArticlesMock[0].Body, article.Body)
+}
+
+func TestFavourite(t *testing.T) {
+	asserts := assert.New(t)
+
+	//first favourite count check
+	asserts.Equal(articlesModel.ArticlesMock[0].FavoriteCount(), int64(0))
+
+	//first favourite by user check 1
+	asserts.False(articlesModel.ArticlesMock[0].IsFavoriteBy(&articlesModel.ArticleUsersModelMock[1]))
+
+	//assign favourite by
+	err := articlesModel.ArticlesMock[0].FavoriteBy(articlesModel.ArticleUsersModelMock[1])
+	asserts.NoError(err)
+
+	//favourite count check 2
+	asserts.Equal(articlesModel.ArticlesMock[0].FavoriteCount(), int64(1))
+
+	//first favourite by user check 2
+	asserts.True(articlesModel.ArticlesMock[0].IsFavoriteBy(&articlesModel.ArticleUsersModelMock[1]))
+
+	//unfavourite by
+	err = articlesModel.ArticlesMock[0].UnFavoriteBy(&articlesModel.ArticleUsersModelMock[1])
+	asserts.NoError(err)
+
+	//favourite count check 3
+	asserts.Equal(articlesModel.ArticlesMock[0].FavoriteCount(), int64(0))
+
+	//first favourite by user check 3
+	asserts.False(articlesModel.ArticlesMock[0].IsFavoriteBy(&articlesModel.ArticleUsersModelMock[1]))
 }

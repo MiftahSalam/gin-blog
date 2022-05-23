@@ -55,6 +55,7 @@ func AutoMigrate() {
 	db.AutoMigrate(&ArticleUserModel{})
 	db.AutoMigrate(&ArticleModel{})
 	db.AutoMigrate(&CommentModel{})
+	db.AutoMigrate(&FavoriteModel{})
 }
 
 func GetArticleUserModel(user userModel.UserModel) ArticleUserModel {
@@ -103,4 +104,51 @@ func (article *ArticleModel) setTags(tags []string) error {
 	}
 	article.Tags = tagList
 	return nil
+}
+
+func (article *ArticleModel) FavoriteCount() int64 {
+	var count int64
+	db := common.GetDB()
+
+	db.Model(&FavoriteModel{}).Where(FavoriteModel{
+		FavoriteID: article.ID,
+	}).Count(&count)
+
+	return count
+}
+
+func (article *ArticleModel) IsFavoriteBy(user *ArticleUserModel) bool {
+	db := common.GetDB()
+	var favourite FavoriteModel
+
+	db.Where(FavoriteModel{
+		FavoriteByID: user.ID,
+		FavoriteID:   article.ID,
+	}).First(&favourite)
+
+	return favourite.ID != 0
+}
+
+func (article *ArticleModel) FavoriteBy(user ArticleUserModel) error {
+	db := common.GetDB()
+	var favourite FavoriteModel
+
+	err := db.FirstOrCreate(&favourite, &FavoriteModel{
+		FavoriteByID: user.ID,
+		FavoriteID:   article.ID,
+	}).Error
+
+	return err
+}
+
+func (article *ArticleModel) UnFavoriteBy(user *ArticleUserModel) error {
+	db := common.GetDB()
+	var favourite FavoriteModel
+
+	err := db.Unscoped().Where(FavoriteModel{
+		FavoriteID:   article.ID,
+		FavoriteByID: user.ID,
+	}).Delete(&favourite).Error
+
+	return err
 }
