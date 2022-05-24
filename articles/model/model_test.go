@@ -138,3 +138,46 @@ func TestGetAllTags(t *testing.T) {
 	asserts.NoError(err)
 	asserts.Equal(len(TagsMock), len(tags))
 }
+
+func TestGetArticleComments(t *testing.T) {
+	comments0, err := ArticlesMock[0].getComments()
+
+	if err != nil {
+		common.LogI.Println("article0", comments0)
+	} else {
+		common.LogI.Println("article0 err", err)
+	}
+}
+
+func TestFindArticles(t *testing.T) {
+	t.Skip()
+	articles, count, err := FindArticles("mock", "user0", "", 0, 0)
+
+	if err == nil {
+		common.LogI.Println("articles", articles)
+		common.LogI.Println("articles len", len(articles))
+		common.LogI.Println("count", count)
+	} else {
+		common.LogI.Println("articles err", err)
+	}
+}
+
+func TestGetArticleFeed(t *testing.T) {
+	asserts := assert.New(t)
+	//follow two of avail user mock
+	ArticleUsersModelMock[0].UserModel.Following(ArticleUsersModelMock[1].UserModel)
+	ArticleUsersModelMock[0].UserModel.Following(ArticleUsersModelMock[2].UserModel)
+
+	//get article feeds
+	articles, count, err := ArticleUsersModelMock[0].getArticleFeed(0, 0)
+
+	if err == nil {
+		common.LogI.Println("article feeds", articles)
+		common.LogI.Println("article feeds len", len(articles))
+		common.LogI.Println("count", count)
+	} else {
+		common.LogI.Println("article feeds err", err)
+	}
+
+	asserts.Equal(2, count)
+}

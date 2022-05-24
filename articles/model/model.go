@@ -89,12 +89,55 @@ func FindOneArticle(condition interface{}) (ArticleModel, error) {
 	return model, err
 }
 
+func FindArticles(tag, author, favorited string, limit, offset int) ([]ArticleModel, int64, error) {
+	db := common.GetDB()
+	var articles []ArticleModel
+	var count int64
+
+	// user, err := userModel.FindOneUser(&userModel.UserModel{Username: author})
+	// if err == nil {
+	// 	common.LogI.Println("user", user)
+	// } else {
+	// 	common.LogI.Println("user err", err)
+	// }
+	// err = db.Preload("Tags", "tag = ?", tag).
+	// 	Preload("Author.UserModel", "username = ?", author).
+	// 	Joins("FavoriteModel.ArticleUserModel.UserModel", "username = ?", favorited).
+	// 	Offset(offset_int).
+	// 	Limit(limit_int).Find(&articles).Count(&count).Error
+
+	tx := db.Begin()
+	var tagModel TagModel
+
+	tx.Where(TagModel{Tag: tag}).First(&tagModel)
+	tx.Model(&ArticleModel{}).Where("tag IN ?", tag).Association("Tags").Find(&articles)
+	err := tx.Commit().Error
+
+	common.LogI.Println("tagModel", tagModel)
+	// common.LogI.Println("articles", articles)
+	// common.LogI.Println("count", count)
+	// common.LogI.Println("err", err)
+
+	return articles, count, err
+}
+
 func getAllTags() ([]TagModel, error) {
 	db := common.GetDB()
 	var tags []TagModel
 	err := db.Find(&tags).Error
 
 	return tags, err
+}
+
+func (article *ArticleModel) getComments() ([]CommentModel, error) {
+	db := common.GetDB()
+	var comments []CommentModel
+
+	err := db.Model(&ArticleModel{}).Preload("Comments").Find(&comments, ArticleModel{
+		Slug: article.Slug,
+	}).Error
+
+	return comments, err
 }
 
 func (article *ArticleModel) setTags(tags []string) error {
@@ -159,4 +202,26 @@ func (article *ArticleModel) unFavoriteBy(user *ArticleUserModel) error {
 	}).Delete(&favourite).Error
 
 	return err
+}
+
+func (user *ArticleUserModel) getArticleFeed(limit, offset int) ([]ArticleModel, int, error) {
+	db := common.GetDB()
+	var articles []ArticleModel
+
+	tx := db.Begin()
+	followings := user.UserModel.GetFollowing()
+	var articleUserModelIds []uint
+
+	for _, following := range followings {
+		articleUserModel := GetArticleUserModel(following)
+		articleUserModelIds = append(articleUserModelIds, articleUserModel.ID)
+	}
+	tx.Preload("Author.UserModel").Preload("Tags").Where("author_id IN (?)", articleUserModelIds).Offset(offset).Limit(limit).Find(&articles)
+	err := tx.Commit().Error
+
+	// common.LogI.Println("followings", followings)
+	// common.LogI.Println("count", count)
+	// common.LogI.Println("err", err)
+
+	return articles, len(articles), err
 }
