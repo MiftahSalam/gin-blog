@@ -73,7 +73,7 @@ func TestSaveComment(t *testing.T) {
 		ArticleID: ArticlesMock[0].ID,
 		Author:    ArticleUsersModelMock[1],
 		AuthorID:  ArticleUsersModelMock[1].ID,
-		Body:      "this is comment for article 0",
+		Body:      "this is comment one for article 0 from author 1",
 	})
 
 	asserts.NoError(err, "comment for article 0 should created")
@@ -140,13 +140,18 @@ func TestGetAllTags(t *testing.T) {
 }
 
 func TestGetArticleComments(t *testing.T) {
+	asserts := assert.New(t)
+
 	comments0, err := ArticlesMock[0].getComments()
 
-	if err != nil {
+	if err == nil {
 		common.LogI.Println("article0", comments0)
 	} else {
 		common.LogI.Println("article0 err", err)
 	}
+
+	asserts.NoError(err)
+	asserts.Equal(1, len(comments0))
 }
 
 func TestFindArticles(t *testing.T) {
@@ -180,4 +185,73 @@ func TestGetArticleFeed(t *testing.T) {
 	}
 
 	asserts.Equal(2, count)
+}
+
+func TestUpdateArticle(t *testing.T) {
+	asserts := assert.New(t)
+
+	err := ArticlesMock[1].Update(&ArticleModel{
+		Description: "This is my article with title My Article 1 after updated",
+		Title:       "My Article 1 updated",
+	})
+
+	asserts.NoError(err)
+
+	updated_article, _ := FindOneArticle(&ArticleModel{
+		Title: ArticlesMock[1].Title,
+	})
+
+	// common.LogI.Println("updated_article err", err)
+	common.LogI.Println("updated_article", updated_article)
+
+	asserts.Equal(ArticlesMock[1].Description, updated_article.Description)
+	asserts.Equal("My Article 1 updated", updated_article.Title)
+	asserts.Equal(slug.Make("My Article 1 updated"), updated_article.Slug)
+}
+
+func TestDeleteCommentModel(t *testing.T) {
+	asserts := assert.New(t)
+
+	//create new comment to article 0
+	err := SaveOne(&CommentModel{
+		Article:   ArticlesMock[0],
+		ArticleID: ArticlesMock[0].ID,
+		Author:    ArticleUsersModelMock[1],
+		AuthorID:  ArticleUsersModelMock[1].ID,
+		Body:      "this is comment two for article 0 from author1",
+	})
+	asserts.NoError(err)
+
+	articles0, err := FindOneArticle(&ArticleModel{
+		Slug: ArticlesMock[0].Slug,
+	})
+	asserts.NoError(err)
+
+	if err == nil {
+		comments0, err := articles0.getComments()
+		asserts.NoError(err)
+		if err == nil {
+			asserts.Equal(2, len(comments0))
+			err = DeleteCommentModel(&comments0[0])
+			asserts.NoError(err)
+			articles0, err = FindOneArticle(&ArticleModel{
+				Slug: ArticlesMock[0].Slug,
+			})
+			asserts.NoError(err)
+			comments0, err = articles0.getComments()
+			asserts.NoError(err)
+			asserts.Equal(1, len(comments0))
+		}
+	}
+
+}
+
+func TestDeleteArticleModel(t *testing.T) {
+	asserts := assert.New(t)
+
+	err := DeleteArticleModel(&ArticleModel{
+		Slug: ArticlesMock[0].Slug,
+	})
+
+	asserts.NoError(err)
 }

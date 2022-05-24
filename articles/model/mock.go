@@ -124,7 +124,7 @@ func CleanUpAfterTest() {
 			common.LogE.Println("cannot delete tag: ", err)
 		}
 	}
-	err := db.Unscoped().Where("body LIKE ?", "%this is comment for %").Delete(CommentModel{}).Error
+	err := db.Unscoped().Where("body LIKE ?", "%this is comment %").Delete(CommentModel{}).Error
 	if err != nil {
 		common.LogE.Println("cannot delete comment ", err)
 	}

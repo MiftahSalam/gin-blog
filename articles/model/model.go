@@ -3,6 +3,7 @@ package model
 import (
 	"github.com/MiftahSalam/gin-blog/common"
 	userModel "github.com/MiftahSalam/gin-blog/users/models"
+	"github.com/gosimple/slug"
 	"gorm.io/gorm"
 )
 
@@ -15,7 +16,7 @@ type ArticleModel struct {
 	Author      ArticleUserModel
 	AuthorID    uint
 	Tags        []TagModel     `gorm:"many2many:article_tags"`
-	Comments    []CommentModel `gorm:"ForeignKey:ArticleID"`
+	Comments    []CommentModel `gorm:"ForeignKey:ID;constraint:OnDelete:CASCADE"`
 }
 
 type ArticleUserModel struct {
@@ -29,7 +30,7 @@ type ArticleUserModel struct {
 type TagModel struct {
 	gorm.Model
 	Tag           string         `gorm:"unique_index"`
-	ArticleModels []ArticleModel `gorm:"many2many:article_tags"`
+	ArticleModels []ArticleModel `gorm:"many2many:article_tags;constraint:OnDelete:CASCADE"`
 }
 
 type CommentModel struct {
@@ -89,6 +90,50 @@ func FindOneArticle(condition interface{}) (ArticleModel, error) {
 	return model, err
 }
 
+func DeleteArticleModel(condition interface{}) error {
+	db := common.GetDB()
+
+	article, err := FindOneArticle(condition)
+	if err != nil {
+		common.LogE.Println("cannot find article: ", err)
+		return err
+	}
+
+	common.LogI.Println("clean up article tags", article.Tags)
+	err = db.Unscoped().Model(&article).Association("Tags").Clear()
+	if err != nil {
+		common.LogE.Println("cannot delete article tags: ", err)
+		return err
+	}
+
+	common.LogI.Println("clean up article favourite", article.Slug)
+	err = db.Unscoped().Where(&FavoriteModel{
+		FavoriteID: article.ID,
+	}).Delete(FavoriteModel{}).Error
+	if err != nil {
+		common.LogE.Println("cannot delete article favourite: ", err)
+		return err
+	}
+
+	common.LogI.Println("clean up article comments", article.Comments)
+	err = db.Unscoped().Where("article_id = ?", article.ID).Delete(CommentModel{}).Error
+	if err != nil {
+		common.LogE.Println("cannot delete comment ", err)
+		return err
+	}
+
+	err = db.Unscoped().Where(condition).Delete(&ArticleModel{}).Error
+
+	return err
+}
+
+func DeleteCommentModel(condition interface{}) error {
+	db := common.GetDB()
+	err := db.Unscoped().Where(condition).Delete(&CommentModel{}).Error
+
+	return err
+}
+
 func FindArticles(tag, author, favorited string, limit, offset int) ([]ArticleModel, int64, error) {
 	db := common.GetDB()
 	var articles []ArticleModel
@@ -129,12 +174,22 @@ func getAllTags() ([]TagModel, error) {
 	return tags, err
 }
 
+func (article *ArticleModel) Update(data interface{}) error {
+	db := common.GetDB()
+	var buf_data *ArticleModel = data.(*ArticleModel)
+
+	buf_data.Slug = slug.Make(buf_data.Title)
+	err := db.Model(article).Updates(data).Error
+
+	return err
+}
+
 func (article *ArticleModel) getComments() ([]CommentModel, error) {
 	db := common.GetDB()
 	var comments []CommentModel
 
-	err := db.Model(&ArticleModel{}).Preload("Comments").Find(&comments, ArticleModel{
-		Slug: article.Slug,
+	err := db.Model(&CommentModel{}).Find(&comments, CommentModel{
+		ArticleID: article.ID,
 	}).Error
 
 	return comments, err
