@@ -56,7 +56,7 @@ func createArticlesMock(n int) []ArticleModel {
 
 		ret = append(ret, article)
 	}
-	ret[0].setTags(TagsMock)
+	ret[0].SetTags(TagsMock)
 
 	return ret
 }

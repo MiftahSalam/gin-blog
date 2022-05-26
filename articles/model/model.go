@@ -198,7 +198,7 @@ func (article *ArticleModel) getComments() ([]CommentModel, error) {
 	return comments, err
 }
 
-func (article *ArticleModel) setTags(tags []string) error {
+func (article *ArticleModel) SetTags(tags []string) error {
 	db := common.GetDB()
 	var tagList []TagModel
 
