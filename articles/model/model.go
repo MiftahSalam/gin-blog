@@ -99,14 +99,14 @@ func DeleteArticleModel(condition interface{}) error {
 		return err
 	}
 
-	common.LogI.Println("clean up article tags", article.Tags)
+	// common.LogI.Println("clean up article tags", article.Tags)
 	err = db.Unscoped().Model(&article).Association("Tags").Clear()
 	if err != nil {
 		common.LogE.Println("cannot delete article tags: ", err)
 		return err
 	}
 
-	common.LogI.Println("clean up article favourite", article.Slug)
+	// common.LogI.Println("clean up article favourite", article.Slug)
 	err = db.Unscoped().Where(&FavoriteModel{
 		FavoriteID: article.ID,
 	}).Delete(FavoriteModel{}).Error
@@ -115,7 +115,7 @@ func DeleteArticleModel(condition interface{}) error {
 		return err
 	}
 
-	common.LogI.Println("clean up article comments", article.Comments)
+	// common.LogI.Println("clean up article comments", article.Comments)
 	err = db.Unscoped().Where("article_id = ?", article.ID).Delete(CommentModel{}).Error
 	if err != nil {
 		common.LogE.Println("cannot delete comment ", err)
@@ -151,15 +151,18 @@ func FindArticles(tag, author, favorited string, limit, offset int) ([]ArticleMo
 	// 	Offset(offset_int).
 	// 	Limit(limit_int).Find(&articles).Count(&count).Error
 
-	tx := db.Begin()
-	var tagModel TagModel
+	// tx := db.Begin()
+	// var tagModel TagModel
 
-	tx.Where(TagModel{Tag: tag}).First(&tagModel)
-	tx.Model(&ArticleModel{}).Where("tag IN ?", tag).Association("Tags").Find(&articles)
-	err := tx.Commit().Error
+	// tx.Where(TagModel{Tag: tag}).First(&tagModel)
+	// tx.Model(&ArticleModel{}).Where("tag IN ?", tag).Association("Tags").Find(&articles)
+	// err := tx.Commit().Error
 
-	common.LogI.Println("tagModel", tagModel)
-	// common.LogI.Println("articles", articles)
+	// var tagModel TagModel
+	err := db.Model(&TagModel{}).Where("tag IN (?)", tag).Association("Tags").Find(&articles)
+
+	// common.LogI.Println("tagModel", tagModel)
+	common.LogI.Println("articles", articles)
 	// common.LogI.Println("count", count)
 	// common.LogI.Println("err", err)
 

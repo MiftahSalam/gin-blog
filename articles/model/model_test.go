@@ -86,14 +86,14 @@ func TestFindOneArticle(t *testing.T) {
 		Slug: ArticlesMock[0].Slug,
 	})
 
-	common.LogI.Println("ArticlesMock0", ArticlesMock[0])
+	// common.LogI.Println("ArticlesMock0", ArticlesMock[0])
 
 	if err != nil {
 		common.LogE.Fatal("cannot find article with error: ", err)
 		return
 	}
 
-	common.LogI.Println("article found", article)
+	// common.LogI.Println("article found", article)
 
 	asserts.Equal(ArticlesMock[0].Author.UserModel, article.Author.UserModel)
 	asserts.Equal(ArticlesMock[0].Title, article.Title)
@@ -144,24 +144,24 @@ func TestGetArticleComments(t *testing.T) {
 
 	comments0, err := ArticlesMock[0].getComments()
 
-	if err == nil {
-		common.LogI.Println("article0", comments0)
-	} else {
-		common.LogI.Println("article0 err", err)
-	}
+	// if err == nil {
+	// 	common.LogI.Println("article0", comments0)
+	// } else {
+	// 	common.LogI.Println("article0 err", err)
+	// }
 
 	asserts.NoError(err)
 	asserts.Equal(1, len(comments0))
 }
 
 func TestFindArticles(t *testing.T) {
-	t.Skip()
-	articles, count, err := FindArticles("mock", "user0", "", 0, 0)
+	// t.Skip()
+	_, _, err := FindArticles("mock", "user0", "", 0, 0)
 
 	if err == nil {
-		common.LogI.Println("articles", articles)
-		common.LogI.Println("articles len", len(articles))
-		common.LogI.Println("count", count)
+		// common.LogI.Println("articles", articles)
+		// common.LogI.Println("articles len", len(articles))
+		// common.LogI.Println("count", count)
 	} else {
 		common.LogI.Println("articles err", err)
 	}
@@ -174,16 +174,17 @@ func TestGetArticleFeed(t *testing.T) {
 	ArticleUsersModelMock[0].UserModel.Following(ArticleUsersModelMock[2].UserModel)
 
 	//get article feeds
-	articles, count, err := ArticleUsersModelMock[0].getArticleFeed(0, 0)
+	_, count, err := ArticleUsersModelMock[0].getArticleFeed(0, 0)
 
-	if err == nil {
-		common.LogI.Println("article feeds", articles)
-		common.LogI.Println("article feeds len", len(articles))
-		common.LogI.Println("count", count)
-	} else {
-		common.LogI.Println("article feeds err", err)
-	}
+	// if err == nil {
+	// 	common.LogI.Println("article feeds", articles)
+	// 	common.LogI.Println("article feeds len", len(articles))
+	// 	common.LogI.Println("count", count)
+	// } else {
+	// 	common.LogI.Println("article feeds err", err)
+	// }
 
+	asserts.NoError(err)
 	asserts.Equal(2, count)
 }
 
@@ -202,7 +203,7 @@ func TestUpdateArticle(t *testing.T) {
 	})
 
 	// common.LogI.Println("updated_article err", err)
-	common.LogI.Println("updated_article", updated_article)
+	// common.LogI.Println("updated_article", updated_article)
 
 	asserts.Equal(ArticlesMock[1].Description, updated_article.Description)
 	asserts.Equal("My Article 1 updated", updated_article.Title)
@@ -243,7 +244,6 @@ func TestDeleteCommentModel(t *testing.T) {
 			asserts.Equal(1, len(comments0))
 		}
 	}
-
 }
 
 func TestDeleteArticleModel(t *testing.T) {
