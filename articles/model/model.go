@@ -215,7 +215,7 @@ func (article *ArticleModel) SetTags(tags []string) error {
 	return nil
 }
 
-func (article *ArticleModel) favoriteCount() int64 {
+func (article *ArticleModel) FavoriteCount() int64 {
 	var count int64
 	db := common.GetDB()
 
@@ -226,7 +226,7 @@ func (article *ArticleModel) favoriteCount() int64 {
 	return count
 }
 
-func (article *ArticleModel) isFavoriteBy(user *ArticleUserModel) bool {
+func (article *ArticleModel) IsFavoriteBy(user *ArticleUserModel) bool {
 	db := common.GetDB()
 	var favourite FavoriteModel
 
@@ -238,7 +238,7 @@ func (article *ArticleModel) isFavoriteBy(user *ArticleUserModel) bool {
 	return favourite.ID != 0
 }
 
-func (article *ArticleModel) favoriteBy(user ArticleUserModel) error {
+func (article *ArticleModel) FavoriteBy(user ArticleUserModel) error {
 	db := common.GetDB()
 	var favourite FavoriteModel
 

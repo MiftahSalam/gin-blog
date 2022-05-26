@@ -104,30 +104,30 @@ func TestFavourite(t *testing.T) {
 	asserts := assert.New(t)
 
 	//first favourite count check
-	asserts.Equal(ArticlesMock[0].favoriteCount(), int64(0))
+	asserts.Equal(ArticlesMock[0].FavoriteCount(), int64(0))
 
 	//first favourite by user check 1
-	asserts.False(ArticlesMock[0].isFavoriteBy(&ArticleUsersModelMock[1]))
+	asserts.False(ArticlesMock[0].IsFavoriteBy(&ArticleUsersModelMock[1]))
 
 	//assign favourite by
-	err := ArticlesMock[0].favoriteBy(ArticleUsersModelMock[1])
+	err := ArticlesMock[0].FavoriteBy(ArticleUsersModelMock[1])
 	asserts.NoError(err)
 
 	//favourite count check 2
-	asserts.Equal(ArticlesMock[0].favoriteCount(), int64(1))
+	asserts.Equal(ArticlesMock[0].FavoriteCount(), int64(1))
 
 	//first favourite by user check 2
-	asserts.True(ArticlesMock[0].isFavoriteBy(&ArticleUsersModelMock[1]))
+	asserts.True(ArticlesMock[0].IsFavoriteBy(&ArticleUsersModelMock[1]))
 
 	//unfavourite by
 	err = ArticlesMock[0].unFavoriteBy(&ArticleUsersModelMock[1])
 	asserts.NoError(err)
 
 	//favourite count check 3
-	asserts.Equal(ArticlesMock[0].favoriteCount(), int64(0))
+	asserts.Equal(ArticlesMock[0].FavoriteCount(), int64(0))
 
 	//first favourite by user check 3
-	asserts.False(ArticlesMock[0].isFavoriteBy(&ArticleUsersModelMock[1]))
+	asserts.False(ArticlesMock[0].IsFavoriteBy(&ArticleUsersModelMock[1]))
 }
 
 func TestGetAllTags(t *testing.T) {
