@@ -176,16 +176,37 @@ func TestGetArticleFeed(t *testing.T) {
 	//get article feeds
 	_, count, err := ArticleUsersModelMock[0].GetArticleFeed(0, 0)
 
-	// if err == nil {
-	// 	common.LogI.Println("article feeds", articles)
-	// 	common.LogI.Println("article feeds len", len(articles))
-	// 	common.LogI.Println("count", count)
-	// } else {
-	// 	common.LogI.Println("article feeds err", err)
-	// }
-
 	asserts.NoError(err)
 	asserts.Equal(2, count)
+
+	_, count, err = ArticleUsersModelMock[0].GetArticleFeed(1, 0)
+	asserts.NoError(err)
+	asserts.Equal(1, count)
+
+	_, count, err = ArticleUsersModelMock[0].GetArticleFeed(0, 1)
+	asserts.NoError(err)
+	asserts.Equal(1, count)
+
+	_, count, err = ArticleUsersModelMock[0].GetArticleFeed(1, 1)
+	asserts.NoError(err)
+	asserts.Equal(1, count)
+
+	_, count, err = ArticleUsersModelMock[0].GetArticleFeed(1, 3)
+	asserts.NoError(err)
+	asserts.Equal(0, count)
+
+	_, count, err = ArticleUsersModelMock[0].GetArticleFeed(-1, 3)
+	/*
+		if err == nil {
+			common.LogI.Println("article feeds", articles)
+			common.LogI.Println("article feeds len", len(articles))
+			common.LogI.Println("count", count)
+		} else {
+			common.LogI.Println("article feeds err", err)
+		}
+	*/
+	asserts.NoError(err)
+	asserts.Equal(0, count)
 }
 
 func TestUpdateArticle(t *testing.T) {
