@@ -174,7 +174,7 @@ func TestGetArticleFeed(t *testing.T) {
 	ArticleUsersModelMock[0].UserModel.Following(ArticleUsersModelMock[2].UserModel)
 
 	//get article feeds
-	_, count, err := ArticleUsersModelMock[0].getArticleFeed(0, 0)
+	_, count, err := ArticleUsersModelMock[0].GetArticleFeed(0, 0)
 
 	// if err == nil {
 	// 	common.LogI.Println("article feeds", articles)

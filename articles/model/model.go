@@ -262,7 +262,7 @@ func (article *ArticleModel) unFavoriteBy(user *ArticleUserModel) error {
 	return err
 }
 
-func (user *ArticleUserModel) getArticleFeed(limit, offset int) ([]ArticleModel, int, error) {
+func (user *ArticleUserModel) GetArticleFeed(limit, offset int) ([]ArticleModel, int, error) {
 	db := common.GetDB()
 	var articles []ArticleModel
 
