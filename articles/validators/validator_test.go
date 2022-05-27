@@ -58,7 +58,7 @@ func TestNewArticleModelValidatorFillWith(t *testing.T) {
 
 	articleModelValidator := NewArticleModelValidatorFillWith(articleModel)
 
-	asserts.Equal(articleModel, articleModelValidator.articleModel)
+	asserts.Equal(articleModel, articleModelValidator.ArticleModel)
 
 	asserts.Equal(articleModel.Title, articleModelValidator.Article.Title)
 	asserts.Equal(articleModel.Description, articleModelValidator.Article.Description)

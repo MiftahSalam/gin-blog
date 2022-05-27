@@ -15,14 +15,14 @@ type ArticleModelValidator struct {
 		Body        string   `form:"body" json:"body"`
 		Tags        []string `form:"tagList" json:"tagList"`
 	} `json:"article"`
-	articleModel ArticleModels.ArticleModel `json:"-"`
+	ArticleModel ArticleModels.ArticleModel `json:"-"`
 }
 
 type CommentModelValidator struct {
 	Comment struct {
 		Body string `form:"body" json:"body" binding:"max=2048"`
 	} `json:"comment"`
-	commentModel ArticleModels.CommentModel `json:"-"`
+	CommentModel ArticleModels.CommentModel `json:"-"`
 }
 
 func NewArticleModelValidator() ArticleModelValidator {
@@ -34,7 +34,7 @@ func NewArticleModelValidatorFillWith(article ArticleModels.ArticleModel) Articl
 	articleModelValidator.Article.Title = article.Title
 	articleModelValidator.Article.Description = article.Description
 	articleModelValidator.Article.Body = article.Body
-	articleModelValidator.articleModel = article
+	articleModelValidator.ArticleModel = article
 
 	for _, tag := range article.Tags {
 		articleModelValidator.Article.Tags = append(articleModelValidator.Article.Tags, tag.Tag)
@@ -51,12 +51,12 @@ func (articleModelValidator *ArticleModelValidator) Bind(c *gin.Context) error {
 		return err
 	}
 
-	articleModelValidator.articleModel.Slug = slug.Make(articleModelValidator.articleModel.Title)
-	articleModelValidator.articleModel.Title = articleModelValidator.Article.Title
-	articleModelValidator.articleModel.Description = articleModelValidator.Article.Description
-	articleModelValidator.articleModel.Body = articleModelValidator.Article.Body
-	articleModelValidator.articleModel.Author = ArticleModels.GetArticleUserModel(currentUser)
-	articleModelValidator.articleModel.SetTags(articleModelValidator.Article.Tags)
+	articleModelValidator.ArticleModel.Slug = slug.Make(articleModelValidator.ArticleModel.Title)
+	articleModelValidator.ArticleModel.Title = articleModelValidator.Article.Title
+	articleModelValidator.ArticleModel.Description = articleModelValidator.Article.Description
+	articleModelValidator.ArticleModel.Body = articleModelValidator.Article.Body
+	articleModelValidator.ArticleModel.Author = ArticleModels.GetArticleUserModel(UserModels.UserModel(currentUser))
+	articleModelValidator.ArticleModel.SetTags(articleModelValidator.Article.Tags)
 
 	return nil
 }
@@ -73,8 +73,8 @@ func (commentModelValidator *CommentModelValidator) Bind(c *gin.Context) error {
 		return err
 	}
 
-	commentModelValidator.commentModel.Body = commentModelValidator.Comment.Body
-	commentModelValidator.commentModel.Author = ArticleModels.GetArticleUserModel(currentUser)
+	commentModelValidator.CommentModel.Body = commentModelValidator.Comment.Body
+	commentModelValidator.CommentModel.Author = ArticleModels.GetArticleUserModel(UserModels.UserModel(currentUser))
 
 	return nil
 }
