@@ -3,8 +3,8 @@ package serializers
 import (
 	ArticleModels "github.com/MiftahSalam/gin-blog/articles/model"
 	UserModels "github.com/MiftahSalam/gin-blog/users/models"
+	UserProfileSerializer "github.com/MiftahSalam/gin-blog/users/serializers/profile"
 	"github.com/gin-gonic/gin"
-	"github.com/gothinkster/golang-gin-realworld-example-app/users"
 )
 
 type ArticleSerializer struct {
@@ -43,25 +43,25 @@ type TagsSerializer struct {
 }
 
 type ArticleResponse struct {
-	ID             uint                  `json:"-"`
-	Title          string                `json:"title"`
-	Slug           string                `json:"slug"`
-	Description    string                `json:"description"`
-	Body           string                `json:"body"`
-	CreatedAt      string                `json:"createdAt"`
-	UpdatedAt      string                `json:"updatedAt"`
-	Author         users.ProfileResponse `json:"author"`
-	Tags           []string              `json:"tagList"`
-	Favorite       bool                  `json:"favorited"`
-	FavoritesCount uint                  `json:"favoritesCount"`
+	ID             uint                                  `json:"-"`
+	Title          string                                `json:"title"`
+	Slug           string                                `json:"slug"`
+	Description    string                                `json:"description"`
+	Body           string                                `json:"body"`
+	CreatedAt      string                                `json:"createdAt"`
+	UpdatedAt      string                                `json:"updatedAt"`
+	Author         UserProfileSerializer.ProfileResponse `json:"author"`
+	Tags           []string                              `json:"tagList"`
+	Favorite       bool                                  `json:"favorited"`
+	FavoritesCount uint                                  `json:"favoritesCount"`
 }
 
 type CommentResponse struct {
-	ID        uint                  `json:"id"`
-	Body      string                `json:"body"`
-	CreatedAt string                `json:"createdAt"`
-	UpdatedAt string                `json:"updatedAt"`
-	Author    users.ProfileResponse `json:"author"`
+	ID        uint                                  `json:"id"`
+	Body      string                                `json:"body"`
+	CreatedAt string                                `json:"createdAt"`
+	UpdatedAt string                                `json:"updatedAt"`
+	Author    UserProfileSerializer.ProfileResponse `json:"author"`
 }
 
 func (tag *TagSerializer) Response() string {
@@ -79,7 +79,7 @@ func (tags *TagsSerializer) Response() []string {
 }
 
 func (article *ArticleSerializer) Response() ArticleResponse {
-	currentUser := article.C.MustGet("user").(users.UserModel)
+	currentUser := article.C.MustGet("user").(UserModels.UserModel)
 	authorSerializer := ArticleUserSerializer{C: article.C, ArticleUserModel: article.Author}
 	userArticle := ArticleModels.GetArticleUserModel(UserModels.UserModel(currentUser))
 	response := ArticleResponse{
@@ -103,10 +103,10 @@ func (article *ArticleSerializer) Response() ArticleResponse {
 	return response
 }
 
-func (articleUser *ArticleUserSerializer) Response() users.ProfileResponse {
-	response := users.ProfileSerializer{
+func (articleUser *ArticleUserSerializer) Response() UserProfileSerializer.ProfileResponse {
+	response := UserProfileSerializer.ProfileSerializer{
 		C:         articleUser.C,
-		UserModel: users.UserModel(articleUser.ArticleUserModel.UserModel),
+		UserModel: UserModels.UserModel(articleUser.ArticleUserModel.UserModel),
 	}
 	return response.Response()
 }
