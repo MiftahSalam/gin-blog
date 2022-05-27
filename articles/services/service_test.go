@@ -75,6 +75,23 @@ func TestCreateArticle(t *testing.T) {
 	// common.LogI.Println("key user after", user)
 }
 
+func TestGetArticlesFeed(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, test := range MockArticlesFeedTest {
+		t.Run(test.TestName, func(t *testing.T) {
+			c, w := InitTest()
+			test.Init(c)
+
+			ArticleFeed(c)
+
+			asserts.Equal(test.ResponseCode, w.Code)
+
+			test.ResponseTest(c, w, asserts)
+		})
+	}
+}
+
 func MockJSONPost(c *gin.Context, content interface{}) {
 	c.Request.Method = "POST"
 	c.Request.Header.Set("Content-Type", "application/json")
