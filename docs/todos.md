@@ -1,4 +1,5 @@
 - ## create appropiate DTO for different user request-respond
+  - Logout Handler
   - Login DTO
   - Update DTO
   - Register DTO
