@@ -137,7 +137,7 @@ func TestFavourite(t *testing.T) {
 	asserts.True(ArticlesMock[0].IsFavoriteBy(&ArticleUsersModelMock[1]))
 
 	//unfavourite by
-	err = ArticlesMock[0].unFavoriteBy(&ArticleUsersModelMock[1])
+	err = ArticlesMock[0].UnFavoriteBy(&ArticleUsersModelMock[1])
 	asserts.NoError(err)
 
 	//favourite count check 3

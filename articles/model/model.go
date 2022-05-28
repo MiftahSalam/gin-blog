@@ -250,7 +250,7 @@ func (article *ArticleModel) FavoriteBy(user ArticleUserModel) error {
 	return err
 }
 
-func (article *ArticleModel) unFavoriteBy(user *ArticleUserModel) error {
+func (article *ArticleModel) UnFavoriteBy(user *ArticleUserModel) error {
 	db := common.GetDB()
 	var favourite FavoriteModel
 
