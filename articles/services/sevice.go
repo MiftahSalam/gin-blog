@@ -200,3 +200,34 @@ func ArticleFavorite(c *gin.Context) {
 	serializer := serializers.ArticleSerializer{C: c, ArticleModel: article}
 	c.JSON(http.StatusOK, gin.H{"article": serializer.Response()})
 }
+
+func ArticleUnFavorite(c *gin.Context) {
+	slug := c.Param("slug")
+	if slug == "" {
+		c.JSON(http.StatusBadRequest, common.NewError("article", errors.New("invalid slug")))
+		return
+	}
+
+	curUserModel, _ := c.Get("user")
+	if curUserModel == nil {
+		c.JSON(http.StatusUnauthorized, common.NewError("article", errors.New("user not login")))
+		return
+	}
+
+	userModel := curUserModel.(UserModels.UserModel)
+	article, err := ArticleModels.FindOneArticle(&ArticleModels.ArticleModel{Slug: slug})
+	if err != nil {
+		c.JSON(http.StatusNotFound, common.NewError("article", errors.New("article not found")))
+		return
+	}
+
+	articleUserModel := ArticleModels.GetArticleUserModel(userModel)
+	err = article.UnFavoriteBy(&articleUserModel)
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, common.NewError("database", err))
+		return
+	}
+
+	serializer := serializers.ArticleSerializer{C: c, ArticleModel: article}
+	c.JSON(http.StatusOK, gin.H{"article": serializer.Response()})
+}

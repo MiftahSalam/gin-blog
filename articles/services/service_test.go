@@ -161,6 +161,23 @@ func TestArticleFavorite(t *testing.T) {
 	}
 }
 
+func TestArticleUnFavorite(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, test := range MockArticleUnFavoriteTest {
+		t.Run(test.TestName, func(t *testing.T) {
+			c, w := InitTest()
+			test.Init(c)
+
+			ArticleUnFavorite(c)
+
+			asserts.Equal(test.ResponseCode, w.Code)
+
+			test.ResponseTest(c, w, asserts)
+		})
+	}
+}
+
 func MockJSONPost(c *gin.Context, content interface{}) {
 	c.Request.Method = "POST"
 	c.Request.Header.Set("Content-Type", "application/json")
@@ -199,6 +216,17 @@ func CleanUpAfterTest() {
 		err = db.Unscoped().Model(&createdArticleFromServices).Association("Tags").Clear()
 		if err != nil {
 			common.LogE.Println("cannot delete article tags: ", err)
+		}
+	}
+	for _, tag := range tagsMockUpdate {
+		common.LogI.Println("clean up tag", tag)
+
+		var tagModel ArticleModels.TagModel
+		err := db.Unscoped().Delete(&tagModel, ArticleModels.TagModel{
+			Tag: tag,
+		}).Error
+		if err != nil {
+			common.LogE.Println("cannot delete tag: ", err)
 		}
 	}
 
