@@ -127,6 +127,40 @@ func TestArticleUpdate(t *testing.T) {
 	}
 }
 
+func TestArticleDelete(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, test := range MockArticleDeleteTest {
+		t.Run(test.TestName, func(t *testing.T) {
+			c, w := InitTest()
+			test.Init(c)
+
+			ArticleDelete(c)
+
+			asserts.Equal(test.ResponseCode, w.Code)
+
+			test.ResponseTest(c, w, asserts)
+		})
+	}
+}
+
+func TestArticleFavorite(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, test := range MockArticleFavoriteTest {
+		t.Run(test.TestName, func(t *testing.T) {
+			c, w := InitTest()
+			test.Init(c)
+
+			ArticleFavorite(c)
+
+			asserts.Equal(test.ResponseCode, w.Code)
+
+			test.ResponseTest(c, w, asserts)
+		})
+	}
+}
+
 func MockJSONPost(c *gin.Context, content interface{}) {
 	c.Request.Method = "POST"
 	c.Request.Header.Set("Content-Type", "application/json")
