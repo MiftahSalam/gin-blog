@@ -110,3 +110,41 @@ func ArticleRetrieve(c *gin.Context) {
 	serializer := serializers.ArticleSerializer{C: c, ArticleModel: articleModel}
 	c.JSON(http.StatusOK, gin.H{"article": serializer.Response()})
 }
+
+func ArticleUpdate(c *gin.Context) {
+	slug := c.Param("slug")
+
+	// common.LogI.Println("slug", slug)
+
+	if slug == "" {
+		c.JSON(http.StatusBadRequest, common.NewError("article", errors.New("invalid slug")))
+		return
+	}
+
+	curUserModel, _ := c.Get("user")
+	if curUserModel == nil {
+		c.JSON(http.StatusUnauthorized, common.NewError("article", errors.New("user not login")))
+		return
+	}
+
+	articleModel, err := ArticleModels.FindOneArticle(&ArticleModels.ArticleModel{Slug: slug})
+	if err != nil {
+		c.JSON(http.StatusNotFound, common.NewError("article", errors.New("article not found")))
+		return
+	}
+
+	articleValidator := validator.NewArticleModelValidator()
+	if err := articleValidator.Bind(c); err != nil {
+		c.JSON(http.StatusBadRequest, common.NewValidatorError(err))
+		return
+	}
+
+	articleValidator.ArticleModel.ID = articleModel.ID
+	if err := articleModel.Update(&articleValidator.ArticleModel); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, common.NewError("database", err))
+		return
+	}
+
+	serializer := serializers.ArticleSerializer{C: c, ArticleModel: articleModel}
+	c.JSON(http.StatusOK, gin.H{"article": serializer.Response()})
+}
