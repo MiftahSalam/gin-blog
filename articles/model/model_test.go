@@ -98,6 +98,23 @@ func TestFindOneArticle(t *testing.T) {
 	asserts.Equal(ArticlesMock[0].Author.UserModel, article.Author.UserModel)
 	asserts.Equal(ArticlesMock[0].Title, article.Title)
 	asserts.Equal(ArticlesMock[0].Body, article.Body)
+
+	article, err = FindOneArticle(&ArticleModel{
+		Slug: ArticlesMock[1].Slug,
+	})
+
+	// common.LogI.Println("ArticlesMock0", ArticlesMock[0])
+
+	if err != nil {
+		common.LogE.Fatal("cannot find article with error: ", err)
+		return
+	}
+
+	// common.LogI.Println("article found", article)
+
+	asserts.Equal(ArticlesMock[1].Author.UserModel, article.Author.UserModel)
+	asserts.Equal(ArticlesMock[1].Title, article.Title)
+	asserts.Equal(ArticlesMock[1].Body, article.Body)
 }
 
 func TestFavourite(t *testing.T) {
