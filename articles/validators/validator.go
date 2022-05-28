@@ -20,7 +20,7 @@ type ArticleModelValidator struct {
 
 type CommentModelValidator struct {
 	Comment struct {
-		Body string `form:"body" json:"body" binding:"max=2048"`
+		Body string `form:"body" json:"body" binding:"required,max=2048"`
 	} `json:"comment"`
 	CommentModel ArticleModels.CommentModel `json:"-"`
 }
