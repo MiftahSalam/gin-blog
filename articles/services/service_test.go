@@ -178,6 +178,35 @@ func TestArticleUnFavorite(t *testing.T) {
 	}
 }
 
+func TestCreateArticleComment(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, test := range MockArticleCommentCreateTest {
+		t.Run(test.TestName, func(t *testing.T) {
+			c, w := InitTest()
+			test.Init(c)
+			MockJSONPost(c, test.Data)
+
+			ArticleCommentCreate(c)
+
+			asserts.Equal(test.ResponseCode, w.Code)
+
+			test.ResponseTest(c, w, asserts)
+		})
+	}
+
+	// user, _ := c.Get("user")
+	// common.LogI.Println("key user before", user)
+	// for k := range c.Keys {
+	// 	if k == "user" {
+	// 		delete(c.Keys, k)
+	// 		common.LogI.Println("ckeys", k)
+	// 	}
+	// }
+	// user, _ = c.Get("user")
+	// common.LogI.Println("key user after", user)
+}
+
 func MockJSONPost(c *gin.Context, content interface{}) {
 	c.Request.Method = "POST"
 	c.Request.Header.Set("Content-Type", "application/json")

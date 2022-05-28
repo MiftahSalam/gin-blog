@@ -22,6 +22,12 @@ type ArticlesResponse struct {
 	ArticleCount uint `json:"articlesCount"`
 }
 
+type ArticleCommentResponse struct {
+	Comment struct {
+		ArticleSerializers.CommentResponse
+	} `json:"comment"`
+}
+
 var ArticlesMock = []ArticleModels.ArticleModel{
 	{
 		Title:       "My Article From Service",
@@ -37,6 +43,12 @@ var ArticlesMock = []ArticleModels.ArticleModel{
 		Title:       "My ArticleUpdated From Service1",
 		Description: "This is article with title My ArticleUpdated From Service1",
 		Body:        "ArticleArticleUpdated From Service1 is created with gin gonic with title My ArticleUpdated From Service1",
+	},
+}
+
+var ArticleCommentsMock = []ArticleModels.CommentModel{
+	{
+		Body: "This is comment for article",
 	},
 }
 

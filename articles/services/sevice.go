@@ -231,3 +231,38 @@ func ArticleUnFavorite(c *gin.Context) {
 	serializer := serializers.ArticleSerializer{C: c, ArticleModel: article}
 	c.JSON(http.StatusOK, gin.H{"article": serializer.Response()})
 }
+
+func ArticleCommentCreate(c *gin.Context) {
+	slug := c.Param("slug")
+	if slug == "" {
+		c.JSON(http.StatusBadRequest, common.NewError("comment", errors.New("invalid slug")))
+		return
+	}
+
+	curUserModel, _ := c.Get("user")
+	if curUserModel == nil {
+		c.JSON(http.StatusUnauthorized, common.NewError("comment", errors.New("user not login")))
+		return
+	}
+
+	commentValidator := validator.NewCommentModelValidator()
+	if err := commentValidator.Bind(c); err != nil {
+		c.JSON(http.StatusBadRequest, common.NewValidatorError(err))
+		return
+	}
+
+	article, err := ArticleModels.FindOneArticle(&ArticleModels.ArticleModel{Slug: slug})
+	if err != nil {
+		c.JSON(http.StatusNotFound, common.NewError("comment", errors.New("article not found")))
+		return
+	}
+
+	commentValidator.CommentModel.Article = article
+	if err := ArticleModels.SaveOne(&commentValidator.CommentModel); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, common.NewError("database", err))
+		return
+	}
+
+	serializer := serializers.CommentSerializer{C: c, CommentModel: commentValidator.CommentModel}
+	c.JSON(http.StatusCreated, gin.H{"comment": serializer.Response()})
+}
