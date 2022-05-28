@@ -92,6 +92,23 @@ func TestGetArticlesFeed(t *testing.T) {
 	}
 }
 
+func TestArticleRetrieve(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, test := range MockArticleRetrieveTest {
+		t.Run(test.TestName, func(t *testing.T) {
+			c, w := InitTest()
+			test.Init(c)
+
+			ArticleRetrieve(c)
+
+			asserts.Equal(test.ResponseCode, w.Code)
+
+			test.ResponseTest(c, w, asserts)
+		})
+	}
+}
+
 func MockJSONPost(c *gin.Context, content interface{}) {
 	c.Request.Method = "POST"
 	c.Request.Header.Set("Content-Type", "application/json")

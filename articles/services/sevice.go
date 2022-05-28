@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	ArticleModels "github.com/MiftahSalam/gin-blog/articles/model"
-	serializer "github.com/MiftahSalam/gin-blog/articles/serializers"
+	serializers "github.com/MiftahSalam/gin-blog/articles/serializers"
 	validator "github.com/MiftahSalam/gin-blog/articles/validators"
 	"github.com/MiftahSalam/gin-blog/common"
 	UserModels "github.com/MiftahSalam/gin-blog/users/models"
@@ -33,24 +33,25 @@ func ArticleCreate(c *gin.Context) {
 		return
 	}
 
-	serializer := serializer.ArticleSerializer{C: c, ArticleModel: articleModelValidator.ArticleModel}
+	serializer := serializers.ArticleSerializer{C: c, ArticleModel: articleModelValidator.ArticleModel}
 	c.JSON(http.StatusCreated, gin.H{"article": serializer.Response()})
 }
 
 //todo Article list
 
 func ArticleFeed(c *gin.Context) {
-	limit := c.Query("limit")
-	offset := c.Query("offset")
+	limit := c.DefaultQuery("limit", "0")
+	offset := c.DefaultQuery("offset", "0")
+
+	common.LogI.Println("query limit", limit)
+	common.LogI.Println("query offset", offset)
+
 	curUserModel, _ := c.Get("user")
 	if curUserModel == nil {
 		c.JSON(http.StatusUnauthorized, common.NewError("access", errors.New("user not login")))
 		return
 	}
 	currentUser := curUserModel.(UserModels.UserModel)
-
-	common.LogI.Println("query limit", limit)
-	common.LogI.Println("query offset", offset)
 
 	if currentUser.ID < 1 {
 		c.JSON(http.StatusUnauthorized, common.NewError("access", errors.New("user not login")))
@@ -72,9 +73,40 @@ func ArticleFeed(c *gin.Context) {
 		c.JSON(http.StatusNotFound, common.NewError("articles", err))
 	}
 
-	serializer := serializer.ArticlesSerializer{C: c, Articles: articles}
+	serializer := serializers.ArticlesSerializer{C: c, Articles: articles}
 	c.JSON(http.StatusOK, gin.H{
 		"articles":      serializer.Response(),
 		"articlesCount": articleCount,
 	})
+}
+
+func ArticleRetrieve(c *gin.Context) {
+	slug := c.Param("slug")
+
+	// common.LogI.Println("slug", slug)
+
+	if slug == "" {
+		c.JSON(http.StatusBadRequest, common.NewError("article", errors.New("invalid slug")))
+		return
+	}
+
+	curUserModel, _ := c.Get("user")
+	if curUserModel == nil {
+		c.JSON(http.StatusUnauthorized, common.NewError("article", errors.New("user not login")))
+		return
+	}
+
+	if slug == "feed" {
+		ArticleFeed(c)
+		return
+	}
+
+	articleModel, err := ArticleModels.FindOneArticle(&ArticleModels.ArticleModel{Slug: slug})
+	if err != nil {
+		c.JSON(http.StatusNotFound, common.NewError("article", errors.New("article not found")))
+		return
+	}
+
+	serializer := serializers.ArticleSerializer{C: c, ArticleModel: articleModel}
+	c.JSON(http.StatusOK, gin.H{"article": serializer.Response()})
 }
