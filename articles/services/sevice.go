@@ -266,3 +266,32 @@ func ArticleCommentCreate(c *gin.Context) {
 	serializer := serializers.CommentSerializer{C: c, CommentModel: commentValidator.CommentModel}
 	c.JSON(http.StatusCreated, gin.H{"comment": serializer.Response()})
 }
+
+func ArticleCommentList(c *gin.Context) {
+	slug := c.Param("slug")
+	if slug == "" {
+		c.JSON(http.StatusBadRequest, common.NewError("comments", errors.New("invalid slug")))
+		return
+	}
+
+	curUserModel, _ := c.Get("user")
+	if curUserModel == nil {
+		c.JSON(http.StatusUnauthorized, common.NewError("comments", errors.New("user not login")))
+		return
+	}
+
+	article, err := ArticleModels.FindOneArticle(&ArticleModels.ArticleModel{Slug: slug})
+	if err != nil {
+		c.JSON(http.StatusNotFound, common.NewError("comments", errors.New("article not found")))
+		return
+	}
+	comments, err := article.GetComments()
+	if err != nil {
+		c.JSON(http.StatusNotFound, common.NewError("comments", err))
+		return
+	}
+
+	serializer := serializers.CommentsSerializer{C: c, Comments: comments}
+	c.JSON(http.StatusOK, gin.H{"comments": serializer.Response()})
+
+}
