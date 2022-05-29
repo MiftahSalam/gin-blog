@@ -96,58 +96,79 @@ var MockArticleCommentCreateTest = []MockTests{
 			a.Equal(ArticleModels.ArticleUsersModelMock[0].UserModel.Username, jsonResp.Comment.CommentResponse.Author.Username)
 		},
 	},
-	/*
-		{
-			"no error althought some data body fields not provided: ArticleCreate Test",
-			func(c *gin.Context) {
-				c.Set("user", ArticleModels.ArticleUsersModelMock[0].UserModel)
-			},
-			map[string]map[string]interface{}{"article": {
-				"title": ArticlesMock[1].Title,
-				"body":  ArticlesMock[1].Body,
-			}},
-			http.StatusCreated,
-			func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
-				response_body, _ := ioutil.ReadAll(w.Body)
-				// common.LogI.Println("response_body", string(response_body))
-				var jsonResp ArticleResponse
-				err := json.Unmarshal(response_body, &jsonResp)
-				if err != nil {
-					common.LogE.Println("Cannot umarshal json content with error: ", err)
-				}
-				a.NoError(err)
-				// common.LogI.Println("jsonResp", jsonResp)
-				a.Equal(ArticlesMock[1].Title, jsonResp.Article.Title)
-				a.Equal(ArticlesMock[1].Body, jsonResp.Article.Body)
-				a.Equal(ArticleModels.ArticleUsersModelMock[0].UserModel.Username, jsonResp.Article.Author.Username)
-			},
+	{
+		"no error comment again: ArticleCommentCreate Test",
+		func(c *gin.Context) {
+			c.Params = append(c.Params, gin.Param{Key: "slug", Value: "my-article1"})
+			c.Set("user", ArticleModels.ArticleUsersModelMock[0].UserModel)
 		},
-		{
-			"no error: ArticleCreate Test",
-			func(c *gin.Context) {
-				c.Set("user", ArticleModels.ArticleUsersModelMock[0].UserModel)
-			},
-			map[string]map[string]interface{}{"article": {
-				"title":       ArticlesMock[0].Title,
-				"description": ArticlesMock[0].Description,
-				"body":        ArticlesMock[0].Body,
-				"tagList":     ArticleModels.TagsMock,
-			}},
-			http.StatusCreated,
-			func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
-				response_body, _ := ioutil.ReadAll(w.Body)
-				// common.LogI.Println("response_body", string(response_body))
-				var jsonResp ArticleResponse
-				err := json.Unmarshal(response_body, &jsonResp)
-				if err != nil {
-					common.LogE.Println("Cannot umarshal json content with error: ", err)
-				}
-				a.NoError(err)
-				// common.LogI.Println("jsonResp", jsonResp)
-				a.Equal(ArticlesMock[0].Title, jsonResp.Article.Title)
-				a.Equal(ArticlesMock[0].Body, jsonResp.Article.Body)
-				a.Equal(ArticleModels.ArticleUsersModelMock[0].UserModel.Username, jsonResp.Article.Author.Username)
-			},
+		map[string]map[string]interface{}{"comment": {
+			"body": ArticleCommentsMock[1].Body,
+		}},
+		http.StatusCreated,
+		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+			response_body, _ := ioutil.ReadAll(w.Body)
+			common.LogI.Println("response_body", string(response_body))
+
+			var jsonResp ArticleCommentResponse
+			err := json.Unmarshal(response_body, &jsonResp)
+			if err != nil {
+				common.LogE.Println("Cannot umarshal json content with error: ", err)
+			}
+			a.NoError(err)
+			// common.LogI.Println("jsonResp", jsonResp)
+			a.Equal(ArticleCommentsMock[1].Body, jsonResp.Comment.Body)
+			a.Equal(ArticleModels.ArticleUsersModelMock[0].UserModel.Username, jsonResp.Comment.CommentResponse.Author.Username)
 		},
-	*/
+	},
+	{
+		"no error comment from another user: ArticleCommentCreate Test",
+		func(c *gin.Context) {
+			c.Params = append(c.Params, gin.Param{Key: "slug", Value: "my-article1"})
+			c.Set("user", ArticleModels.ArticleUsersModelMock[1].UserModel)
+		},
+		map[string]map[string]interface{}{"comment": {
+			"body": ArticleCommentsMock[0].Body,
+		}},
+		http.StatusCreated,
+		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+			response_body, _ := ioutil.ReadAll(w.Body)
+			common.LogI.Println("response_body", string(response_body))
+
+			var jsonResp ArticleCommentResponse
+			err := json.Unmarshal(response_body, &jsonResp)
+			if err != nil {
+				common.LogE.Println("Cannot umarshal json content with error: ", err)
+			}
+			a.NoError(err)
+			// common.LogI.Println("jsonResp", jsonResp)
+			a.Equal(ArticleCommentsMock[0].Body, jsonResp.Comment.Body)
+			a.Equal(ArticleModels.ArticleUsersModelMock[1].UserModel.Username, jsonResp.Comment.CommentResponse.Author.Username)
+		},
+	},
+	{
+		"no error comment to another article: ArticleCommentCreate Test",
+		func(c *gin.Context) {
+			c.Params = append(c.Params, gin.Param{Key: "slug", Value: "my-article2"})
+			c.Set("user", ArticleModels.ArticleUsersModelMock[1].UserModel)
+		},
+		map[string]map[string]interface{}{"comment": {
+			"body": ArticleCommentsMock[1].Body,
+		}},
+		http.StatusCreated,
+		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+			response_body, _ := ioutil.ReadAll(w.Body)
+			common.LogI.Println("response_body", string(response_body))
+
+			var jsonResp ArticleCommentResponse
+			err := json.Unmarshal(response_body, &jsonResp)
+			if err != nil {
+				common.LogE.Println("Cannot umarshal json content with error: ", err)
+			}
+			a.NoError(err)
+			// common.LogI.Println("jsonResp", jsonResp)
+			a.Equal(ArticleCommentsMock[1].Body, jsonResp.Comment.Body)
+			a.Equal(ArticleModels.ArticleUsersModelMock[1].UserModel.Username, jsonResp.Comment.CommentResponse.Author.Username)
+		},
+	},
 }
