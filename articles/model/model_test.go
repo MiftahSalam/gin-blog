@@ -159,7 +159,7 @@ func TestGetAllTags(t *testing.T) {
 func TestGetArticleComments(t *testing.T) {
 	asserts := assert.New(t)
 
-	comments0, err := ArticlesMock[0].getComments()
+	comments0, err := ArticlesMock[0].GetComments()
 
 	// if err == nil {
 	// 	common.LogI.Println("article0", comments0)
@@ -267,7 +267,7 @@ func TestDeleteCommentModel(t *testing.T) {
 	asserts.NoError(err)
 
 	if err == nil {
-		comments0, err := articles0.getComments()
+		comments0, err := articles0.GetComments()
 		asserts.NoError(err)
 		if err == nil {
 			asserts.Equal(2, len(comments0))
@@ -277,7 +277,7 @@ func TestDeleteCommentModel(t *testing.T) {
 				Slug: ArticlesMock[0].Slug,
 			})
 			asserts.NoError(err)
-			comments0, err = articles0.getComments()
+			comments0, err = articles0.GetComments()
 			asserts.NoError(err)
 			asserts.Equal(1, len(comments0))
 		}

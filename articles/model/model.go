@@ -187,11 +187,11 @@ func (article *ArticleModel) Update(data interface{}) error {
 	return err
 }
 
-func (article *ArticleModel) getComments() ([]CommentModel, error) {
+func (article *ArticleModel) GetComments() ([]CommentModel, error) {
 	db := common.GetDB()
 	var comments []CommentModel
 
-	err := db.Model(&CommentModel{}).Find(&comments, CommentModel{
+	err := db.Preload("Author.UserModel").Model(&CommentModel{}).Find(&comments, CommentModel{
 		ArticleID: article.ID,
 	}).Error
 
