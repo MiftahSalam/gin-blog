@@ -169,7 +169,7 @@ func FindArticles(tag, author, favorited string, limit, offset int) ([]ArticleMo
 	return articles, count, err
 }
 
-func getAllTags() ([]TagModel, error) {
+func GetAllTags() ([]TagModel, error) {
 	db := common.GetDB()
 	var tags []TagModel
 	err := db.Find(&tags).Error

@@ -150,7 +150,7 @@ func TestFavourite(t *testing.T) {
 func TestGetAllTags(t *testing.T) {
 	asserts := assert.New(t)
 
-	tags, err := getAllTags()
+	tags, err := GetAllTags()
 
 	asserts.NoError(err)
 	asserts.Equal(len(TagsMock), len(tags))
