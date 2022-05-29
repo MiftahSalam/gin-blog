@@ -12,6 +12,7 @@ import (
 	UserModels "github.com/MiftahSalam/gin-blog/users/models"
 	"github.com/gin-gonic/gin"
 	"github.com/gosimple/slug"
+	"gorm.io/gorm"
 )
 
 func ArticleCreate(c *gin.Context) {
@@ -268,6 +269,26 @@ func ArticleCommentCreate(c *gin.Context) {
 
 	serializer := serializers.CommentSerializer{C: c, CommentModel: commentValidator.CommentModel}
 	c.JSON(http.StatusCreated, gin.H{"comment": serializer.Response()})
+}
+
+func ArticleCommentDelete(c *gin.Context) {
+	comment_id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, common.NewError("comment", errors.New("invalid comment id")))
+		return
+	}
+
+	id := uint(comment_id)
+
+	common.LogI.Println("comment id", id)
+
+	err = ArticleModels.DeleteCommentModel(&ArticleModels.CommentModel{Model: gorm.Model{ID: id}})
+	if err != nil {
+		c.JSON(http.StatusNotFound, common.NewError("comment", errors.New("comment not found")))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"comment": "Deleted"})
 }
 
 func ArticleCommentList(c *gin.Context) {

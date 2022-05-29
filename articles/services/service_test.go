@@ -195,6 +195,23 @@ func TestListArticleComment(t *testing.T) {
 	}
 }
 
+func TestArticleCommenteDelete(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, test := range MockArticleCommentDeleteTest {
+		t.Run(test.TestName, func(t *testing.T) {
+			c, w := InitTest()
+			test.Init(c)
+
+			ArticleCommentDelete(c)
+
+			asserts.Equal(test.ResponseCode, w.Code)
+
+			test.ResponseTest(c, w, asserts)
+		})
+	}
+}
+
 func TestTagList(t *testing.T) {
 	asserts := assert.New(t)
 

@@ -169,6 +169,7 @@ var MockArticleCommentCreateTest = []MockTests{
 			// common.LogI.Println("jsonResp", jsonResp)
 			a.Equal(ArticleCommentsMock[1].Body, jsonResp.Comment.Body)
 			a.Equal(ArticleModels.ArticleUsersModelMock[1].UserModel.Username, jsonResp.Comment.CommentResponse.Author.Username)
+			ArticleCommentsMock[1].ID = jsonResp.Comment.ID
 		},
 	},
 }
