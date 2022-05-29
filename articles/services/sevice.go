@@ -161,8 +161,11 @@ func ArticleDelete(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, common.NewError("article", errors.New("user not login")))
 		return
 	}
+	user := curUserModel.(UserModels.UserModel)
+	userModel := ArticleModels.GetArticleUserModel(user)
 
-	err := ArticleModels.DeleteArticleModel(&ArticleModels.ArticleModel{Slug: slug})
+	common.LogI.Println("userModel id", userModel.ID)
+	err := ArticleModels.DeleteArticleModel(&ArticleModels.ArticleModel{Slug: slug, AuthorID: userModel.ID})
 	if err != nil {
 		c.JSON(http.StatusNotFound, common.NewError("article", errors.New("article not found")))
 		return
@@ -294,4 +297,15 @@ func ArticleCommentList(c *gin.Context) {
 	serializer := serializers.CommentsSerializer{C: c, Comments: comments}
 	c.JSON(http.StatusOK, gin.H{"comments": serializer.Response()})
 
+}
+
+func TagList(c *gin.Context) {
+	tagsModel, err := ArticleModels.GetAllTags()
+	if err != nil {
+		c.JSON(http.StatusNotFound, common.NewError("tags", err))
+		return
+	}
+
+	serializer := serializers.TagsSerializer{C: c, Tags: tagsModel}
+	c.JSON(http.StatusOK, gin.H{"tags": serializer.Response()})
 }

@@ -38,6 +38,10 @@ type ArticleCommentsResponse struct {
 	} `json:"comments"`
 }
 
+type TagsResponse struct {
+	Tags []string `json:"tags"`
+}
+
 var ArticlesMock = []ArticleModels.ArticleModel{
 	{
 		Title:       "My Article From Service",

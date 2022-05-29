@@ -1,6 +1,8 @@
 package services
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -124,23 +126,6 @@ func TestArticleUpdate(t *testing.T) {
 	}
 }
 
-func TestArticleDelete(t *testing.T) {
-	asserts := assert.New(t)
-
-	for _, test := range MockArticleDeleteTest {
-		t.Run(test.TestName, func(t *testing.T) {
-			c, w := InitTest()
-			test.Init(c)
-
-			ArticleDelete(c)
-
-			asserts.Equal(test.ResponseCode, w.Code)
-
-			test.ResponseTest(c, w, asserts)
-		})
-	}
-}
-
 func TestArticleFavorite(t *testing.T) {
 	asserts := assert.New(t)
 
@@ -202,6 +187,54 @@ func TestListArticleComment(t *testing.T) {
 			test.Init(c)
 
 			ArticleCommentList(c)
+
+			asserts.Equal(test.ResponseCode, w.Code)
+
+			test.ResponseTest(c, w, asserts)
+		})
+	}
+}
+
+func TestTagList(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, test := range MockArticleCommentListTest {
+		t.Run(test.TestName, func(t *testing.T) {
+			c, w := InitTest()
+
+			TagList(c)
+
+			asserts.Equal(http.StatusOK, w.Code)
+
+			response_body, _ := ioutil.ReadAll(w.Body)
+
+			common.LogI.Println("response_body", string(response_body))
+
+			var jsonResp TagsResponse
+			err := json.Unmarshal(response_body, &jsonResp)
+			if err != nil {
+				common.LogE.Println("Cannot umarshal json content with error: ", err)
+			}
+			asserts.NoError(err)
+
+			common.LogI.Println("jsonResp", jsonResp)
+
+			allTags := append(ArticleModels.TagsMock, tagsMockUpdate...)
+			asserts.Equal(uint(len(allTags)), uint(len(jsonResp.Tags)))
+			asserts.Equal(allTags, jsonResp.Tags)
+		})
+	}
+}
+
+func TestArticleDelete(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, test := range MockArticleDeleteTest {
+		t.Run(test.TestName, func(t *testing.T) {
+			c, w := InitTest()
+			test.Init(c)
+
+			ArticleDelete(c)
 
 			asserts.Equal(test.ResponseCode, w.Code)
 
