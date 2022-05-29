@@ -1,6 +1,8 @@
 package model
 
 import (
+	"errors"
+
 	"github.com/MiftahSalam/gin-blog/common"
 	userModel "github.com/MiftahSalam/gin-blog/users/models"
 	"github.com/gosimple/slug"
@@ -129,7 +131,14 @@ func DeleteArticleModel(condition interface{}) error {
 
 func DeleteCommentModel(condition interface{}) error {
 	db := common.GetDB()
-	err := db.Unscoped().Where(condition).Delete(&CommentModel{}).Error
+	tx := db.Debug().Unscoped().Where(condition).Delete(&CommentModel{})
+	err := tx.Error
+	row_affected := tx.RowsAffected
+
+	if row_affected == 0 {
+		err = errors.New("comment not found")
+	}
+	common.LogI.Println("row_affected", row_affected)
 
 	return err
 }
