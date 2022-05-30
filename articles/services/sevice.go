@@ -122,6 +122,13 @@ func ArticleRetrieve(c *gin.Context) {
 }
 
 func ArticleUpdate(c *gin.Context) {
+	defer func() {
+		if err := recover(); err != nil {
+			common.LogI.Println("recover from panic", err)
+			c.JSON(http.StatusInternalServerError, common.NewError("server", errors.New("oopss something went wrong")))
+		}
+	}()
+
 	slug := c.Param("slug")
 
 	// common.LogI.Println("slug", slug)
