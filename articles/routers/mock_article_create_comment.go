@@ -139,6 +139,7 @@ var MockCreateCommentArticle = []RouterMockTest{
 
 			a.Equal(articleServices.ArticleCommentsMock[0].Body, jsonResp.Comment.Body)
 			a.Equal(articleModels.ArticleUsersModelMock[0].UserModel.Username, jsonResp.Comment.CommentResponse.Author.Username)
+			articleServices.ArticleCommentsMock[0].ID = jsonResp.Comment.ID
 		},
 	},
 	{
@@ -173,6 +174,7 @@ var MockCreateCommentArticle = []RouterMockTest{
 
 			a.Equal(articleServices.ArticleCommentsMock[1].Body, jsonResp.Comment.Body)
 			a.Equal(articleModels.ArticleUsersModelMock[0].UserModel.Username, jsonResp.Comment.CommentResponse.Author.Username)
+			articleServices.ArticleCommentsMock[1].ID = jsonResp.Comment.ID
 		},
 	},
 }

@@ -14,6 +14,7 @@ func Articles(router *gin.RouterGroup) {
 	router.DELETE("/:slug/favorite", services.ArticleUnFavorite)
 	router.POST("/:slug/comment", services.ArticleCommentCreate)
 	router.GET("/:slug/comments", services.ArticleCommentList)
+	router.DELETE("/:slug/comment/:id", services.ArticleCommentDelete)
 }
 
 func Tags(router *gin.RouterGroup) {

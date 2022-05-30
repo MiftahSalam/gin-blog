@@ -54,7 +54,8 @@ func createTest(asserts *assert.Assertions, testData *RouterMockTest) *httptest.
 	body := testData.UserMockTest.Body
 	req, err := http.NewRequest(testData.UserMockTest.Method, testData.UserMockTest.Url, bytes.NewBufferString(body))
 
-	common.LogI.Println("test body", testData.UserMockTest.Body)
+	common.LogI.Println("test url", testData.UserMockTest.Url)
+	// common.LogI.Println("test body", testData.UserMockTest.Body)
 
 	asserts.NoError(err)
 
@@ -158,6 +159,22 @@ func TestCommentListArticle(t *testing.T) {
 	asserts := assert.New(t)
 
 	for _, test := range MockCommentListArticle {
+		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+			w := createTest(asserts, &test)
+
+			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
+
+			test.ResponseTest(w, asserts)
+		})
+	}
+}
+
+//hard to test (need to know comment id first)
+func TestDeleteCommentrticle(t *testing.T) {
+	t.Skip()
+	asserts := assert.New(t)
+
+	for _, test := range MockDeleteCommentArticle {
 		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
 			w := createTest(asserts, &test)
 
