@@ -33,8 +33,8 @@ func TestMain(m *testing.M) {
 	gin.SetMode(gin.TestMode)
 
 	router = gin.New()
-	router.Use(middlewares.AuthMiddleware(true))
-	Articles(router.Group("/article"))
+	Articles(router.Group("/article", middlewares.AuthMiddleware(true)))
+	Tags(router.Group("/tags", middlewares.AuthMiddleware(false)))
 
 	exitVal := m.Run()
 
@@ -144,6 +144,34 @@ func TestCommentCreateArticle(t *testing.T) {
 	asserts := assert.New(t)
 
 	for _, test := range MockCreateCommentArticle {
+		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+			w := createTest(asserts, &test)
+
+			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
+
+			test.ResponseTest(w, asserts)
+		})
+	}
+}
+
+func TestCommentListArticle(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, test := range MockCommentListArticle {
+		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+			w := createTest(asserts, &test)
+
+			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
+
+			test.ResponseTest(w, asserts)
+		})
+	}
+}
+
+func TestTagList(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, test := range MockGetTagList {
 		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
 			w := createTest(asserts, &test)
 

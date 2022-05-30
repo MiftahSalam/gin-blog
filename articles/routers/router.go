@@ -15,3 +15,7 @@ func Articles(router *gin.RouterGroup) {
 	router.POST("/:slug/comment", services.ArticleCommentCreate)
 	router.GET("/:slug/comments", services.ArticleCommentList)
 }
+
+func Tags(router *gin.RouterGroup) {
+	router.GET("/", services.TagList)
+}
