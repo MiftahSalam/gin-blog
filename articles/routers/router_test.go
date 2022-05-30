@@ -54,6 +54,8 @@ func createTest(asserts *assert.Assertions, testData *RouterMockTest) *httptest.
 	body := testData.UserMockTest.Body
 	req, err := http.NewRequest(testData.UserMockTest.Method, testData.UserMockTest.Url, bytes.NewBufferString(body))
 
+	common.LogI.Println("test body", testData.UserMockTest.Body)
+
 	asserts.NoError(err)
 
 	testData.UserMockTest.Init(req)
@@ -70,6 +72,21 @@ func TestGetArticle(t *testing.T) {
 	asserts := assert.New(t)
 
 	for _, test := range MockGetArticle {
+		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+			w := createTest(asserts, &test)
+
+			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
+
+			test.ResponseTest(w, asserts)
+		})
+	}
+
+}
+
+func TestCreateArticle(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, test := range MockCreateArticle {
 		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
 			w := createTest(asserts, &test)
 
