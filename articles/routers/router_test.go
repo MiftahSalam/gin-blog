@@ -125,3 +125,31 @@ func TestFavoriteArticle(t *testing.T) {
 		})
 	}
 }
+
+func TestUnFavoriteArticle(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, test := range MockUnFavoriteArticle {
+		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+			w := createTest(asserts, &test)
+
+			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
+
+			test.ResponseTest(w, asserts)
+		})
+	}
+}
+
+func TestCommentCreateArticle(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, test := range MockCreateCommentArticle {
+		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+			w := createTest(asserts, &test)
+
+			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
+
+			test.ResponseTest(w, asserts)
+		})
+	}
+}
