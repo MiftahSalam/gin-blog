@@ -141,4 +141,38 @@ var MockCreateCommentArticle = []RouterMockTest{
 			a.Equal(articleModels.ArticleUsersModelMock[0].UserModel.Username, jsonResp.Comment.CommentResponse.Author.Username)
 		},
 	},
+	{
+		UserMockTest: userServices.MockTests{
+			TestName: "no error (create another for other article): Create Comment Article Test",
+			Init: func(req *http.Request) {
+				req.Header.Set("Content-Type", "application/json")
+				req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", common.GetToken(userModels.UsersMock[0].ID)))
+			},
+			Url:    "/article/my-article2/comment",
+			Method: "POST",
+			Body: fmt.Sprintf(`{"comment":{"body":"%v"}}`,
+				articleServices.ArticleCommentsMock[1].Body,
+			),
+			ResponseCode:    http.StatusCreated,
+			ResponsePattern: "",
+			Msg:             "valid data and should return StatusOK",
+		},
+		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
+			response_body, _ := ioutil.ReadAll(w.Body)
+
+			common.LogI.Println("response_body", string(response_body))
+
+			var jsonResp articleServices.ArticleCommentResponse
+			err := json.Unmarshal(response_body, &jsonResp)
+			if err != nil {
+				common.LogE.Println("Cannot umarshal json content with error: ", err)
+			}
+			a.NoError(err)
+
+			common.LogI.Println("jsonResp", jsonResp)
+
+			a.Equal(articleServices.ArticleCommentsMock[1].Body, jsonResp.Comment.Body)
+			a.Equal(articleModels.ArticleUsersModelMock[0].UserModel.Username, jsonResp.Comment.CommentResponse.Author.Username)
+		},
+	},
 }
