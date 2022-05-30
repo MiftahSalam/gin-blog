@@ -236,7 +236,7 @@ func TestTagList(t *testing.T) {
 
 			common.LogI.Println("jsonResp", jsonResp)
 
-			allTags := append(ArticleModels.TagsMock, tagsMockUpdate...)
+			allTags := append(ArticleModels.TagsMock, TagsMockUpdate...)
 			asserts.Equal(uint(len(allTags)), uint(len(jsonResp.Tags)))
 			asserts.Equal(allTags, jsonResp.Tags)
 		})
@@ -286,7 +286,7 @@ func CleanUpAfterTest() {
 			common.LogE.Println("cannot delete article tags: ", err)
 		}
 	}
-	for _, tag := range tagsMockUpdate {
+	for _, tag := range TagsMockUpdate {
 		common.LogI.Println("clean up tag", tag)
 
 		var tagModel ArticleModels.TagModel
