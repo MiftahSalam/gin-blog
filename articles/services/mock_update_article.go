@@ -54,7 +54,7 @@ var MockArticleUpdate = []MockTests{
 			"title":       ArticlesMock[2].Title,
 			"description": ArticlesMock[2].Description,
 			"body":        ArticlesMock[2].Body,
-			"tagList":     tagsMockUpdate,
+			"tagList":     TagsMockUpdate,
 		}},
 		http.StatusBadRequest,
 		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
@@ -75,7 +75,7 @@ var MockArticleUpdate = []MockTests{
 			"title":       ArticlesMock[2].Title,
 			"description": ArticlesMock[2].Description,
 			"body":        ArticlesMock[2].Body,
-			"tagList":     tagsMockUpdate,
+			"tagList":     TagsMockUpdate,
 		}},
 		http.StatusNotFound,
 		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
@@ -111,7 +111,7 @@ var MockArticleUpdate = []MockTests{
 			"title":       ArticlesMock[2].Title,
 			"description": ArticlesMock[2].Description,
 			"body":        ArticlesMock[2].Body,
-			"tagList":     tagsMockUpdate,
+			"tagList":     TagsMockUpdate,
 		}},
 		http.StatusUnauthorized,
 		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
