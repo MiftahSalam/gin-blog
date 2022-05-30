@@ -12,6 +12,7 @@ func Articles(router *gin.RouterGroup) {
 	router.PUT("/:slug", services.ArticleUpdate)
 	router.POST("/:slug/favorite", services.ArticleFavorite)
 	router.DELETE("/:slug/favorite", services.ArticleUnFavorite)
+	router.DELETE("/:slug", services.ArticleDelete)
 	router.POST("/:slug/comment", services.ArticleCommentCreate)
 	router.GET("/:slug/comments", services.ArticleCommentList)
 	router.DELETE("/:slug/comment/:id", services.ArticleCommentDelete)

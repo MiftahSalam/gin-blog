@@ -169,6 +169,20 @@ func TestCommentListArticle(t *testing.T) {
 	}
 }
 
+func TestDeleteArticle(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, test := range MockDeleteArticle {
+		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+			w := createTest(asserts, &test)
+
+			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
+
+			test.ResponseTest(w, asserts)
+		})
+	}
+}
+
 //hard to test (need to know comment id first)
 func TestDeleteCommentrticle(t *testing.T) {
 	t.Skip()
