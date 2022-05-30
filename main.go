@@ -32,13 +32,13 @@ func main() {
 	router := gin.Default()
 	v1 := router.Group("/api")
 
-	// v1.Use(userMiddlewares.AuthMiddleware(true))
+	// v1.Use(userMiddlewares.AuthMiddleware(true)) //global middleware
 	users.Users(v1.Group("/users"))
-	v1.Use(userMiddlewares.AuthMiddleware(true))
-	users.UsersAuth(v1.Group("/users"))
-	users.Profile(v1.Group("/profile"))
+	users.UsersAuth(v1.Group("/users", userMiddlewares.AuthMiddleware(true)))
+	users.Profile(v1.Group("/profile", userMiddlewares.AuthMiddleware(true)))
 
-	articleRouter.Articles(v1.Group("/article"))
+	articleRouter.Articles(v1.Group("/article", userMiddlewares.AuthMiddleware(true)))
+	articleRouter.Tags(v1.Group("/tags", userMiddlewares.AuthMiddleware(false)))
 
 	router.Run()
 }
