@@ -10,5 +10,6 @@ func Articles(router *gin.RouterGroup) {
 	router.POST("/", services.ArticleCreate)
 	router.GET("/:slug", services.ArticleRetrieve)
 	router.PUT("/:slug", services.ArticleUpdate)
+	router.POST("/:slug/favorite", services.ArticleFavorite)
 	router.GET("/:slug/comments", services.ArticleCommentList)
 }

@@ -110,5 +110,18 @@ func TestUpdateArticle(t *testing.T) {
 			test.ResponseTest(w, asserts)
 		})
 	}
+}
 
+func TestFavoriteArticle(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, test := range MockFavoriteArticle {
+		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+			w := createTest(asserts, &test)
+
+			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
+
+			test.ResponseTest(w, asserts)
+		})
+	}
 }
