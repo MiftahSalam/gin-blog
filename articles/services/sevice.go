@@ -253,6 +253,13 @@ func ArticleUnFavorite(c *gin.Context) {
 }
 
 func ArticleCommentCreate(c *gin.Context) {
+	defer func() {
+		if err := recover(); err != nil {
+			common.LogI.Println("recover from panic", err)
+			c.JSON(http.StatusInternalServerError, common.NewError("server", errors.New("oopss something went wrong")))
+		}
+	}()
+
 	slug := c.Param("slug")
 	if slug == "" {
 		c.JSON(http.StatusBadRequest, common.NewError("comment", errors.New("invalid slug")))
