@@ -1,6 +1,7 @@
 package main
 
 import (
+	articleRouter "github.com/MiftahSalam/gin-blog/articles/routers"
 	"github.com/MiftahSalam/gin-blog/common"
 	"github.com/MiftahSalam/gin-blog/users"
 	userMiddlewares "github.com/MiftahSalam/gin-blog/users/middlewares"
@@ -36,6 +37,8 @@ func main() {
 	v1.Use(userMiddlewares.AuthMiddleware(true))
 	users.UsersAuth(v1.Group("/users"))
 	users.Profile(v1.Group("/profile"))
+
+	articleRouter.Articles(v1.Group("/article"))
 
 	router.Run()
 }
