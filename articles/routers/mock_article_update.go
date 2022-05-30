@@ -52,7 +52,6 @@ var MockUpdateArticle = []RouterMockTest{
 			a.Equal(articleModels.ArticleUsersModelMock[0].UserModel.Username, jsonResp.Article.Author.Username)
 		},
 	},
-
 	{
 		UserMockTest: userServices.MockTests{
 			TestName: "error (no body data provided): Update Article Test",
@@ -73,7 +72,28 @@ var MockUpdateArticle = []RouterMockTest{
 			common.LogI.Println("response_body", string(response_body))
 		},
 	},
+	{
+		UserMockTest: userServices.MockTests{
+			TestName: "error (article not found): Update Article Test",
+			Init: func(req *http.Request) {
+				req.Header.Set("Content-Type", "application/json")
+				req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", common.GetToken(userModels.UsersMock[0].ID)))
+			},
+			Url:             "/article/my-article10",
+			Method:          "PUT",
+			Body:            "fasdlkjrawer",
+			ResponseCode:    http.StatusNotFound,
+			ResponsePattern: "",
+			Msg:             "valid data and should return StatusNotFound",
+		},
+		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
+			response_body, _ := ioutil.ReadAll(w.Body)
 
+			common.LogI.Println("response_body", string(response_body))
+
+			a.Equal(`{"errors":{"article":"article not found"}}`, string(response_body))
+		},
+	},
 	{
 		UserMockTest: userServices.MockTests{
 			TestName: "error (invalid body format): Update Article Test",
