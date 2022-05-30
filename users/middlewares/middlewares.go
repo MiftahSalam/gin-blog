@@ -26,26 +26,29 @@ func UpdateContextUserModel(c *gin.Context, user_id uint) {
 
 func AuthMiddleware(autho401 bool) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		UpdateContextUserModel(ctx, 0)
-		tok, err := request.ParseFromRequest(ctx.Request, common.Auth2Extractor, func(t *jwt.Token) (interface{}, error) {
-			b := []byte(os.Getenv("JWT_SECRET"))
-			return b, nil
-		})
-		if err != nil {
-			common.LogE.Println("err", err)
-			if autho401 {
+		common.LogI.Println("autho401", autho401)
+		if autho401 {
+			UpdateContextUserModel(ctx, 0)
+			tok, err := request.ParseFromRequest(ctx.Request, common.Auth2Extractor, func(t *jwt.Token) (interface{}, error) {
+				b := []byte(os.Getenv("JWT_SECRET"))
+				return b, nil
+			})
+
+			if err != nil {
+				common.LogE.Println("err", err)
 				ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+				return
 			}
+
+			if claims, ok := tok.Claims.(jwt.MapClaims); ok {
+				// common.LogI.Println("cek tok exp", claims["exp"])
+
+				user_id := uint(claims["id"].(float64))
+				UpdateContextUserModel(ctx, user_id)
+			}
+		} else {
+			common.LogI.Println("no tok check")
 			return
-		}
-
-		// common.LogI.Println("tok", tok)
-
-		if claims, ok := tok.Claims.(jwt.MapClaims); ok {
-			// common.LogI.Println("cek tok exp", claims["exp"])
-
-			user_id := uint(claims["id"].(float64))
-			UpdateContextUserModel(ctx, user_id)
 		}
 	}
 }
