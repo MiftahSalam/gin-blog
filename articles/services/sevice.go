@@ -16,11 +16,20 @@ import (
 )
 
 func ArticleCreate(c *gin.Context) {
+	defer func() {
+		if err := recover(); err != nil {
+			common.LogI.Println("recover from panic", err)
+			c.JSON(http.StatusInternalServerError, common.NewError("server", errors.New("oopss something went wrong")))
+		}
+	}()
+
 	_, exist := c.Get("user")
 	if !exist {
 		c.JSON(http.StatusUnauthorized, common.NewError("access", errors.New("user not login")))
 		return
 	}
+
+	common.LogI.Println("req body", c.Request.Body)
 
 	articleModelValidator := validator.NewArticleModelValidator()
 	if err := articleModelValidator.Bind(c); err != nil {
