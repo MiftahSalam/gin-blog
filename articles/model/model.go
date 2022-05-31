@@ -168,7 +168,19 @@ func FindArticles(tag, author, favorited string, limit, offset int) ([]ArticleMo
 	// err := tx.Commit().Error
 
 	// var tagModel TagModel
-	err := db.Model(&TagModel{}).Where("tag IN (?)", tag).Association("Tags").Find(&articles)
+	// err := db.Model(&TagModel{}).Where("tag IN (?)", tag).Association("Tags").Find(&articles)
+
+	user, err := userModel.FindOneUser(&userModel.UserModel{Username: author})
+	if err != nil {
+		common.LogI.Println("err", err)
+	}
+	userModel := GetArticleUserModel(user)
+
+	err = db.Debug().Where(&ArticleModel{AuthorID: userModel.ID}).
+		// Preload("Favorite").
+		Preload("Tags").
+		Preload("Author.UserModel").
+		Find(&articles).Error
 
 	// common.LogI.Println("tagModel", tagModel)
 	common.LogI.Println("articles", articles)
@@ -221,6 +233,8 @@ func (article *ArticleModel) SetTags(tags []string) error {
 		tagList = append(tagList, tagModel)
 	}
 	article.Tags = tagList
+	article.Update(&ArticleModel{Tags: tagList})
+
 	return nil
 }
 
