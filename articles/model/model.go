@@ -148,42 +148,67 @@ func FindArticles(tag, author, favorited string, limit, offset int) ([]ArticleMo
 	var articles []ArticleModel
 	var count int64
 
-	// user, err := userModel.FindOneUser(&userModel.UserModel{Username: author})
-	// if err == nil {
-	// 	common.LogI.Println("user", user)
-	// } else {
-	// 	common.LogI.Println("user err", err)
-	// }
-	// err = db.Preload("Tags", "tag = ?", tag).
-	// 	Preload("Author.UserModel", "username = ?", author).
-	// 	Joins("FavoriteModel.ArticleUserModel.UserModel", "username = ?", favorited).
-	// 	Offset(offset_int).
-	// 	Limit(limit_int).Find(&articles).Count(&count).Error
+	tx := db.Begin()
+	if tag != "" {
+		var tagModel TagModel
+		tx.Debug().Where(TagModel{Tag: tag}).First(&tagModel)
 
-	// tx := db.Begin()
-	// var tagModel TagModel
+		common.LogI.Println("tagModel.ID", tagModel.ID)
 
-	// tx.Where(TagModel{Tag: tag}).First(&tagModel)
-	// tx.Model(&ArticleModel{}).Where("tag IN ?", tag).Association("Tags").Find(&articles)
-	// err := tx.Commit().Error
+		if tagModel.ID != 0 {
+			tx.Model(&tagModel).
+				Preload("Tags").
+				Preload("Author.UserModel").
+				Offset(offset).Limit(limit).
+				Association("ArticleModels").
+				Find(&articles)
+			count = tx.Model(&tagModel).Association("ArticleModels").Count()
+		}
+	} else if author != "" {
+		var user userModel.UserModel
+		tx.Where(userModel.UserModel{Username: author}).First(&user)
+		articleUser := GetArticleUserModel(user)
 
-	// var tagModel TagModel
-	// err := db.Model(&TagModel{}).Where("tag IN (?)", tag).Association("Tags").Find(&articles)
+		common.LogI.Println("articleUser.ID", articleUser.ID)
 
-	user, err := userModel.FindOneUser(&userModel.UserModel{Username: author})
-	if err != nil {
-		common.LogI.Println("err", err)
+		if articleUser.ID != 0 {
+			tx.Model(&articleUser).
+				Preload("Tags").
+				Preload("Author.UserModel").
+				Offset(offset).Limit(limit).
+				Association("ArticleModels").
+				Find(&articles)
+			count = tx.Model(&articleUser).Association("ArticleModels").Count()
+		}
+	} else if favorited != "" {
+		var user userModel.UserModel
+		tx.Where(userModel.UserModel{Username: favorited}).First(&user)
+		articleUser := GetArticleUserModel(user)
+
+		if articleUser.ID != 0 {
+			var favoritedModel []FavoriteModel
+			tx.Where(FavoriteModel{FavoriteByID: articleUser.ID}).
+				Offset(offset).Limit(limit).Find(&favoritedModel)
+
+			count = tx.Model(&articleUser).Association("FavoriteModels").Count()
+			for _, favorite := range favoritedModel {
+				var article ArticleModel
+				tx.Model(&favorite).
+					Preload("Tags").
+					Preload("Author.UserModel").
+					Association("Favorite").Find(&article)
+
+				articles = append(articles, article)
+			}
+		}
+	} else {
+		db.Preload("Tags").Preload("Author.UserModel").Offset(offset).Limit(limit).Find(&articles)
+		count = int64(len(articles))
 	}
-	userModel := GetArticleUserModel(user)
 
-	err = db.Debug().Where(&ArticleModel{AuthorID: userModel.ID}).
-		// Preload("Favorite").
-		Preload("Tags").
-		Preload("Author.UserModel").
-		Find(&articles).Error
+	err := tx.Commit().Error
 
-	// common.LogI.Println("tagModel", tagModel)
-	common.LogI.Println("articles", articles)
+	// common.LogI.Println("articles", articles)
 	// common.LogI.Println("count", count)
 	// common.LogI.Println("err", err)
 

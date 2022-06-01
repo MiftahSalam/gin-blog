@@ -54,10 +54,10 @@ func TestSaveArticle(t *testing.T) {
 	articleUser0Model := GetArticleUserModel(userModel.UsersMock[0])
 
 	err := SaveOne(&ArticleModel{
-		Title:       "My Article 0",
-		Slug:        slug.Make("My Article 0"),
-		Description: "This article is about article 0",
-		Body:        "Article 0 is en example of creating article",
+		Title:       "My Article 3",
+		Slug:        slug.Make("My Article 3"),
+		Description: "This article is about article 3",
+		Body:        "Article 3 is en example of creating article",
 		Author:      articleUser0Model,
 		AuthorID:    articleUser0Model.ID,
 	})
@@ -147,6 +147,67 @@ func TestFavourite(t *testing.T) {
 	asserts.False(ArticlesMock[0].IsFavoriteBy(&ArticleUsersModelMock[1]))
 }
 
+func TestFindArticles(t *testing.T) {
+	asserts := assert.New(t)
+
+	//assign favourite by
+	err := ArticlesMock[0].FavoriteBy(ArticleUsersModelMock[1])
+	asserts.NoError(err)
+
+	//test find all articles
+	_, count, err := FindArticles("", "", "", 0, 0)
+	asserts.NoError(err)
+	asserts.Equal(int64(4), count)
+
+	//test find all articles limit 2
+	articles, count, err := FindArticles("", "", "", 2, 0)
+	asserts.NoError(err)
+	asserts.Equal(int64(2), count)
+	common.LogI.Println("articles len", len(articles))
+
+	//test find all articles offset 2
+	_, count, err = FindArticles("", "", "", 2, 0)
+	asserts.NoError(err)
+	asserts.Equal(int64(2), count)
+
+	//test find all articles offset 3 limit 2
+	_, count, err = FindArticles("", "", "", 2, 3)
+	asserts.NoError(err)
+	asserts.Equal(int64(1), count)
+
+	//test find articles by tag mock
+	articles, count, err = FindArticles("mock", "", "", 0, 0)
+	asserts.NoError(err)
+	asserts.Equal(int64(1), count)
+	asserts.Equal(ArticlesMock[0].Title, articles[0].Title)
+
+	//test find articles by tag new
+	articles, count, err = FindArticles("new", "", "", 0, 0)
+	asserts.NoError(err)
+	asserts.Equal(int64(1), count)
+	asserts.Equal(ArticlesMock[1].Title, articles[0].Title)
+
+	//test find articles by author user0
+	articles, count, err = FindArticles("", "user0", "", 0, 0)
+	asserts.NoError(err)
+	asserts.Equal(int64(2), count)
+	asserts.Equal(ArticlesMock[0].Title, articles[0].Title)
+	asserts.Equal("My Article 3", articles[1].Title)
+
+	//test find articles by author user1
+	articles, count, err = FindArticles("", "user1", "", 0, 0)
+	asserts.NoError(err)
+	asserts.Equal(int64(1), count)
+	asserts.Equal(ArticlesMock[1].Title, articles[0].Title)
+
+	//test find articles by favorited user1
+	articles, count, err = FindArticles("", "", "user1", 0, 0)
+	asserts.NoError(err)
+	asserts.Equal(int64(1), count)
+	asserts.Equal(ArticlesMock[0].Title, articles[0].Title)
+	asserts.Equal(ArticlesMock[0].Author.UserModel.Username, articles[0].Author.UserModel.Username)
+}
+
 func TestGetAllTags(t *testing.T) {
 	asserts := assert.New(t)
 
@@ -169,19 +230,6 @@ func TestGetArticleComments(t *testing.T) {
 
 	asserts.NoError(err)
 	asserts.Equal(1, len(comments0))
-}
-
-func TestFindArticles(t *testing.T) {
-	// t.Skip()
-	_, _, err := FindArticles("mock", "user0", "", 0, 0)
-
-	if err == nil {
-		// common.LogI.Println("articles", articles)
-		// common.LogI.Println("articles len", len(articles))
-		// common.LogI.Println("count", count)
-	} else {
-		common.LogI.Println("articles err", err)
-	}
 }
 
 func TestGetArticleFeed(t *testing.T) {
