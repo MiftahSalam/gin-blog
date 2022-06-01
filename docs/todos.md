@@ -6,3 +6,8 @@
   - Get User DTO
   - Error response DTO
   - etc
+- ## Database
+  - set unique field for user table (username/email field)
+  - set unique field for article table (slug)
+- ## Article Services
+  - create function to get all articles by joining user, article, tag, favorite

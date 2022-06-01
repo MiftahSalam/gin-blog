@@ -1,2 +1,7 @@
 - ## Testing detail output not shown in windows
   - Status: Solved (add t.Run() in TestMain function )
+- ## Database
+  - no unique field for user table
+  - no unique field for article table
+- ## Article Services
+  - function to get all articles list only capable for one criteria (user/article/tag/favorite
