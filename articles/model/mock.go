@@ -19,7 +19,7 @@ var ArticlesMock []ArticleModel
 var ArticlesMockNumber = 3
 var CurrentArticleRecordCount int64
 
-var TagsMock = []string{"mock", "article"}
+var TagsMock = []string{"mock", "article", "new", "tag"}
 var TagsMockNumber = 3
 var CurrentTagRecordCount int64
 
@@ -56,7 +56,9 @@ func createArticlesMock(n int) []ArticleModel {
 
 		ret = append(ret, article)
 	}
-	ret[0].SetTags(TagsMock)
+	ret[0].SetTags(TagsMock[:2])
+	// ret[1].SetTags(TagsMock)
+	ret[1].SetTags(TagsMock[2:])
 
 	return ret
 }
