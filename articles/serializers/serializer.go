@@ -79,9 +79,14 @@ func (tags *TagsSerializer) Response() []string {
 }
 
 func (article *ArticleSerializer) Response() ArticleResponse {
-	currentUser := article.C.MustGet("user").(UserModels.UserModel)
+	logged_user_id := article.C.GetInt("user_id")
+	var favorited bool = false
+	if logged_user_id > 0 {
+		currentUser := article.C.MustGet("user").(UserModels.UserModel)
+		userArticle := ArticleModels.GetArticleUserModel(UserModels.UserModel(currentUser))
+		favorited = article.IsFavoriteBy(&userArticle)
+	}
 	authorSerializer := ArticleUserSerializer{C: article.C, ArticleUserModel: article.Author}
-	userArticle := ArticleModels.GetArticleUserModel(UserModels.UserModel(currentUser))
 	response := ArticleResponse{
 		ID:             article.ID,
 		Slug:           article.Slug,
@@ -91,7 +96,7 @@ func (article *ArticleSerializer) Response() ArticleResponse {
 		CreatedAt:      article.CreatedAt.UTC().Format("2006-01-02T15:04:05.999Z"),
 		UpdatedAt:      article.UpdatedAt.UTC().Format("2006-01-02T15:04:05.999Z"),
 		Author:         authorSerializer.Response(),
-		Favorite:       article.IsFavoriteBy(&userArticle),
+		Favorite:       favorited,
 		FavoritesCount: uint(article.FavoriteCount()),
 	}
 	response.Tags = make([]string, 0)
