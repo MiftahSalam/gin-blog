@@ -69,7 +69,7 @@ var ArticleCommentsMock = []ArticleModels.CommentModel{
 	},
 }
 
-var TagsMockUpdate = []string{"service", "tag"}
+var TagsMockUpdate = []string{"service", "all"}
 
 type MockTests struct {
 	TestName     string
