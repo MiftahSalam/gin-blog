@@ -48,6 +48,31 @@ func ArticleCreate(c *gin.Context) {
 }
 
 //todo Article list
+func ArticleList(c *gin.Context) {
+	tag := c.DefaultQuery("tag", "")
+	author := c.DefaultQuery("author", "")
+	favorited := c.DefaultQuery("favorited", "")
+	limit := c.DefaultQuery("limit", "0")
+	offset := c.DefaultQuery("offset", "0")
+
+	limit_int, err := strconv.Atoi(limit)
+	if err != nil {
+		limit_int = 0
+	}
+	offset_int, err := strconv.Atoi(offset)
+	if err != nil {
+		offset_int = 0
+	}
+
+	articles, count, err := ArticleModels.FindArticles(tag, author, favorited, limit_int, offset_int)
+	if err != nil {
+		c.JSON(http.StatusNotFound, common.NewError("articles", err))
+		return
+	}
+
+	serializer := serializers.ArticlesSerializer{C: c, Articles: articles}
+	c.JSON(http.StatusOK, gin.H{"articles": serializer.Response(), "articlesCount": count})
+}
 
 func ArticleFeed(c *gin.Context) {
 	limit := c.DefaultQuery("limit", "0")

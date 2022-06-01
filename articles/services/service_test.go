@@ -74,6 +74,23 @@ func TestCreateArticle(t *testing.T) {
 	// common.LogI.Println("key user after", user)
 }
 
+func TestArticlesList(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, test := range MockArticlesListTest {
+		t.Run(test.TestName, func(t *testing.T) {
+			c, w := InitTest()
+			test.Init(c)
+
+			ArticleList(c)
+
+			asserts.Equal(test.ResponseCode, w.Code)
+
+			test.ResponseTest(c, w, asserts)
+		})
+	}
+}
+
 func TestGetArticlesFeed(t *testing.T) {
 	asserts := assert.New(t)
 
