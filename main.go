@@ -38,6 +38,7 @@ func main() {
 	users.Profile(v1.Group("/profile", userMiddlewares.AuthMiddleware(true)))
 
 	articleRouter.Articles(v1.Group("/article", userMiddlewares.AuthMiddleware(true)))
+	articleRouter.ArticlesAnonymous(v1.Group("/article", userMiddlewares.AuthMiddleware(false)))
 	articleRouter.Tags(v1.Group("/tags", userMiddlewares.AuthMiddleware(false)))
 
 	router.Run()
