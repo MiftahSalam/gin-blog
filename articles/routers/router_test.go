@@ -34,6 +34,7 @@ func TestMain(m *testing.M) {
 
 	router = gin.New()
 	Articles(router.Group("/article", middlewares.AuthMiddleware(true)))
+	ArticlesAnonymous(router.Group("/article", middlewares.AuthMiddleware(false)))
 	Tags(router.Group("/tags", middlewares.AuthMiddleware(false)))
 
 	exitVal := m.Run()
@@ -96,7 +97,20 @@ func TestCreateArticle(t *testing.T) {
 			test.ResponseTest(w, asserts)
 		})
 	}
+}
 
+func TestListArticle(t *testing.T) {
+	asserts := assert.New(t)
+
+	for _, test := range MockListArticle {
+		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+			w := createTest(asserts, &test)
+
+			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
+
+			test.ResponseTest(w, asserts)
+		})
+	}
 }
 
 func TestUpdateArticle(t *testing.T) {
