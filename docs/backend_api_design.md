@@ -1,324 +1,634 @@
 # API Endpoints
 
-## 1. Blog List
+## 1. Article List
 
-- Endpoint: /api/blog
+- Endpoint: /api/article/
 - Method: GET
 - Headers: -
 - Request
-  - Parameter: authorize user object
-  - Query: -
+  - Parameter: -
+  - Query:
+    - tag : string
+    - author : string
+    - favorite by : string
+    - limit : integer
+    - offset : integer
   - Body: -
 - Response:
+  - http status : Ok/NotFound
+  - Body :
 
 ```
 {
-    status: Ok/Not Found,
-    message: 'Blogs found' / 'Current user does not have blog article yet',
-    data:
-    {
-        [
-            {
-                id,
-                author,
-                created_at
-                modified_at
-                published_at
-                slug
-                title
-                description
-                content
-                blog_image_url
-            },
-            .
-            .
-            .
-        ]
-    }
+    articles :
+    [
+      {
+        id,
+        title,
+        slug,
+        description,
+        body,
+        created_at,
+        updated_at,
+        author: {
+          id,
+          username,
+          bio,
+          image_url,
+          following
+        },
+        tags,
+        favorited,
+        favoritedCount
+      },
+    ],
+    articlesCount,
 }
 ```
 
-## 2. Single Blog
+## 3. Article feeds
 
-- Endpoint: /api/blog/:id
+- Endpoint: /api/article/feed
 - Method: GET
-- Headers: -
+- Headers: Auth Bearer token
 - Request
-  - Parameter: id, authorize user object
+  - Parameter: -
+  - Query:
+    - limit : integer
+    - offset : integer
+  - Body: -
+- Response:
+  - http status : Ok/NotFound/Unauthorized
+  - Body :
+
+```
+{
+    articles :
+    [
+      {
+        id,
+        title,
+        slug,
+        description,
+        body,
+        created_at,
+        updated_at,
+        author: {
+          id,
+          username,
+          bio,
+          image_url,
+          following
+        },
+        tags,
+        favorited,
+        favoritedCount
+      },
+    ],
+    articlesCount,
+}
+```
+
+## 3. Single article
+
+- Endpoint: /api/article/:slug
+- Method: GET
+- Headers: Auth Bearer token
+- Request
+  - Parameter: article slug
   - Query: -
   - Body: -
 - Response:
+  - http status : Ok/NotFound
+  - Body :
 
-  ```
-  {
-      status: Ok/Not Found/Forbidden,
-      message: 'Blog found' / 'Current user does not have blog article yet' / 'Access forbidden for this user',
-      data:
-      {
-          {
-              id,
-              author,
-              created_at
-              modified_at
-              published_at
-              slug
-              title
-              description
-              content
-              blog_image_url
-          },
-      }
-  }
-  ```
+```
+{
+    article :
+    {
+      id,
+      title,
+      slug,
+      description,
+      body,
+      created_at,
+      updated_at,
+      author: {
+        id,
+        username,
+        bio,
+        image_url,
+        following
+      },
+      tags,
+      favorited,
+      favoritedCount
+    },
+}
+```
 
-## 3. Create Blog
+## 4. Create article
 
-- Endpoint: /api/blog/
+- Endpoint: /api/article/
 - Method: POST
 - Headers:
   - Auth beared: token
+  - Content Type : application/json
 - Request
-
-  - Parameter: authorize user object
+  - Parameter: -
   - Query: -
   - Body:
     ```
     {
-        title,
+        title, -> required
         description,
-        content,
-        image_url,
+        body,
+        tags,
     }
     ```
-
 - Response:
-
-  ```
-  {
-      status: Created/Not Authorize/Bad Request,
-      message: 'Blog Created'/'Not Authorize'/'Bad request',
-      data:
-      {
+  -  http status: Created/Unauthorized/Bad Request
+  - body : 
+    ```
+    {
+        article :
+        {
           id,
-          slug,
           title,
+          slug,
           description,
-          content,
-          createdAt,
-          updatedAt,
+          body,
+          created_at,
+          updated_at,
           author: {
-              id,
-              username,
-              fullname,
-              role
-          }
+            id,
+            username,
+            bio,
+            image_url,
+            following
+          },
+          tags,
+          favorited,
+          favoritedCount
+        },
       }
-  }
-  ```
+    ```
 
-## 4. Update Blog
+## 5. Update article
 
-- Endpoint: /api/blog/
+- Endpoint: /api/article/:slug
 - Method: PUT
 - Headers:
   - Auth beared: token
+  - Content Type : application/json
 - Request
-
-  - Parameter: authorize user object
+  - Parameter: slug
   - Query: -
   - Body:
-
-  ```
+    ```
     {
-        id,
-        title,
+        title, -> required
         description,
-        content,
-        image_url,
+        body,
+        tags,
     }
-  ```
-
+    ```
 - Response:
-
-      {
-          status: Ok/Authorize/Not Found/Bad Request/Forbidden,
-          message: 'Blog updated'/'Not Authorize'/'Bad request'/'Not Found'/'Forbidde',
-          data:
-          {
-              id,
-          }
+  -  http status: Ok/Unauthorized/Bad Request/Not Found
+  - body : 
+    ```
+    {
+        article :
+        {
+          id,
+          title,
+          slug,
+          description,
+          body,
+          created_at,
+          updated_at,
+          author: {
+            id,
+            username,
+            bio,
+            image_url,
+            following
+          },
+          tags,
+          favorited,
+          favoritedCount
+        },
       }
+    ```
 
-## 5. Delete Blog
+## 6. Favorite article
 
-- Endpoint: /api/blog/id
+- Endpoint: /api/article/:slug/favorite
+- Method: POST
+- Headers:
+  - Auth bearer: token
+- Request
+  - Parameter: slug
+  - Query: -
+  - Body: - 
+- Response:
+  -  http status: Ok/Unauthorized/Bad Request/Not Found
+  - body : 
+    ```
+    {
+        article :
+        {
+          id,
+          title,
+          slug,
+          description,
+          body,
+          created_at,
+          updated_at,
+          author: {
+            id,
+            username,
+            bio,
+            image_url,
+            following
+          },
+          tags,
+          favorited,
+          favoritedCount
+        },
+      }
+    ```
+
+## 7. UnFavorite article
+- Endpoint: /api/article/:slug/favorite
+- Method: DELETE
+- Headers:
+  - Auth bearer: token
+- Request
+  - Parameter: slug
+  - Query: -
+  - Body: - 
+- Response:
+  -  http status: Ok/Unauthorized/Bad Request/Not Found
+  - body : 
+    ```
+    {
+        article :
+        {
+          id,
+          title,
+          slug,
+          description,
+          body,
+          created_at,
+          updated_at,
+          author: {
+            id,
+            username,
+            bio,
+            image_url,
+            following
+          },
+          tags,
+          favorited,
+          favoritedCount
+        },
+      }
+    ```
+
+## 8. Create article comment
+
+- Endpoint: /api/article/:slug/comment
+- Method: POST
+- Headers:
+  - Auth beared: token
+  - Content Type : application/json
+- Request
+  - Parameter: slug
+  - Query: -
+  - Body:
+    ```
+    {
+        body,
+    }
+    ```
+- Response:
+  -  http status: Created/Unauthorized/Bad Request/NotFound
+  - body : 
+    ```
+    {
+        comment :
+        {
+          id,
+          body,
+          created_at,
+          updated_at,
+          author: {
+            id,
+            username,
+            bio,
+            image_url,
+            following
+          },
+        },
+      }
+    ```
+
+## 9. List article comments
+
+- Endpoint: /api/article/:slug/comment
+- Method: GET
+- Headers:
+  - Auth beared: token
+- Request
+  - Parameter: slug
+  - Query: -
+  - Body: - 
+- Response:
+  -  http status: Ok/Unauthorized/NotFound
+  - body : 
+    ```
+    {
+        comments :
+        [
+          {
+            id,
+            body,
+            created_at,
+            updated_at,
+            author: {
+              id,
+              username,
+              bio,
+              image_url,
+              following
+            },
+          },
+        ]
+    }
+    ```
+
+## 10. Delete article comment
+- Endpoint: /api/article/:slug/comment
 - Method: DELETE
 - Headers:
   - Auth beared: token
 - Request
-
-  - Parameter: blog id, authorize user object
+  - Parameter: slug
   - Query: -
-  - Body:
-
+  - Body: -
 - Response:
+  -  http status: Ok/Unauthorized/NotFound
+  - body : 
+    ```
+    {
+        comment : Deleted
+    }
+    ```
 
-      {
-          status: Ok/Authorize/Not Found/Forbidden,
-          message: 'Blog deleted'/'Not Authorize'/'Not Found'/'Forbidde',
-          data:
-          {
-              title,
-          }
-      }
+## 11. Delete article
+- Endpoint: /api/article/:slug
+- Method: DELETE
+- Headers:
+  - Auth beared: token
+- Request
+  - Parameter: slug
+  - Query: -
+  - Body: -
+- Response:
+  -  http status: Ok/Unauthorized/NotFound
+  - body : 
+    ```
+    {
+        article : Deleted
+    }
+    ```
 
-## 6. User Register
-
+## 12. Create user (register)
 - Endpoint: /api/users/
 - Method: POST
-- Headers: -
+- Headers:
+  - Content Type : application/json
 - Request
-
   - Parameter: -
   - Query: -
   - Body:
-
     ```
     {
+        username, -> required
+        email, -> required
+        password, -> required
+        bio,
+        image_url,
+    }
+    ```
+- Response:
+  - http status: Created/Bad Request
+  - body : 
+    ```
+    {
+      user : {
         username,
         email,
-        password,
         bio,
-        image
+        image_url,
+        token,
+      }
     }
     ```
 
-- Response:
-
-  ```
-  {
-      user:
-      {
-          username: string;
-          image: string;
-          email: string;
-          bio: string;
-          token: string;
-      }
-  }
-  ```
-
-## 7. User Login
-
-- Endpoint: /api/auth/login
+## 13. login user
+- Endpoint: /api/users/login
 - Method: POST
-- Headers: Authorization: Bearer token
+- Headers:
+  - Content Type : application/json
 - Request
-
   - Parameter: -
   - Query: -
   - Body:
-
     ```
     {
+        user : {
+          email, -> required
+          password, -> required
+        }
+    }
+    ```
+- Response:
+  - http status: Ok/Bad Request
+  - body : 
+    ```
+    {
+      user : {
         username,
-        password,
+        email,
+        bio,
+        image_url,
+        token,
+      }
     }
     ```
 
-- Response:
-
-  ```
-  {
-      status: Ok/Not Found/Bad Request,
-      message: ''/'User does not exist'/'Bad request',
-      data:
-      {
-          access_token
-      }
-  }
-  ```
-
-## 8. Find All User
-
-- Endpoint: /api/users
+## 14. List users
+- Endpoint: /api/users/
 - Method: GET
-- Headers: Authorization: Bearer token
+- Headers:
+  - Auth bearer: token
+- Request
+  - Parameter: -
+  - Query: -
+  - Body: - 
+- Response:
+  -  http status: Ok/Unauthorized
+  - body : 
+    ```
+    {
+        users :
+        [
+          {
+            username,
+            email,
+            bio,
+            image_url,
+            token,
+          },
+        ]
+    }
+    ```
+
+## 15. Update user
+- Endpoint: /api/users/:id
+- Method: PUT
+- Headers:
+  - Content Type : application/json
+  - Auth bearer: token
 - Request
   - Parameter: -
   - Query: -
   - Body:
+    ```
+    {
+        username, -> required
+        email, -> required
+        password, -> required
+        bio,
+        image_url,
+    }
+    ```
 - Response:
+  - http status: Ok/Bad Request/Unauthorized/Not Found
+  - body : 
+    ```
+    {
+      user : {
+        username,
+        email,
+        bio,
+        image_url,
+        token,
+      }
+    }
+    ```
 
-  ```
-  {
-      users:
-      [
-          {
-              username: string;
-              image: string;
-              email: string;
-              bio: string;
-              token: string;
-          },
-              .
-              .
-              .
-      ]
-  }
-  ```
-
-## 9. Find One User
-
-- Endpoint: /api/user/id
+## 16. Get user profile
+- Endpoint: /api/users/:username
 - Method: GET
-- Headers: Authorization: Bearer token
+- Headers: -
 - Request
-  - Parameter: user id
+  - Parameter: username
   - Query: -
-  - Body:
+  - Body: -
 - Response:
-
-  ```
-  {
-      status: Ok/Not Found/Unauthorized/Forbidden,
-      message: 'OK'/'User not found'/'Not Authorized'/'Forbidden Resource',
-      data:
-      {
-          {
-              id: string;
-              username: string;
-              fullname: string;
-              image_url: string;
-              email: string;
-              role: Role;
-              createdAt: Date;
-          }
+  - http status: Ok/Not Found
+  - body : 
+    ```
+    {
+      user : {
+        id,
+        username,
+        email,
+        bio,
+        image_url,
+        following,
       }
-  }
-  ```
+    }
+    ```
 
-## 10. Delete One User
+## 17. Follow user 
+- Endpoint: /api/users/:username/follow
+- Method: POST
+- Headers:
+  - Auth bearer: token
+- Request
+  - Parameter: username
+  - Query: -
+  - Body: -
+- Response:
+  - http status: Ok/Not Found
+  - body : 
+    ```
+    {
+      user : {
+        id,
+        username,
+        email,
+        bio,
+        image_url,
+        following,
+      }
+    }
+    ```
 
-- Endpoint: /api/user/id
+## 18. Get user following
+- Endpoint: /api/users/following
+- Method: GET
+- Headers: 
+  - Auth bearer: token
+- Request
+  - Parameter: -
+  - Query: -
+  - Body: -
+- Response:
+  - http status: Ok/Not Found
+  - body : 
+    ```
+    {
+      [
+        {
+          id,
+          username,
+          email,
+          bio,
+          image_url,
+          following,
+        },
+      ]
+    }
+    ```
+
+## 19. User unfollow
+- Endpoint: /api/users/:username/follow
 - Method: DELETE
-- Headers: Authorization: Bearer token
+- Headers: 
+  - Auth bearer: token
 - Request
-  - Parameter: user id
+  - Parameter: -
   - Query: -
-  - Body:
+  - Body: -
 - Response:
-
-  ```
-  {
-      status: Ok/Not Found/Unauthorized/Forbidden
-      message: 'User deleted'/'User not found'/'Not Authorized'/'Forbidden Resource',
-      data:
-      {
-          username: string;
+  - http status: Ok/Not Found
+  - body : 
+    ```
+    {
+      user : {
+        id,
+        username,
+        email,
+        bio,
+        image_url,
+        following,
       }
-  }
-  ```
-
+    }
+    ```
 <br/>
 <br/>

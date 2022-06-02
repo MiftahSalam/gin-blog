@@ -11,3 +11,5 @@
   - set unique field for article table (slug)
 - ## Article Services
   - create function to get all articles by joining user, article, tag, favorite
+- ## User Services
+  - More proper change password proccedur
