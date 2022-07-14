@@ -202,8 +202,8 @@ func FindArticles(tag, author, favorited string, limit, offset int) ([]ArticleMo
 			}
 		}
 	} else {
+		tx.Model(&ArticleModel{}).Count(&count)
 		db.Preload("Tags").Preload("Author.UserModel").Offset(offset).Limit(limit).Find(&articles)
-		count = int64(len(articles))
 	}
 
 	err := tx.Commit().Error
