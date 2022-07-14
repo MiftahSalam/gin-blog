@@ -6,6 +6,7 @@ import (
 	"github.com/MiftahSalam/gin-blog/users"
 	userMiddlewares "github.com/MiftahSalam/gin-blog/users/middlewares"
 	"github.com/MiftahSalam/gin-blog/users/models"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -30,6 +31,16 @@ func main() {
 	}()
 
 	router := gin.Default()
+	router.SetTrustedProxies(nil)
+
+	// router.Use(func(ctx *gin.Context) {
+	// 	common.LogI.Println("request", ctx.Request)
+	// })
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowOrigins = []string{"*"}
+	corsConfig.AllowHeaders = []string{"Origin", "content-type"}
+	router.Use(cors.New(corsConfig))
+
 	v1 := router.Group("/api")
 
 	// v1.Use(userMiddlewares.AuthMiddleware(true)) //global middleware
