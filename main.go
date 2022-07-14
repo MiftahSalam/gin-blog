@@ -1,6 +1,7 @@
 package main
 
 import (
+	articleModels "github.com/MiftahSalam/gin-blog/articles/model"
 	articleRouter "github.com/MiftahSalam/gin-blog/articles/routers"
 	"github.com/MiftahSalam/gin-blog/common"
 	"github.com/MiftahSalam/gin-blog/users"
@@ -13,6 +14,7 @@ import (
 
 func Migrate() {
 	models.AuthoMigrate()
+	articleModels.AutoMigrate()
 }
 func main() {
 	err := godotenv.Load()
