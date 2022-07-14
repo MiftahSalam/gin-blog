@@ -38,7 +38,7 @@ func main() {
 	// })
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowOrigins = []string{"*"}
-	corsConfig.AllowHeaders = []string{"Origin", "content-type"}
+	corsConfig.AllowHeaders = []string{"Origin", "content-type", "Authorization"}
 	router.Use(cors.New(corsConfig))
 
 	v1 := router.Group("/api")
