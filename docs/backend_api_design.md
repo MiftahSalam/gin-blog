@@ -140,15 +140,17 @@
   - Body:
     ```
     {
+      article: {
         title, -> required
         description,
         body,
         tags,
+      }
     }
     ```
 - Response:
-  -  http status: Created/Unauthorized/Bad Request
-  - body : 
+  - http status: Created/Unauthorized/Bad Request
+  - body :
     ```
     {
         article :
@@ -194,8 +196,8 @@
     }
     ```
 - Response:
-  -  http status: Ok/Unauthorized/Bad Request/Not Found
-  - body : 
+  - http status: Ok/Unauthorized/Bad Request/Not Found
+  - body :
     ```
     {
         article :
@@ -230,10 +232,10 @@
 - Request
   - Parameter: slug
   - Query: -
-  - Body: - 
+  - Body: -
 - Response:
-  -  http status: Ok/Unauthorized/Bad Request/Not Found
-  - body : 
+  - http status: Ok/Unauthorized/Bad Request/Not Found
+  - body :
     ```
     {
         article :
@@ -260,6 +262,7 @@
     ```
 
 ## 7. UnFavorite article
+
 - Endpoint: /api/article/:slug/favorite
 - Method: DELETE
 - Headers:
@@ -267,10 +270,10 @@
 - Request
   - Parameter: slug
   - Query: -
-  - Body: - 
+  - Body: -
 - Response:
-  -  http status: Ok/Unauthorized/Bad Request/Not Found
-  - body : 
+  - http status: Ok/Unauthorized/Bad Request/Not Found
+  - body :
     ```
     {
         article :
@@ -313,8 +316,8 @@
     }
     ```
 - Response:
-  -  http status: Created/Unauthorized/Bad Request/NotFound
-  - body : 
+  - http status: Created/Unauthorized/Bad Request/NotFound
+  - body :
     ```
     {
         comment :
@@ -343,10 +346,10 @@
 - Request
   - Parameter: slug
   - Query: -
-  - Body: - 
+  - Body: -
 - Response:
-  -  http status: Ok/Unauthorized/NotFound
-  - body : 
+  - http status: Ok/Unauthorized/NotFound
+  - body :
     ```
     {
         comments :
@@ -369,6 +372,7 @@
     ```
 
 ## 10. Delete article comment
+
 - Endpoint: /api/article/:slug/comment
 - Method: DELETE
 - Headers:
@@ -378,8 +382,8 @@
   - Query: -
   - Body: -
 - Response:
-  -  http status: Ok/Unauthorized/NotFound
-  - body : 
+  - http status: Ok/Unauthorized/NotFound
+  - body :
     ```
     {
         comment : Deleted
@@ -387,6 +391,7 @@
     ```
 
 ## 11. Delete article
+
 - Endpoint: /api/article/:slug
 - Method: DELETE
 - Headers:
@@ -396,8 +401,8 @@
   - Query: -
   - Body: -
 - Response:
-  -  http status: Ok/Unauthorized/NotFound
-  - body : 
+  - http status: Ok/Unauthorized/NotFound
+  - body :
     ```
     {
         article : Deleted
@@ -405,6 +410,7 @@
     ```
 
 ## 12. Create user (register)
+
 - Endpoint: /api/users/
 - Method: POST
 - Headers:
@@ -424,7 +430,7 @@
     ```
 - Response:
   - http status: Created/Bad Request
-  - body : 
+  - body :
     ```
     {
       user : {
@@ -438,6 +444,7 @@
     ```
 
 ## 13. login user
+
 - Endpoint: /api/users/login
 - Method: POST
 - Headers:
@@ -456,7 +463,7 @@
     ```
 - Response:
   - http status: Ok/Bad Request
-  - body : 
+  - body :
     ```
     {
       user : {
@@ -470,6 +477,7 @@
     ```
 
 ## 14. List users
+
 - Endpoint: /api/users/
 - Method: GET
 - Headers:
@@ -477,10 +485,10 @@
 - Request
   - Parameter: -
   - Query: -
-  - Body: - 
+  - Body: -
 - Response:
-  -  http status: Ok/Unauthorized
-  - body : 
+  - http status: Ok/Unauthorized
+  - body :
     ```
     {
         users :
@@ -497,6 +505,7 @@
     ```
 
 ## 15. Update user
+
 - Endpoint: /api/users/:id
 - Method: PUT
 - Headers:
@@ -517,7 +526,7 @@
     ```
 - Response:
   - http status: Ok/Bad Request/Unauthorized/Not Found
-  - body : 
+  - body :
     ```
     {
       user : {
@@ -531,6 +540,7 @@
     ```
 
 ## 16. Get user profile
+
 - Endpoint: /api/users/:username
 - Method: GET
 - Headers: -
@@ -540,7 +550,7 @@
   - Body: -
 - Response:
   - http status: Ok/Not Found
-  - body : 
+  - body :
     ```
     {
       user : {
@@ -554,7 +564,8 @@
     }
     ```
 
-## 17. Follow user 
+## 17. Follow user
+
 - Endpoint: /api/users/:username/follow
 - Method: POST
 - Headers:
@@ -565,7 +576,7 @@
   - Body: -
 - Response:
   - http status: Ok/Not Found
-  - body : 
+  - body :
     ```
     {
       user : {
@@ -580,9 +591,10 @@
     ```
 
 ## 18. Get user following
+
 - Endpoint: /api/users/following
 - Method: GET
-- Headers: 
+- Headers:
   - Auth bearer: token
 - Request
   - Parameter: -
@@ -590,7 +602,7 @@
   - Body: -
 - Response:
   - http status: Ok/Not Found
-  - body : 
+  - body :
     ```
     {
       [
@@ -607,9 +619,10 @@
     ```
 
 ## 19. User unfollow
+
 - Endpoint: /api/users/:username/follow
 - Method: DELETE
-- Headers: 
+- Headers:
   - Auth bearer: token
 - Request
   - Parameter: -
@@ -617,18 +630,7 @@
   - Body: -
 - Response:
   - http status: Ok/Not Found
-  - body : 
-    ```
-    {
-      user : {
-        id,
-        username,
-        email,
-        bio,
-        image_url,
-        following,
-      }
-    }
-    ```
-<br/>
-<br/>
+  - body :
+    ` { user : { id, username, email, bio, image_url, following, } } `
+    <br/>
+    <br/>
