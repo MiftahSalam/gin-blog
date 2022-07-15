@@ -79,7 +79,10 @@ func (tags *TagsSerializer) Response() []string {
 }
 
 func (article *ArticleSerializer) Response() ArticleResponse {
-	logged_user_id := article.C.GetInt("user_id")
+	logged_user_id_str, _ := article.C.Get("user_id")
+	logged_user_id := logged_user_id_str.(uint)
+	// common.LogI.Println("logged_user_id_str", logged_user_id_str)
+	// common.LogI.Println("logged_user_id", logged_user_id)
 	var favorited bool = false
 	if logged_user_id > 0 {
 		currentUser := article.C.MustGet("user").(UserModels.UserModel)
