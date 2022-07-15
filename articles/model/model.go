@@ -313,6 +313,7 @@ func (article *ArticleModel) UnFavoriteBy(user *ArticleUserModel) error {
 func (user *ArticleUserModel) GetArticleFeed(limit, offset int) ([]ArticleModel, int, error) {
 	db := common.GetDB()
 	var articles []ArticleModel
+	var count int64
 
 	tx := db.Begin()
 	followings := user.UserModel.GetFollowing()
@@ -322,6 +323,8 @@ func (user *ArticleUserModel) GetArticleFeed(limit, offset int) ([]ArticleModel,
 		articleUserModel := GetArticleUserModel(following)
 		articleUserModelIds = append(articleUserModelIds, articleUserModel.ID)
 	}
+	articleUserModelIds = append(articleUserModelIds, GetArticleUserModel(user.UserModel).ID)
+	tx.Model(&ArticleModel{}).Where("author_id IN (?)", articleUserModelIds).Count(&count)
 	tx.Preload("Author.UserModel").Preload("Tags").Where("author_id IN (?)", articleUserModelIds).Offset(offset).Limit(limit).Find(&articles)
 	err := tx.Commit().Error
 
@@ -329,5 +332,5 @@ func (user *ArticleUserModel) GetArticleFeed(limit, offset int) ([]ArticleModel,
 	// common.LogI.Println("count", count)
 	// common.LogI.Println("err", err)
 
-	return articles, len(articles), err
+	return articles, int(count), err
 }
