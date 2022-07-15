@@ -19,11 +19,15 @@ type ProfileResponse struct {
 }
 
 func (pSerializer *ProfileSerializer) Response() ProfileResponse {
-	logged_user_id := pSerializer.C.GetInt("user_id")
+	logged_user_id_str, _ := pSerializer.C.Get("user_id")
+	logged_user_id := logged_user_id_str.(uint)
+	// common.LogI.Println("logged_user_id_str", logged_user_id_str)
+	// common.LogI.Println("logged_user_id", logged_user_id)
 	var isFollowing bool = false
 	if logged_user_id > 0 {
 		currentUser := pSerializer.C.MustGet("user").(models.UserModel)
-		currentUser.IsFollowing(pSerializer.UserModel)
+		isFollowing = currentUser.IsFollowing(pSerializer.UserModel)
+		// common.LogI.Printf("%v isFollowing %v %s", logged_user_id, isFollowing, pSerializer.Username)
 	}
 	profile := ProfileResponse{
 		ID:        pSerializer.ID,
