@@ -79,16 +79,18 @@ func (tags *TagsSerializer) Response() []string {
 }
 
 func (article *ArticleSerializer) Response() ArticleResponse {
-	logged_user_id_str, _ := article.C.Get("user_id")
-	logged_user_id := logged_user_id_str.(uint)
 	// common.LogI.Println("logged_user_id_str", logged_user_id_str)
 	// common.LogI.Println("logged_user_id", logged_user_id)
 	var favorited bool = false
-	if logged_user_id > 0 {
-		currentUser := article.C.MustGet("user").(UserModels.UserModel)
-		userArticle := ArticleModels.GetArticleUserModel(UserModels.UserModel(currentUser))
-		favorited = article.IsFavoriteBy(&userArticle)
+	if logged_user_id_str, exist := article.C.Get("user_id"); exist {
+		logged_user_id := logged_user_id_str.(uint)
+		if logged_user_id > 0 {
+			currentUser := article.C.MustGet("user").(UserModels.UserModel)
+			userArticle := ArticleModels.GetArticleUserModel(UserModels.UserModel(currentUser))
+			favorited = article.IsFavoriteBy(&userArticle)
+		}
 	}
+
 	authorSerializer := ArticleUserSerializer{C: article.C, ArticleUserModel: article.Author}
 	response := ArticleResponse{
 		ID:             article.ID,
