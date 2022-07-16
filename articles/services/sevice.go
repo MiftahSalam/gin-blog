@@ -125,11 +125,11 @@ func ArticleRetrieve(c *gin.Context) {
 		return
 	}
 
-	curUserModel, _ := c.Get("user")
-	if curUserModel == nil {
-		c.JSON(http.StatusUnauthorized, common.NewError("article", errors.New("user not login")))
-		return
-	}
+	// curUserModel, _ := c.Get("user")
+	// if curUserModel == nil {
+	// 	c.JSON(http.StatusUnauthorized, common.NewError("article", errors.New("user not login")))
+	// 	return
+	// }
 
 	if slug == "feed" {
 		ArticleFeed(c)
@@ -346,11 +346,11 @@ func ArticleCommentList(c *gin.Context) {
 		return
 	}
 
-	curUserModel, _ := c.Get("user")
-	if curUserModel == nil {
-		c.JSON(http.StatusUnauthorized, common.NewError("comments", errors.New("user not login")))
-		return
-	}
+	// curUserModel, _ := c.Get("user")
+	// if curUserModel == nil {
+	// 	c.JSON(http.StatusUnauthorized, common.NewError("comments", errors.New("user not login")))
+	// 	return
+	// }
 
 	article, err := ArticleModels.FindOneArticle(&ArticleModels.ArticleModel{Slug: slug})
 	if err != nil {
