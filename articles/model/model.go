@@ -59,6 +59,7 @@ func AutoMigrate() {
 	db.AutoMigrate(&ArticleModel{})
 	db.AutoMigrate(&CommentModel{})
 	db.AutoMigrate(&FavoriteModel{})
+	db.AutoMigrate(&TagModel{})
 }
 
 func GetArticleUserModel(user userModel.UserModel) ArticleUserModel {
