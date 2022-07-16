@@ -131,10 +131,10 @@ func ArticleRetrieve(c *gin.Context) {
 	// 	return
 	// }
 
-	if slug == "feed" {
-		ArticleFeed(c)
-		return
-	}
+	// if slug == "feed" {
+	// 	ArticleFeed(c)
+	// 	return
+	// }
 
 	articleModel, err := ArticleModels.FindOneArticle(&ArticleModels.ArticleModel{Slug: slug})
 	if err != nil {

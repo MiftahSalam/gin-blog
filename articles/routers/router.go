@@ -7,6 +7,7 @@ import (
 
 func Articles(router *gin.RouterGroup) {
 	router.POST("/", services.ArticleCreate)
+	router.GET("/feed", services.ArticleFeed)
 	router.PUT("/:slug", services.ArticleUpdate)
 	router.POST("/:slug/favorite", services.ArticleFavorite)
 	router.DELETE("/:slug/favorite", services.ArticleUnFavorite)
