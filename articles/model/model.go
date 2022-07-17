@@ -229,7 +229,8 @@ func (article *ArticleModel) Update(data interface{}) error {
 	var buf_data *ArticleModel = data.(*ArticleModel)
 
 	buf_data.Slug = slug.Make(buf_data.Title)
-	err := db.Model(article).Updates(data).Error
+	err := db.Session(&gorm.Session{FullSaveAssociations: true}).Updates(data).Error
+	// err := db.Model(article).Updates(data).Error
 
 	return err
 }
