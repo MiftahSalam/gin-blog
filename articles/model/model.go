@@ -227,10 +227,14 @@ func GetAllTags() ([]TagModel, error) {
 func (article *ArticleModel) Update(data interface{}) error {
 	db := common.GetDB()
 	var buf_data *ArticleModel = data.(*ArticleModel)
+	new_tags := buf_data.Tags
 
 	buf_data.Slug = slug.Make(buf_data.Title)
-	err := db.Session(&gorm.Session{FullSaveAssociations: true}).Updates(data).Error
-	// err := db.Model(article).Updates(data).Error
+	err := db.Model(article).Updates(data).Error
+	if err != nil {
+		return err
+	}
+	err = db.Model(article).Association("Tags").Replace(new_tags)
 
 	return err
 }
