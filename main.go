@@ -47,7 +47,7 @@ func main() {
 
 	// v1.Use(userMiddlewares.AuthMiddleware(true)) //global middleware
 	users.Users(v1.Group("/users"))
-	users.UsersAuth(v1.Group("/users", userMiddlewares.AuthMiddleware(true)))
+	users.UsersAuth(v1.Group("/user", userMiddlewares.AuthMiddleware(true)))
 	users.Profile(v1.Group("/profile", userMiddlewares.AuthMiddleware(true)))
 
 	articleRouter.Articles(v1.Group("/article", userMiddlewares.AuthMiddleware(true)))
