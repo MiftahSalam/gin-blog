@@ -11,7 +11,8 @@ func Users(router *gin.RouterGroup) {
 }
 
 func UsersAuth(router *gin.RouterGroup) {
-	router.GET("/", services.GetUsers)
+	router.GET("/all", services.GetUsers)
+	router.GET("/", services.GetUser)
 	router.GET("/following", services.GetUsersFollowing)
 	router.PUT("/", services.UpdateUser)
 }
