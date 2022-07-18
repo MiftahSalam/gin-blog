@@ -71,6 +71,11 @@ func GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"users": serializer.Responses(users)})
 }
 
+func GetUser(c *gin.Context) {
+	serializer := userSerializers.UserSerializer{C: c}
+	c.JSON(http.StatusOK, gin.H{"user": serializer.Response()})
+}
+
 func GetUsersFollowing(c *gin.Context) {
 	current_user, exist := c.Get("user")
 	if !exist {
