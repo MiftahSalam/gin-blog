@@ -22,7 +22,7 @@ var MockArticleRetrieveTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusOK,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
 			// common.LogI.Println("response_body", string(response_body))
@@ -47,7 +47,7 @@ var MockArticleRetrieveTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusOK,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
 			// common.LogI.Println("response_body", string(response_body))
@@ -73,7 +73,7 @@ var MockArticleRetrieveTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusOK,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
 			// common.LogI.Println("response_body", string(response_body))
@@ -85,8 +85,8 @@ var MockArticleRetrieveTest = []MockTests{
 			}
 			a.NoError(err)
 			// common.LogI.Println("jsonResp", jsonResp)
-			a.Equal(uint(4), jsonResp.ArticleCount)
-			a.Equal(uint(4), uint(len(jsonResp.Articles)))
+			a.Equal(uint(5), jsonResp.ArticleCount)
+			a.Equal(uint(5), uint(len(jsonResp.Articles)))
 		},
 	},
 	{
@@ -98,7 +98,7 @@ var MockArticleRetrieveTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusOK,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
 			// common.LogI.Println("response_body", string(response_body))
@@ -110,8 +110,8 @@ var MockArticleRetrieveTest = []MockTests{
 			}
 			a.NoError(err)
 			// common.LogI.Println("jsonResp", jsonResp)
-			a.Equal(uint(4), jsonResp.ArticleCount)
-			a.Equal(uint(4), uint(len(jsonResp.Articles)))
+			a.Equal(uint(5), jsonResp.ArticleCount)
+			a.Equal(uint(5), uint(len(jsonResp.Articles)))
 		},
 	},
 	{
@@ -121,10 +121,10 @@ var MockArticleRetrieveTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusBadRequest,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp ArticleResponse
 			err := json.Unmarshal(response_body, &jsonResp)
@@ -132,7 +132,7 @@ var MockArticleRetrieveTest = []MockTests{
 				common.LogE.Println("Cannot umarshal json content with error: ", err)
 			}
 			a.NoError(err)
-			common.LogI.Println("jsonResp", jsonResp)
+			// common.LogI.Println("jsonResp", jsonResp)
 			a.Equal(`{"errors":{"article":"invalid slug"}}`, string(response_body))
 		},
 	},
@@ -144,27 +144,12 @@ var MockArticleRetrieveTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusNotFound,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Equal(`{"errors":{"article":"article not found"}}`, string(response_body))
-		},
-	},
-	{
-		"error unauthorized (no user loged in): ArticlesRetrieve Test",
-		func(c *gin.Context) {
-			c.Params = append(c.Params, gin.Param{Key: "slug", Value: "my-article0"})
-		},
-		map[string]map[string]interface{}{},
-		http.StatusUnauthorized,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
-			response_body, _ := ioutil.ReadAll(w.Body)
-
-			common.LogI.Println("response_body", string(response_body))
-
-			a.Equal(`{"errors":{"article":"user not login"}}`, string(response_body))
 		},
 	},
 }
