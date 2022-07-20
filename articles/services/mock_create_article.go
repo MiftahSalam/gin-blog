@@ -25,7 +25,7 @@ var MockArticleCreateTest = []MockTests{
 			"tagList":     ArticleModels.TagsMock,
 		}},
 		http.StatusCreated,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 			// common.LogI.Println("response_body", string(response_body))
 			var jsonResp ArticleResponse
@@ -51,9 +51,9 @@ var MockArticleCreateTest = []MockTests{
 			"tagList":     ArticleModels.TagsMock,
 		}},
 		http.StatusUnauthorized,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 			a.Equal(`{"errors":{"access":"user not login"}}`, string(response_body))
 
 		},
@@ -66,8 +66,8 @@ var MockArticleCreateTest = []MockTests{
 		map[string]map[string]interface{}{},
 		http.StatusBadRequest,
 		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
-			response_body, _ := ioutil.ReadAll(w.Body)
-			common.LogI.Println("response_body", string(response_body))
+			// response_body, _ := ioutil.ReadAll(w.Body)
+			// common.LogI.Println("response_body", string(response_body))
 			// a.Equal(`{"errors":{"access":"user not login"}}`, string(response_body))
 		},
 	},
@@ -81,7 +81,7 @@ var MockArticleCreateTest = []MockTests{
 			"body":  ArticlesMock[1].Body,
 		}},
 		http.StatusCreated,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 			// common.LogI.Println("response_body", string(response_body))
 			var jsonResp ArticleResponse

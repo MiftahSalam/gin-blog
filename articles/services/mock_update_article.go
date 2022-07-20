@@ -26,10 +26,10 @@ var MockArticleUpdate = []MockTests{
 			"tagList":     TagsMockUpdate,
 		}},
 		http.StatusOK,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp ArticleResponse
 			err := json.Unmarshal(response_body, &jsonResp)
@@ -38,7 +38,7 @@ var MockArticleUpdate = []MockTests{
 			}
 			a.NoError(err)
 
-			common.LogI.Println("jsonResp", jsonResp)
+			// common.LogI.Println("jsonResp", jsonResp)
 
 			a.Equal(ArticlesMock[2].Title, jsonResp.Article.Title)
 			a.Equal(ArticlesMock[2].Body, jsonResp.Article.Body)
@@ -57,10 +57,10 @@ var MockArticleUpdate = []MockTests{
 			"tagList":     TagsMockUpdate,
 		}},
 		http.StatusBadRequest,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Equal(`{"errors":{"article":"invalid slug"}}`, string(response_body))
 		},
@@ -78,10 +78,10 @@ var MockArticleUpdate = []MockTests{
 			"tagList":     TagsMockUpdate,
 		}},
 		http.StatusNotFound,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Equal(`{"errors":{"article":"article not found"}}`, string(response_body))
 		},
@@ -94,10 +94,10 @@ var MockArticleUpdate = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusBadRequest,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Contains(string(response_body), "key: required")
 		},
@@ -114,10 +114,10 @@ var MockArticleUpdate = []MockTests{
 			"tagList":     TagsMockUpdate,
 		}},
 		http.StatusUnauthorized,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Equal(`{"errors":{"article":"user not login"}}`, string(response_body))
 		},

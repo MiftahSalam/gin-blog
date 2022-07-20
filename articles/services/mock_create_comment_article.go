@@ -22,9 +22,9 @@ var MockArticleCommentCreateTest = []MockTests{
 			"body": ArticleCommentsMock[0].Body,
 		}},
 		http.StatusUnauthorized,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 			a.Equal(`{"errors":{"comment":"user not login"}}`, string(response_body))
 		},
 	},
@@ -36,9 +36,9 @@ var MockArticleCommentCreateTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusBadRequest,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 			a.Contains(string(response_body), "key: required")
 		},
 	},
@@ -49,9 +49,9 @@ var MockArticleCommentCreateTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusBadRequest,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 			a.Equal(`{"errors":{"comment":"invalid slug"}}`, string(response_body))
 		},
 	},
@@ -65,9 +65,9 @@ var MockArticleCommentCreateTest = []MockTests{
 			"body": ArticleCommentsMock[0].Body,
 		}},
 		http.StatusNotFound,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 			a.Equal(`{"errors":{"comment":"article not found"}}`, string(response_body))
 		},
 	},
@@ -81,9 +81,9 @@ var MockArticleCommentCreateTest = []MockTests{
 			"body": ArticleCommentsMock[0].Body,
 		}},
 		http.StatusCreated,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp ArticleCommentResponse
 			err := json.Unmarshal(response_body, &jsonResp)
@@ -106,9 +106,9 @@ var MockArticleCommentCreateTest = []MockTests{
 			"body": ArticleCommentsMock[1].Body,
 		}},
 		http.StatusCreated,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp ArticleCommentResponse
 			err := json.Unmarshal(response_body, &jsonResp)
@@ -131,9 +131,9 @@ var MockArticleCommentCreateTest = []MockTests{
 			"body": ArticleCommentsMock[0].Body,
 		}},
 		http.StatusCreated,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp ArticleCommentResponse
 			err := json.Unmarshal(response_body, &jsonResp)
@@ -156,9 +156,9 @@ var MockArticleCommentCreateTest = []MockTests{
 			"body": ArticleCommentsMock[1].Body,
 		}},
 		http.StatusCreated,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp ArticleCommentResponse
 			err := json.Unmarshal(response_body, &jsonResp)

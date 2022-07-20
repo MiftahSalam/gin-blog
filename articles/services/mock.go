@@ -88,7 +88,7 @@ func MockJSONPost(c *gin.Context, content interface{}) {
 		common.LogE.Println("Cannot marshal json content")
 		panic(err)
 	}
-	common.LogI.Println("content", string(jsonbyte))
+	// common.LogI.Println("content", string(jsonbyte))
 
 	c.Request.Body = io.NopCloser(bytes.NewBuffer(jsonbyte))
 }

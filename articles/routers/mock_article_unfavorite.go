@@ -34,7 +34,7 @@ var MockUnFavoriteArticle = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Equal(`{"errors":{"article":"article not found"}}`, string(response_body))
 		},
@@ -55,7 +55,7 @@ var MockUnFavoriteArticle = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Equal(`{"error":"no token present in request"}`, string(response_body))
 		},
@@ -77,7 +77,7 @@ var MockUnFavoriteArticle = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp articleServices.ArticleResponse
 			err := json.Unmarshal(response_body, &jsonResp)
@@ -86,7 +86,7 @@ var MockUnFavoriteArticle = []RouterMockTest{
 			}
 			a.NoError(err)
 
-			common.LogI.Println("jsonResp", jsonResp)
+			// common.LogI.Println("jsonResp", jsonResp)
 
 			a.Equal(articleModels.ArticlesMock[1].Title, jsonResp.Article.Title)
 			a.Equal(articleModels.ArticlesMock[1].Body, jsonResp.Article.Body)
@@ -110,7 +110,7 @@ var MockUnFavoriteArticle = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp articleServices.ArticleResponse
 			err := json.Unmarshal(response_body, &jsonResp)
@@ -118,7 +118,7 @@ var MockUnFavoriteArticle = []RouterMockTest{
 				common.LogE.Println("Cannot umarshal json content with error: ", err)
 			}
 			a.NoError(err)
-			common.LogI.Println("jsonResp", jsonResp)
+			// common.LogI.Println("jsonResp", jsonResp)
 			a.Equal(uint(0), jsonResp.Article.FavoritesCount)
 		},
 	},

@@ -8,7 +8,6 @@ import (
 	// "net/url"
 
 	ArticleModels "github.com/MiftahSalam/gin-blog/articles/model"
-	"github.com/MiftahSalam/gin-blog/common"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
@@ -21,10 +20,10 @@ var MockArticleDeleteTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusBadRequest,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Equal(`{"errors":{"article":"invalid slug"}}`, string(response_body))
 		},
@@ -38,10 +37,10 @@ var MockArticleDeleteTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusNotFound,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Equal(`{"errors":{"article":"article not found"}}`, string(response_body))
 		},
@@ -53,10 +52,10 @@ var MockArticleDeleteTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusUnauthorized,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Equal(`{"errors":{"article":"user not login"}}`, string(response_body))
 		},
@@ -69,10 +68,10 @@ var MockArticleDeleteTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusOK,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Equal(`{"article":"Deleted"}`, string(response_body))
 		},

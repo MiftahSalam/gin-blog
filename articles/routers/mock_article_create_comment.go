@@ -36,7 +36,7 @@ var MockCreateCommentArticle = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Equal(`{"errors":{"comment":"article not found"}}`, string(response_body))
 		},
@@ -58,7 +58,7 @@ var MockCreateCommentArticle = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Contains(string(response_body), "json error")
 		},
@@ -80,7 +80,7 @@ var MockCreateCommentArticle = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Contains(string(response_body), "oopss")
 		},
@@ -102,7 +102,7 @@ var MockCreateCommentArticle = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Equal(`{"error":"no token present in request"}`, string(response_body))
 		},
@@ -126,7 +126,7 @@ var MockCreateCommentArticle = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp articleServices.ArticleCommentResponse
 			err := json.Unmarshal(response_body, &jsonResp)
@@ -135,7 +135,7 @@ var MockCreateCommentArticle = []RouterMockTest{
 			}
 			a.NoError(err)
 
-			common.LogI.Println("jsonResp", jsonResp)
+			// common.LogI.Println("jsonResp", jsonResp)
 
 			a.Equal(articleServices.ArticleCommentsMock[0].Body, jsonResp.Comment.Body)
 			a.Equal(articleModels.ArticleUsersModelMock[0].UserModel.Username, jsonResp.Comment.CommentResponse.Author.Username)
@@ -161,7 +161,7 @@ var MockCreateCommentArticle = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp articleServices.ArticleCommentResponse
 			err := json.Unmarshal(response_body, &jsonResp)
@@ -170,7 +170,7 @@ var MockCreateCommentArticle = []RouterMockTest{
 			}
 			a.NoError(err)
 
-			common.LogI.Println("jsonResp", jsonResp)
+			// common.LogI.Println("jsonResp", jsonResp)
 
 			a.Equal(articleServices.ArticleCommentsMock[1].Body, jsonResp.Comment.Body)
 			a.Equal(articleModels.ArticleUsersModelMock[0].UserModel.Username, jsonResp.Comment.CommentResponse.Author.Username)

@@ -29,7 +29,7 @@ func ArticleCreate(c *gin.Context) {
 		return
 	}
 
-	common.LogI.Println("req body", c.Request.Body)
+	// common.LogI.Println("req body", c.Request.Body)
 
 	articleModelValidator := validator.NewArticleModelValidator()
 	if err := articleModelValidator.Bind(c); err != nil {
@@ -78,8 +78,8 @@ func ArticleFeed(c *gin.Context) {
 	limit := c.DefaultQuery("limit", "0")
 	offset := c.DefaultQuery("offset", "0")
 
-	common.LogI.Println("query limit", limit)
-	common.LogI.Println("query offset", offset)
+	// common.LogI.Println("query limit", limit)
+	// common.LogI.Println("query offset", offset)
 
 	curUserModel, _ := c.Get("user")
 	if curUserModel == nil {

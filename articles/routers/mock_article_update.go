@@ -38,7 +38,7 @@ var MockUpdateArticle = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp articleServices.ArticleResponse
 			err := json.Unmarshal(response_body, &jsonResp)
@@ -46,7 +46,7 @@ var MockUpdateArticle = []RouterMockTest{
 				common.LogE.Println("Cannot umarshal json content with error: ", err)
 			}
 			a.NoError(err)
-			common.LogI.Println("jsonResp", jsonResp)
+			// common.LogI.Println("jsonResp", jsonResp)
 			a.Equal(articleServices.ArticlesMock[2].Title, jsonResp.Article.Title)
 			a.Equal(articleServices.ArticlesMock[2].Body, jsonResp.Article.Body)
 			a.Equal(articleModels.ArticleUsersModelMock[0].UserModel.Username, jsonResp.Article.Author.Username)
@@ -66,10 +66,10 @@ var MockUpdateArticle = []RouterMockTest{
 			ResponsePattern: "",
 			Msg:             "valid data and should return StatusInternalServerError",
 		},
-		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
-			response_body, _ := ioutil.ReadAll(w.Body)
+		ResponseTest: func(w *httptest.ResponseRecorder, _ *assert.Assertions) {
+			// response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 		},
 	},
 	{
@@ -89,7 +89,7 @@ var MockUpdateArticle = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Equal(`{"errors":{"article":"article not found"}}`, string(response_body))
 		},
@@ -111,7 +111,7 @@ var MockUpdateArticle = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Contains(string(response_body), "json error")
 		},
@@ -136,7 +136,7 @@ var MockUpdateArticle = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Equal(`{"error":"no token present in request"}`, string(response_body))
 		},

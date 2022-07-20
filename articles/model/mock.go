@@ -52,7 +52,7 @@ func createArticlesMock(n int) []ArticleModel {
 			continue
 		}
 
-		common.LogI.Println("created article", article)
+		// common.LogI.Println("created article", article)
 
 		ret = append(ret, article)
 	}
@@ -73,7 +73,7 @@ func createArticleUsersModelMock(n int) []ArticleUserModel {
 	//count existing record
 	var articleUsersModel []ArticleUserModel
 	db.Find(&articleUsersModel).Count(&CurrentArticleUsersRecordCount)
-	common.LogI.Println("CurrentArticleUsersRecordCount", CurrentArticleUsersRecordCount)
+	// common.LogI.Println("CurrentArticleUsersRecordCount", CurrentArticleUsersRecordCount)
 	ArticleUsersMockNumber += CurrentArticleUsersRecordCount
 
 	// common.LogI.Println("UsersMock len", len(userModel.UsersMock))
@@ -90,7 +90,7 @@ func createArticleUsersModelMock(n int) []ArticleUserModel {
 			common.LogE.Fatal("failed to create article user", err)
 			continue
 		}
-		common.LogI.Println("created article user", articleUser)
+		// common.LogI.Println("created article user", articleUser)
 		ret = append(ret, articleUser)
 	}
 
@@ -101,13 +101,13 @@ func CleanUpAfterTest() {
 	common.LogI.Println("clean up article start")
 
 	for _, article := range ArticlesMock {
-		common.LogI.Println("clean up article tags", article.Tags)
+		// common.LogI.Println("clean up article tags", article.Tags)
 		err := db.Unscoped().Model(&article).Association("Tags").Clear()
 		if err != nil {
 			common.LogE.Println("cannot delete article tags: ", err)
 		}
 
-		common.LogI.Println("clean up article favourite", article.Slug)
+		// common.LogI.Println("clean up article favourite", article.Slug)
 		err = db.Unscoped().Where(&FavoriteModel{
 			FavoriteID: article.ID,
 		}).Delete(FavoriteModel{}).Error
@@ -116,7 +116,7 @@ func CleanUpAfterTest() {
 		}
 	}
 	for _, tag := range TagsMock {
-		common.LogI.Println("clean up tag", tag)
+		// common.LogI.Println("clean up tag", tag)
 
 		var tagModel TagModel
 		err := db.Unscoped().Delete(&tagModel, TagModel{
@@ -135,7 +135,7 @@ func CleanUpAfterTest() {
 		common.LogE.Println("cannot delete articles ", err)
 	}
 	for _, user := range userModel.UsersMock {
-		common.LogI.Println("clean up article user", user)
+		// common.LogI.Println("clean up article user", user)
 
 		err = db.Unscoped().Delete(ArticleUserModel{}, &ArticleUserModel{
 			UserModelID: user.ID,

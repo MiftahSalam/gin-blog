@@ -30,7 +30,7 @@ var MockGetTagList = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp articleServices.TagsResponse
 			err := json.Unmarshal(response_body, &jsonResp)
@@ -39,7 +39,7 @@ var MockGetTagList = []RouterMockTest{
 			}
 			a.NoError(err)
 
-			common.LogI.Println("jsonResp", jsonResp)
+			// common.LogI.Println("jsonResp", jsonResp)
 
 		},
 	},

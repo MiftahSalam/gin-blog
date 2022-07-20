@@ -20,10 +20,10 @@ var MockArticleUnFavoriteTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusBadRequest,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Equal(`{"errors":{"article":"invalid slug"}}`, string(response_body))
 		},
@@ -36,10 +36,10 @@ var MockArticleUnFavoriteTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusNotFound,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Equal(`{"errors":{"article":"article not found"}}`, string(response_body))
 		},
@@ -52,10 +52,10 @@ var MockArticleUnFavoriteTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusUnauthorized,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Equal(`{"errors":{"article":"user not login"}}`, string(response_body))
 		},
@@ -68,10 +68,10 @@ var MockArticleUnFavoriteTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusOK,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp ArticleResponse
 			err := json.Unmarshal(response_body, &jsonResp)
@@ -79,7 +79,7 @@ var MockArticleUnFavoriteTest = []MockTests{
 				common.LogE.Println("Cannot umarshal json content with error: ", err)
 			}
 			a.NoError(err)
-			common.LogI.Println("jsonResp", jsonResp)
+			// common.LogI.Println("jsonResp", jsonResp)
 			a.Equal(ArticleModels.ArticlesMock[1].Title, jsonResp.Article.Title)
 			a.Equal(ArticleModels.ArticlesMock[1].Body, jsonResp.Article.Body)
 			a.Equal(ArticleModels.ArticlesMock[1].Author.UserModel.Username, jsonResp.Article.Author.Username)
@@ -94,10 +94,10 @@ var MockArticleUnFavoriteTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusOK,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp ArticleResponse
 			err := json.Unmarshal(response_body, &jsonResp)
@@ -105,7 +105,7 @@ var MockArticleUnFavoriteTest = []MockTests{
 				common.LogE.Println("Cannot umarshal json content with error: ", err)
 			}
 			a.NoError(err)
-			common.LogI.Println("jsonResp", jsonResp)
+			// common.LogI.Println("jsonResp", jsonResp)
 			a.Equal(ArticleModels.ArticlesMock[1].Title, jsonResp.Article.Title)
 			a.Equal(ArticleModels.ArticlesMock[1].Body, jsonResp.Article.Body)
 			a.Equal(ArticleModels.ArticlesMock[1].Author.UserModel.Username, jsonResp.Article.Author.Username)

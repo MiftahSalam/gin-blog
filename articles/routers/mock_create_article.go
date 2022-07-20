@@ -38,7 +38,7 @@ var MockCreateArticle = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp articleServices.ArticleResponse
 			err := json.Unmarshal(response_body, &jsonResp)
@@ -46,7 +46,7 @@ var MockCreateArticle = []RouterMockTest{
 				common.LogE.Println("Cannot umarshal json content with error: ", err)
 			}
 			a.NoError(err)
-			common.LogI.Println("jsonResp", jsonResp)
+			// common.LogI.Println("jsonResp", jsonResp)
 			a.Equal(articleServices.ArticlesMock[0].Title, jsonResp.Article.Title)
 			a.Equal(articleServices.ArticlesMock[0].Body, jsonResp.Article.Body)
 			a.Equal(articleModels.ArticleUsersModelMock[0].UserModel.Username, jsonResp.Article.Author.Username)
@@ -66,10 +66,10 @@ var MockCreateArticle = []RouterMockTest{
 			ResponsePattern: "",
 			Msg:             "valid data and should return StatusInternalServerError",
 		},
-		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
-			response_body, _ := ioutil.ReadAll(w.Body)
+		ResponseTest: func(_ *httptest.ResponseRecorder, _ *assert.Assertions) {
+			// response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 		},
 	},
@@ -90,7 +90,7 @@ var MockCreateArticle = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Contains(string(response_body), "json error")
 		},
@@ -115,7 +115,7 @@ var MockCreateArticle = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			a.Equal(`{"error":"no token present in request"}`, string(response_body))
 		},

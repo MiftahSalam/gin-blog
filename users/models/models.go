@@ -127,7 +127,7 @@ func GetUsers() ([]UserModel, error) {
 	db := common.GetDB()
 	var users []UserModel
 
-	err := db.Find(&users).Error
+	err := db.Debug().Find(&users).Error
 
 	return users, err
 }
