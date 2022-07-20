@@ -18,7 +18,7 @@ type ArticleModel struct {
 	Author      ArticleUserModel
 	AuthorID    uint
 	Tags        []TagModel     `gorm:"many2many:article_tags"`
-	Comments    []CommentModel `gorm:"ForeignKey:ID;constraint:OnDelete:CASCADE"`
+	Comments    []CommentModel `gorm:"ForeignKey:ArticleID"`
 }
 
 type ArticleUserModel struct {
@@ -32,7 +32,7 @@ type ArticleUserModel struct {
 type TagModel struct {
 	gorm.Model
 	Tag           string         `gorm:"unique_index"`
-	ArticleModels []ArticleModel `gorm:"many2many:article_tags;constraint:OnDelete:CASCADE"`
+	ArticleModels []ArticleModel `gorm:"many2many:article_tags"`
 }
 
 type CommentModel struct {
@@ -152,9 +152,9 @@ func FindArticles(tag, author, favorited string, limit, offset int) ([]ArticleMo
 	tx := db.Begin()
 	if tag != "" {
 		var tagModel TagModel
-		tx.Debug().Where(TagModel{Tag: tag}).First(&tagModel)
+		tx.Where(TagModel{Tag: tag}).First(&tagModel)
 
-		common.LogI.Println("tagModel.ID", tagModel.ID)
+		// common.LogI.Println("tagModel.ID", tagModel.ID)
 
 		if tagModel.ID != 0 {
 			tx.Model(&tagModel).
@@ -170,7 +170,7 @@ func FindArticles(tag, author, favorited string, limit, offset int) ([]ArticleMo
 		tx.Where(userModel.UserModel{Username: author}).First(&user)
 		articleUser := GetArticleUserModel(user)
 
-		common.LogI.Println("articleUser.ID", articleUser.ID)
+		// common.LogI.Println("articleUser.ID", articleUser.ID)
 
 		if articleUser.ID != 0 {
 			tx.Model(&articleUser).
