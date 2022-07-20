@@ -20,7 +20,7 @@ var router *gin.Engine
 func TestMain(m *testing.M) {
 	common.LogI.Println("Test main article router start")
 
-	err := godotenv.Load("../../.env")
+	err := godotenv.Load("../../.test.env")
 	if err != nil {
 		common.LogE.Fatal("Cannot load env file. Err: ", err)
 		panic("Cannot load env file")
@@ -71,10 +71,11 @@ func createTest(asserts *assert.Assertions, testData *RouterMockTest) *httptest.
 }
 
 func TestGetArticle(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockGetArticle {
-		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+		t.Run(test.UserMockTest.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &test)
 
 			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
@@ -86,10 +87,11 @@ func TestGetArticle(t *testing.T) {
 }
 
 func TestCreateArticle(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockCreateArticle {
-		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+		t.Run(test.UserMockTest.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &test)
 
 			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
@@ -100,10 +102,11 @@ func TestCreateArticle(t *testing.T) {
 }
 
 func TestListArticle(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockListArticle {
-		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+		t.Run(test.UserMockTest.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &test)
 
 			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
@@ -114,10 +117,11 @@ func TestListArticle(t *testing.T) {
 }
 
 func TestUpdateArticle(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockUpdateArticle {
-		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+		t.Run(test.UserMockTest.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &test)
 
 			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
@@ -128,10 +132,11 @@ func TestUpdateArticle(t *testing.T) {
 }
 
 func TestFavoriteArticle(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockFavoriteArticle {
-		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+		t.Run(test.UserMockTest.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &test)
 
 			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
@@ -142,10 +147,11 @@ func TestFavoriteArticle(t *testing.T) {
 }
 
 func TestUnFavoriteArticle(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockUnFavoriteArticle {
-		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+		t.Run(test.UserMockTest.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &test)
 
 			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
@@ -156,10 +162,11 @@ func TestUnFavoriteArticle(t *testing.T) {
 }
 
 func TestCommentCreateArticle(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockCreateCommentArticle {
-		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+		t.Run(test.UserMockTest.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &test)
 
 			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
@@ -170,10 +177,11 @@ func TestCommentCreateArticle(t *testing.T) {
 }
 
 func TestCommentListArticle(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockCommentListArticle {
-		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+		t.Run(test.UserMockTest.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &test)
 
 			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
@@ -184,10 +192,11 @@ func TestCommentListArticle(t *testing.T) {
 }
 
 func TestDeleteArticle(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockDeleteArticle {
-		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+		t.Run(test.UserMockTest.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &test)
 
 			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
@@ -203,7 +212,7 @@ func TestDeleteCommentrticle(t *testing.T) {
 	asserts := assert.New(t)
 
 	for _, test := range MockDeleteCommentArticle {
-		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+		t.Run(test.UserMockTest.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &test)
 
 			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)
@@ -214,10 +223,11 @@ func TestDeleteCommentrticle(t *testing.T) {
 }
 
 func TestTagList(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockGetTagList {
-		t.Run(test.UserMockTest.TestName, func(t *testing.T) {
+		t.Run(test.UserMockTest.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &test)
 
 			asserts.Equal(test.UserMockTest.ResponseCode, w.Code)

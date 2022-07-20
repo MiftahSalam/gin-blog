@@ -23,7 +23,7 @@ var router *gin.Engine
 func TestMain(m *testing.M) {
 	common.LogI.Println("Test main users services start")
 
-	err := godotenv.Load("../../.env")
+	err := godotenv.Load("../../.test.env")
 	if err != nil {
 		common.LogE.Fatal("Cannot load env file. Error: ", err)
 		panic("Cannot load env file")
@@ -66,7 +66,7 @@ func createTest(asserts *assert.Assertions, testData *services.MockTests) *httpt
 func TestUserRegister(t *testing.T) {
 	asserts := assert.New(t)
 	for _, testData := range services.MockTestsRegister {
-		t.Run(testData.TestName, func(t *testing.T) {
+		t.Run(testData.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &testData)
 			var jsonResp services.UserResponseMock
 			err := json.Unmarshal(w.Body.Bytes(), &jsonResp)
@@ -91,7 +91,7 @@ func TestUserRegister(t *testing.T) {
 func TestGetUsers(t *testing.T) {
 	asserts := assert.New(t)
 	for _, testData := range services.MockTestsGetUsers {
-		t.Run(testData.TestName, func(t *testing.T) {
+		t.Run(testData.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &testData)
 			var jsonResp services.UsersResponseMock
 			err := json.Unmarshal(w.Body.Bytes(), &jsonResp)
@@ -108,7 +108,7 @@ func TestGetUsers(t *testing.T) {
 func TestUserLogin(t *testing.T) {
 	asserts := assert.New(t)
 	for _, testData := range services.MockTestsLogin {
-		t.Run(testData.TestName, func(t *testing.T) {
+		t.Run(testData.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &testData)
 			var jsonResp services.UserResponseMock
 			err := json.Unmarshal(w.Body.Bytes(), &jsonResp)
@@ -136,7 +136,7 @@ func TestUserUpdate(t *testing.T) {
 	// t.Skip()
 	asserts := assert.New(t)
 	for _, testData := range services.MockTestsUpdateUser {
-		t.Run(testData.TestName, func(t *testing.T) {
+		t.Run(testData.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &testData)
 			var jsonResp services.UserResponseMock
 
@@ -170,7 +170,7 @@ func TestGetUserProfile(t *testing.T) {
 	asserts := assert.New(t)
 
 	for _, testData := range services.MockTestsGetUserProfile {
-		t.Run(testData.TestName, func(t *testing.T) {
+		t.Run(testData.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &testData)
 
 			var jsonResp services.UserProfileResponseMock
@@ -205,7 +205,7 @@ func TestFollowUser(t *testing.T) {
 	asserts := assert.New(t)
 
 	for _, testData := range services.MockTestsFollowUser {
-		t.Run(testData.TestName, func(t *testing.T) {
+		t.Run(testData.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &testData)
 
 			var jsonResp services.UserProfileResponseMock
@@ -241,7 +241,7 @@ func TestUnfollowUser(t *testing.T) {
 	asserts := assert.New(t)
 
 	for _, testData := range services.MockTestsUnFollowUser {
-		t.Run(testData.TestName, func(t *testing.T) {
+		t.Run(testData.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &testData)
 			var jsonResp services.UserProfileResponseMock
 
@@ -275,7 +275,7 @@ func TestUnfollowUser(t *testing.T) {
 func TestGetUsersFollowing(t *testing.T) {
 	asserts := assert.New(t)
 	for _, testData := range services.MockTestsUsersFollowing {
-		t.Run(testData.TestName, func(t *testing.T) {
+		t.Run(testData.TestName, func(_ *testing.T) {
 			w := createTest(asserts, &testData)
 			var jsonResp services.UsersResponseMock
 

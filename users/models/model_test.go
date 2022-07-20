@@ -25,7 +25,7 @@ var userModelMock UserModel = UserModel{
 func TestMain(m *testing.M) {
 	common.LogI.Println("Test main users start")
 
-	err := godotenv.Load("../../.env")
+	err := godotenv.Load("../../.test.env")
 	if err != nil {
 		common.LogE.Fatal("Cannot load env file. Err: ", err)
 		panic("Cannot load env file")
@@ -133,7 +133,7 @@ func TestFollowing(t *testing.T) {
 	asserts := assert.New(t)
 
 	for _, user := range UsersMock {
-		t.Run(fmt.Sprintf("Test Get Following user: %v", user.Username), func(t *testing.T) {
+		t.Run(fmt.Sprintf("Test Get Following user: %v", user.Username), func(_ *testing.T) {
 			followingUser := user.GetFollowing()
 			asserts.Empty(followingUser, "following user should be empty")
 		})

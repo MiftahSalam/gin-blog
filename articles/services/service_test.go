@@ -18,7 +18,7 @@ import (
 func TestMain(m *testing.M) {
 	common.LogI.Println("Test Main Article Services start")
 
-	err := godotenv.Load("../../.env")
+	err := godotenv.Load("../../.test.env")
 	if err != nil {
 		common.LogE.Fatal("Cannot load env file. Err: ", err)
 		panic("Cannot load env file")
@@ -49,7 +49,7 @@ func TestCreateArticle(t *testing.T) {
 	asserts := assert.New(t)
 
 	for _, test := range MockArticleCreateTest {
-		t.Run(test.TestName, func(t *testing.T) {
+		t.Run(test.TestName, func(_ *testing.T) {
 			c, w := InitTest()
 			test.Init(c)
 			MockJSONPost(c, test.Data)
@@ -75,10 +75,11 @@ func TestCreateArticle(t *testing.T) {
 }
 
 func TestArticlesList(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockArticlesListTest {
-		t.Run(test.TestName, func(t *testing.T) {
+		t.Run(test.TestName, func(_ *testing.T) {
 			c, w := InitTest()
 			test.Init(c)
 
@@ -92,10 +93,11 @@ func TestArticlesList(t *testing.T) {
 }
 
 func TestGetArticlesFeed(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockArticlesFeedTest {
-		t.Run(test.TestName, func(t *testing.T) {
+		t.Run(test.TestName, func(_ *testing.T) {
 			c, w := InitTest()
 			test.Init(c)
 
@@ -109,10 +111,11 @@ func TestGetArticlesFeed(t *testing.T) {
 }
 
 func TestArticleRetrieve(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockArticleRetrieveTest {
-		t.Run(test.TestName, func(t *testing.T) {
+		t.Run(test.TestName, func(_ *testing.T) {
 			c, w := InitTest()
 			test.Init(c)
 
@@ -126,10 +129,11 @@ func TestArticleRetrieve(t *testing.T) {
 }
 
 func TestArticleUpdate(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockArticleUpdate {
-		t.Run(test.TestName, func(t *testing.T) {
+		t.Run(test.TestName, func(_ *testing.T) {
 			c, w := InitTest()
 			test.Init(c)
 			MockJSONPost(c, test.Data)
@@ -144,10 +148,11 @@ func TestArticleUpdate(t *testing.T) {
 }
 
 func TestArticleFavorite(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockArticleFavoriteTest {
-		t.Run(test.TestName, func(t *testing.T) {
+		t.Run(test.TestName, func(_ *testing.T) {
 			c, w := InitTest()
 			test.Init(c)
 
@@ -161,10 +166,11 @@ func TestArticleFavorite(t *testing.T) {
 }
 
 func TestArticleUnFavorite(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockArticleUnFavoriteTest {
-		t.Run(test.TestName, func(t *testing.T) {
+		t.Run(test.TestName, func(_ *testing.T) {
 			c, w := InitTest()
 			test.Init(c)
 
@@ -178,10 +184,11 @@ func TestArticleUnFavorite(t *testing.T) {
 }
 
 func TestCreateArticleComment(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockArticleCommentCreateTest {
-		t.Run(test.TestName, func(t *testing.T) {
+		t.Run(test.TestName, func(_ *testing.T) {
 			c, w := InitTest()
 			test.Init(c)
 			MockJSONPost(c, test.Data)
@@ -196,10 +203,11 @@ func TestCreateArticleComment(t *testing.T) {
 }
 
 func TestListArticleComment(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockArticleCommentListTest {
-		t.Run(test.TestName, func(t *testing.T) {
+		t.Run(test.TestName, func(_ *testing.T) {
 			c, w := InitTest()
 			test.Init(c)
 
@@ -213,10 +221,11 @@ func TestListArticleComment(t *testing.T) {
 }
 
 func TestArticleCommenteDelete(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockArticleCommentDeleteTest {
-		t.Run(test.TestName, func(t *testing.T) {
+		t.Run(test.TestName, func(_ *testing.T) {
 			c, w := InitTest()
 			test.Init(c)
 
@@ -230,10 +239,11 @@ func TestArticleCommenteDelete(t *testing.T) {
 }
 
 func TestTagList(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockArticleCommentListTest {
-		t.Run(test.TestName, func(t *testing.T) {
+		t.Run(test.TestName, func(_ *testing.T) {
 			c, w := InitTest()
 
 			TagList(c)
@@ -242,7 +252,7 @@ func TestTagList(t *testing.T) {
 
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp TagsResponse
 			err := json.Unmarshal(response_body, &jsonResp)
@@ -251,7 +261,7 @@ func TestTagList(t *testing.T) {
 			}
 			asserts.NoError(err)
 
-			common.LogI.Println("jsonResp", jsonResp)
+			// common.LogI.Println("jsonResp", jsonResp)
 
 			allTags := append(ArticleModels.TagsMock, TagsMockUpdate...)
 			asserts.Equal(uint(len(allTags)), uint(len(jsonResp.Tags)))
@@ -261,10 +271,11 @@ func TestTagList(t *testing.T) {
 }
 
 func TestArticleDelete(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	for _, test := range MockArticleDeleteTest {
-		t.Run(test.TestName, func(t *testing.T) {
+		t.Run(test.TestName, func(_ *testing.T) {
 			c, w := InitTest()
 			test.Init(c)
 
@@ -297,7 +308,7 @@ func CleanUpAfterTest() {
 			common.LogE.Printf("cannot find article: %v with err %v", article.Title, err)
 		}
 
-		common.LogI.Println("clean up article tags", createdArticleFromServices.Tags)
+		// common.LogI.Println("clean up article tags", createdArticleFromServices.Tags)
 		err = db.Unscoped().Model(&createdArticleFromServices).Association("Tags").Clear()
 		if err != nil {
 			common.LogE.Println("cannot delete article tags: ", err)

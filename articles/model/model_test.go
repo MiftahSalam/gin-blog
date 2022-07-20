@@ -14,7 +14,7 @@ import (
 func TestMain(m *testing.M) {
 	common.LogI.Println("Test Main Article start")
 
-	err := godotenv.Load("../../.env")
+	err := godotenv.Load("../../.test.env")
 	if err != nil {
 		common.LogE.Fatal("Cannot load env file. Err: ", err)
 		panic("Cannot load env file")
@@ -66,7 +66,11 @@ func TestSaveArticle(t *testing.T) {
 }
 
 func TestSaveComment(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
+
+	common.LogI.Println("ArticlesMock[0]", ArticlesMock[0])
+	common.LogI.Println("ArticleUsersModelMock", ArticleUsersModelMock[1])
 
 	err := SaveOne(&CommentModel{
 		Article:   ArticlesMock[0],
@@ -155,25 +159,30 @@ func TestFindArticles(t *testing.T) {
 	asserts.NoError(err)
 
 	//test find all articles
-	_, count, err := FindArticles("", "", "", 0, 0)
+	articles, count, err := FindArticles("", "", "", 0, 0)
 	asserts.NoError(err)
 	asserts.Equal(int64(4), count)
+	asserts.Equal(4, len(articles))
 
 	//test find all articles limit 2
-	articles, count, err := FindArticles("", "", "", 2, 0)
+	articles, count, err = FindArticles("", "", "", 2, 0)
 	asserts.NoError(err)
-	asserts.Equal(int64(2), count)
+	asserts.Equal(int64(4), count)
+	asserts.Equal(2, len(articles))
 	common.LogI.Println("articles len", len(articles))
+	common.LogI.Println("count", count)
 
 	//test find all articles offset 2
-	_, count, err = FindArticles("", "", "", 2, 0)
+	articles, count, err = FindArticles("", "", "", 0, 2)
 	asserts.NoError(err)
-	asserts.Equal(int64(2), count)
+	asserts.Equal(2, len(articles))
+	asserts.Equal(int64(4), count)
 
 	//test find all articles offset 3 limit 2
-	_, count, err = FindArticles("", "", "", 2, 3)
+	articles, count, err = FindArticles("", "", "", 2, 3)
 	asserts.NoError(err)
-	asserts.Equal(int64(1), count)
+	asserts.Equal(1, len(articles))
+	asserts.Equal(int64(4), count)
 
 	//test find articles by tag mock
 	articles, count, err = FindArticles("mock", "", "", 0, 0)
@@ -218,6 +227,7 @@ func TestGetAllTags(t *testing.T) {
 }
 
 func TestGetArticleComments(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	comments0, err := ArticlesMock[0].GetComments()
@@ -239,28 +249,33 @@ func TestGetArticleFeed(t *testing.T) {
 	ArticleUsersModelMock[0].UserModel.Following(ArticleUsersModelMock[2].UserModel)
 
 	//get article feeds
-	_, count, err := ArticleUsersModelMock[0].GetArticleFeed(0, 0)
+	articles, count, err := ArticleUsersModelMock[0].GetArticleFeed(0, 0)
 
 	asserts.NoError(err)
-	asserts.Equal(2, count)
+	asserts.Equal(4, count)
+	asserts.Equal(4, len(articles))
 
-	_, count, err = ArticleUsersModelMock[0].GetArticleFeed(1, 0)
+	articles, count, err = ArticleUsersModelMock[0].GetArticleFeed(1, 0)
 	asserts.NoError(err)
-	asserts.Equal(1, count)
+	asserts.Equal(1, len(articles))
+	asserts.Equal(4, count)
 
-	_, count, err = ArticleUsersModelMock[0].GetArticleFeed(0, 1)
+	articles, count, err = ArticleUsersModelMock[0].GetArticleFeed(0, 1)
 	asserts.NoError(err)
-	asserts.Equal(1, count)
+	asserts.Equal(3, len(articles))
+	asserts.Equal(4, count)
 
-	_, count, err = ArticleUsersModelMock[0].GetArticleFeed(1, 1)
+	articles, count, err = ArticleUsersModelMock[0].GetArticleFeed(1, 1)
 	asserts.NoError(err)
-	asserts.Equal(1, count)
+	asserts.Equal(1, len(articles))
+	asserts.Equal(4, count)
 
-	_, count, err = ArticleUsersModelMock[0].GetArticleFeed(1, 3)
+	articles, count, err = ArticleUsersModelMock[0].GetArticleFeed(1, 3)
 	asserts.NoError(err)
-	asserts.Equal(0, count)
+	asserts.Equal(1, len(articles))
+	asserts.Equal(4, count)
 
-	_, count, err = ArticleUsersModelMock[0].GetArticleFeed(-1, 3)
+	articles, count, err = ArticleUsersModelMock[0].GetArticleFeed(-1, 3)
 	/*
 		if err == nil {
 			common.LogI.Println("article feeds", articles)
@@ -271,7 +286,8 @@ func TestGetArticleFeed(t *testing.T) {
 		}
 	*/
 	asserts.NoError(err)
-	asserts.Equal(0, count)
+	asserts.Equal(1, len(articles))
+	asserts.Equal(4, count)
 }
 
 func TestUpdateArticle(t *testing.T) {
@@ -297,6 +313,7 @@ func TestUpdateArticle(t *testing.T) {
 }
 
 func TestDeleteCommentModel(t *testing.T) {
+	// t.Skip()
 	asserts := assert.New(t)
 
 	//create new comment to article 0
