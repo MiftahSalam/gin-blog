@@ -25,7 +25,7 @@ var MockArticlesFeedTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusOK,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
 			// common.LogI.Println("response_body", string(response_body))
@@ -37,8 +37,8 @@ var MockArticlesFeedTest = []MockTests{
 			}
 			a.NoError(err)
 			// common.LogI.Println("jsonResp", jsonResp)
-			a.Equal(uint(4), jsonResp.ArticleCount)
-			a.Equal(uint(4), uint(len(jsonResp.Articles)))
+			a.Equal(uint(5), jsonResp.ArticleCount)
+			a.Equal(uint(5), uint(len(jsonResp.Articles)))
 		},
 	},
 	{
@@ -49,10 +49,10 @@ var MockArticlesFeedTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusOK,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp ArticlesResponse
 			err := json.Unmarshal(response_body, &jsonResp)
@@ -60,8 +60,8 @@ var MockArticlesFeedTest = []MockTests{
 				common.LogE.Println("Cannot umarshal json content with error: ", err)
 			}
 			a.NoError(err)
-			common.LogI.Println("jsonResp", jsonResp)
-			a.Equal(uint(1), jsonResp.ArticleCount)
+			// common.LogI.Println("jsonResp", jsonResp)
+			a.Equal(uint(5), jsonResp.ArticleCount)
 			a.Equal(uint(1), uint(len(jsonResp.Articles)))
 		},
 	},
@@ -73,10 +73,10 @@ var MockArticlesFeedTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusOK,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp ArticlesResponse
 			err := json.Unmarshal(response_body, &jsonResp)
@@ -84,8 +84,8 @@ var MockArticlesFeedTest = []MockTests{
 				common.LogE.Println("Cannot umarshal json content with error: ", err)
 			}
 			a.NoError(err)
-			common.LogI.Println("jsonResp", jsonResp)
-			a.Equal(uint(2), jsonResp.ArticleCount)
+			// common.LogI.Println("jsonResp", jsonResp)
+			a.Equal(uint(5), jsonResp.ArticleCount)
 			a.Equal(uint(2), uint(len(jsonResp.Articles)))
 		},
 	},
@@ -96,9 +96,9 @@ var MockArticlesFeedTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusUnauthorized,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 			a.Equal(`{"errors":{"access":"user not login"}}`, string(response_body))
 
 		},

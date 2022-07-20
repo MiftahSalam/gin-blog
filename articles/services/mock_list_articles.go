@@ -21,7 +21,7 @@ var MockArticlesListTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusOK,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
 			// common.LogI.Println("response_body", string(response_body))
@@ -44,7 +44,7 @@ var MockArticlesListTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusOK,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
 			// common.LogI.Println("response_body", string(response_body))
@@ -56,7 +56,7 @@ var MockArticlesListTest = []MockTests{
 			}
 			a.NoError(err)
 			// common.LogI.Println("jsonResp", jsonResp)
-			a.Equal(uint(2), jsonResp.ArticleCount)
+			a.Equal(uint(5), jsonResp.ArticleCount)
 			a.Equal(uint(2), uint(len(jsonResp.Articles)))
 		},
 	},
@@ -67,7 +67,7 @@ var MockArticlesListTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusOK,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
 			// common.LogI.Println("response_body", string(response_body))
@@ -79,7 +79,7 @@ var MockArticlesListTest = []MockTests{
 			}
 			a.NoError(err)
 			// common.LogI.Println("jsonResp", jsonResp)
-			a.Equal(uint(3), jsonResp.ArticleCount)
+			a.Equal(uint(5), jsonResp.ArticleCount)
 			a.Equal(uint(3), uint(len(jsonResp.Articles)))
 		},
 	},
@@ -90,7 +90,7 @@ var MockArticlesListTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusOK,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
 			// common.LogI.Println("response_body", string(response_body))
@@ -113,7 +113,7 @@ var MockArticlesListTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusOK,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
 			// common.LogI.Println("response_body", string(response_body))
@@ -136,7 +136,7 @@ var MockArticlesListTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusOK,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
 			// common.LogI.Println("response_body", string(response_body))
@@ -159,7 +159,7 @@ var MockArticlesListTest = []MockTests{
 		},
 		map[string]map[string]interface{}{},
 		http.StatusOK,
-		func(c *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
+		func(_ *gin.Context, w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
 			// common.LogI.Println("response_body", string(response_body))

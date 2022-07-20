@@ -75,7 +75,7 @@ var MockListArticle = []RouterMockTest{
 			// common.LogI.Println("jsonResp", jsonResp)
 
 			a.Equal(uint(2), uint(len(jsonResp.Articles)))
-			a.Equal(uint(2), jsonResp.ArticleCount)
+			a.Equal(uint(4), jsonResp.ArticleCount)
 		},
 	},
 	{
@@ -104,7 +104,7 @@ var MockListArticle = []RouterMockTest{
 			// common.LogI.Println("jsonResp", jsonResp)
 
 			a.Equal(uint(3), uint(len(jsonResp.Articles)))
-			a.Equal(uint(3), jsonResp.ArticleCount)
+			a.Equal(uint(4), jsonResp.ArticleCount)
 		},
 	},
 	{
@@ -226,7 +226,7 @@ var MockListArticle = []RouterMockTest{
 	{
 		UserMockTest: userServices.MockTests{
 			TestName: "no error (list by favorite user1): Get Article List Test",
-			Init: func(req *http.Request) {
+			Init: func(_ *http.Request) {
 				articleModels.ArticlesMock[0].FavoriteBy(articleModels.ArticleUsersModelMock[1])
 			},
 			Url:             "/article/?favorited=user1",
@@ -239,7 +239,7 @@ var MockListArticle = []RouterMockTest{
 		ResponseTest: func(w *httptest.ResponseRecorder, a *assert.Assertions) {
 			response_body, _ := ioutil.ReadAll(w.Body)
 
-			common.LogI.Println("response_body", string(response_body))
+			// common.LogI.Println("response_body", string(response_body))
 
 			var jsonResp articleServices.ArticlesResponse
 			err := json.Unmarshal(response_body, &jsonResp)
